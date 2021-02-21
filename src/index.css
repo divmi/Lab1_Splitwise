@@ -1,4 +1,4 @@
-.btn.btn-primary{
+.btn.btn-primary {
   background: #eb7f05 none repeat scroll 0 0;
   border-color: #eb7f05;
   color: #ffffff;
@@ -10,24 +10,26 @@
   align-self: initial;
 }
 
-.btn.btn-signup{
+.btn.btn-signup {
   background: #eb7f05;
   border-color: #eb7f05;
   color: #ffffff;
   height: 30px;
   font-size: 12px;
+  margin: 5px;
 }
 
-.btn.btn-login{
+.btn.btn-login {
   background: #5bc5a7;
   border-color: #ffffff;
   color: #ffffff;
   height: 30px;
   font-size: 12px;
+  margin: 5px;
 }
 
-.imageDiv{
-  border-color: #eb7f05;
+.image-div {
+  margin-right: 150px;
 }
 
 .flex-container {
@@ -35,23 +37,22 @@
   justify-content: center;
   margin-top: 80px;
 }
-.label-Splitwise {
+.label-custom {
   color: #ffffff;
-  text-align:right;
+  margin: -30px;
+  text-align: center;
 }
-
 
 .flex-container > div {
   margin: 20px;
   padding: 2px;
   font-size: 20px;
 }
-.header {
-  background-color:#5bc5a7;
-  max-width: 100% !important;
-}
 
 .custom-header {
   padding-right: 0px !important;
   padding-left: 0px !important;
+  background-color: #5bc5a7;
+  width: 100%;
+  height: 50px;
 }
