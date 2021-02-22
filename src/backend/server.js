@@ -22,6 +22,7 @@ app.use(
 
 const insert = require("./insert");
 const login = require("./login");
+const group = require("./group");
 
 app.set("view engine", "ejs");
 const con = mysql.createConnection({
@@ -77,6 +78,13 @@ app.post("/signupUser", function (req, res) {
   ins.insert_user(con, req.body, res);
 });
 
+app.post("/createGroup", function (req, res) {
+  console.log("Req Body : ", req.body);
+  console.log("Divya 11111:" + req.body.name);
+  var insgrp = new insert.insert();
+  insgrp.insert_Group(con, req.body, res);
+});
+
 app.get("/signupUser", function (req, res) {
   console.log("Req Body : ", req.body);
 });
@@ -86,4 +94,15 @@ app.post("/loginUser", function (req, res) {
   console.log("Req Body : ", req.body);
   var loginUser = new login.login();
   loginUser.UserLogin(con, req.body, res);
+});
+
+app.get("/getUserInfo", function (req, res) {
+  console.log("Req Body : ", req.query.userEmail);
+  var userDetail = new group.group();
+  userDetail.getUserDetail(con, req.query.userEmail, res);
+});
+
+app.get("/getAllUser", function (req, res) {
+  var user = new group.group();
+  user.getAllUser(con, req, res);
 });

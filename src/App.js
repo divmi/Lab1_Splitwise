@@ -8,6 +8,7 @@ import { Row, Col, Container } from "reactstrap";
 import Login from "./Components/LoginComponent";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Dashboard from "./Components/DashBoard";
+import CreateGroup from "./Components/Group/CreateGroupComponent";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/createGroup" component={CreateGroup} />
         </Switch>
       </Router>
     </div>
