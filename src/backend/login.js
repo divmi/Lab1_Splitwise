@@ -15,9 +15,9 @@ var login = class login {
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("the record is " + result);
-      if (result[0].Password === body.password) {
-        res.cookie("cookie", result[0].Email);
-        console.log(res.cookie("cookie", result[0].Email));
+      if (result.length > 0 && result[0].Password === body.password) {
+        res.cookie("cookie", JSON.stringify(result[0]));
+        console.log(res.cookie("cookie", JSON.stringify(result[0])));
 
         res.writeHead(200, {
           "Content-Type": "text/plain",

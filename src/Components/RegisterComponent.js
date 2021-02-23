@@ -12,78 +12,99 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-
+import { isEmail } from "validator";
 class Register extends Component {
   constructor(props) {
     super(props);
     {
       this.state = {
-        name: "",
-        email: "",
-        password: "",
-        error: "",
+        userInfo: {
+          name: "",
+          email: "",
+          password: "",
+        },
+        error: {},
+        loginError: "",
         auth: true,
       };
     }
   }
 
-  nameEventHandler = (e) => {
+  handleChange = (e) => {
     this.setState({
-      name: e.target.value,
+      userInfo: {
+        ...this.state.userInfo,
+        [e.target.name]: e.target.value,
+      },
     });
   };
 
-  emailEventHandler = (e) => {
-    this.setState({
-      email: e.target.value,
-    });
-  };
+  // nameEventHandler = (e) => {
+  //   this.setState({
+  //     name: e.target.value,
+  //   });
+  // };
 
-  passEventHandler = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
-  };
+  // emailEventHandler = (e) => {
+  //   this.setState({
+  //     email: e.target.value,
+  //   });
+  // };
+
+  // passEventHandler = (e) => {
+  //   this.setState({
+  //     password: e.target.value,
+  //   });
+  // };
 
   submitForm = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    const data = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-    };
-    //set the with credentials to true
-    axios.defaults.withCredentials = true;
-    //make a post request with the user data
-    axios
-      .post("http://localhost:8000/signupUser", data)
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
+
+    const { userInfo } = this.state;
+    const error = this.validateForm();
+    if (Object.keys(error).length == 0) {
+      //set the with credentials to true
+      axios.defaults.withCredentials = true;
+      //make a post request with the user data
+      axios
+        .post("http://localhost:8000/signupUser", userInfo)
+        .then((response) => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            this.setState({
+              loginError: "",
+              authFlag: true,
+            });
+            alert("Successfully Created! Please Conitnue to Login");
+          } else {
+            this.setState({
+              loginError:
+                "<p style={{color: red}}>User is already registered</p>",
+              authFlag: false,
+            });
+          }
+        })
+        .catch((e) => {
           this.setState({
-            error: "",
-            authFlag: true,
+            loginError: "User is already registered",
           });
-          alert("Successfully Created! Please Conitnue to Login");
-        } else {
-          this.setState({
-            error:
-              "<p style={{color: red}}>Please enter correct credentials</p>",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
         });
-      });
+    } else {
+      this.setState({ error });
+    }
   };
 
-  validateForm() {
-    // if()
-  }
+  validateForm = () => {
+    const { userInfo } = this.state;
+    let error = {};
+    if (userInfo.name === "") error.name = "First Name should not be blank";
+    if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
+    if (userInfo.email === "") error.email = "Email should not be blank";
+    if (userInfo.password === "")
+      error.password = "Password should not be blank";
+    return error;
+  };
 
   render() {
     return (
@@ -99,6 +120,14 @@ class Register extends Component {
               ></img>
             </div>
             <div>
+              <div
+                id="errorLogin"
+                hidden={this.state.loginError.length > 0 ? false : true}
+                className="alert alert-danger"
+                role="alert"
+              >
+                {this.state.loginError}
+              </div>
               <h3>Introduce Yourself</h3>
               <Form onSubmit={this.handleSubmit} className="form-stacked">
                 <FormGroup>
@@ -110,10 +139,10 @@ class Register extends Component {
                     id="name"
                     name="name"
                     placeholder="First Name"
-                    invalid={false}
-                    onChange={this.nameEventHandler}
+                    invalid={this.state.error.name ? true : false}
+                    onChange={this.handleChange}
                   ></Input>
-                  <FormFeedback>First Name should not be blank</FormFeedback>
+                  <FormFeedback>{this.state.error.name}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">
@@ -124,9 +153,11 @@ class Register extends Component {
                     id="email"
                     name="email"
                     placeholder="Email"
-                    onChange={this.emailEventHandler}
+                    onChange={this.handleChange}
+                    invalid={this.state.error.email ? true : false}
                   ></Input>
                 </FormGroup>
+                <FormFeedback>{this.state.error.email}</FormFeedback>
 
                 <FormGroup>
                   <Label htmlFor="password">
@@ -137,8 +168,10 @@ class Register extends Component {
                     id="password"
                     name="password"
                     placeholder="Password"
-                    onChange={this.passEventHandler}
+                    onChange={this.handleChange}
+                    invalid={this.state.error.password ? true : false}
                   ></Input>
+                  <FormFeedback>{this.state.error.password}</FormFeedback>
                 </FormGroup>
                 <FormGroup row>
                   <Col>

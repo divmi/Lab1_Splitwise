@@ -7,12 +7,16 @@ import {
   NavDropdown,
   DropdownMenu,
   DropdownItem,
+  Dropdown,
 } from "reactstrap";
+import cookie from "react-cookies";
 
 import { Redirect, Link } from "react-router-dom";
 
 class Header extends Component {
-  handleLogout() {}
+  handleLogout = () => {
+    cookie.remove("cookie", { path: "/" });
+  };
 
   render() {
     return (
@@ -37,8 +41,13 @@ class Header extends Component {
             <Link to="/login">
               <button className="btn btn-login ">Login</button>
             </Link>
-            <div>
-              <Nav>
+            <select class="selectpicker">
+              <option>Mustard</option>
+              <option>Ketchup</option>
+              <option>Relish</option>
+            </select>
+            <button onClick={this.handleLogout}>Logout</button>
+            {/* <Nav>
                 <DropdownMenu
                   title={
                     <img
@@ -59,14 +68,13 @@ class Header extends Component {
                     <Link to="/myevents">My Events</Link>
                   </DropdownItem>
                   {/* <DropdownItem Divider /> */}
-                  <DropdownItem>
+            {/* <DropdownItem>
                     <Link to="/" onClick={this.handleLogout}>
                       Logout
                     </Link>
                   </DropdownItem>
                 </DropdownMenu>
-              </Nav>
-            </div>
+              </Nav> */}{" "}
           </div>
         </div>
       </div>

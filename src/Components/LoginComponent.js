@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
-import { Link, Redirect } from "react-router-dom";
-
+import { Redirect } from "react-router-dom";
+import { isEmail } from "validator";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,10 +25,22 @@ class Login extends Component {
         email: "",
         password: "",
         error: "",
+        formerror: {},
         auth: true,
       };
     }
   }
+
+  validateForm = () => {
+    const userInfo = this.state;
+    let error = {};
+
+    if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
+    if (userInfo.email === "") error.email = "Email should not be blank";
+    if (userInfo.password === "")
+      error.password = "Password should not be blank";
+    return error;
+  };
 
   emailEventHandler = (e) => {
     this.setState({
@@ -49,32 +61,36 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    //set the with credentials to true
-    axios.defaults.withCredentials = true;
-    //make a post request with the user data
-    axios
-      .post("http://localhost:8000/loginUser", data)
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
+    const formerror = this.validateForm();
+    if (Object.keys(formerror).length == 0) {
+      //set the with credentials to true
+      axios.defaults.withCredentials = true;
+      //make a post request with the user data
+      axios
+        .post("http://localhost:8000/loginUser", data)
+        .then((response) => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            this.setState({
+              error: "",
+              authFlag: true,
+            });
+            <Dashboard></Dashboard>;
+          } else {
+            this.setState({
+              error: "Please enter correct credentials",
+              authFlag: false,
+            });
+          }
+        })
+        .catch((e) => {
           this.setState({
-            error: "",
-            authFlag: true,
+            error: "Please enter correct credentials",
           });
-          <Dashboard></Dashboard>;
-        } else {
-          this.setState({
-            error:
-              "<p style={{color: red}}>Please enter correct credentials</p>",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
         });
-      });
+    } else {
+      this.setState({ formerror });
+    }
   };
 
   render() {
@@ -95,6 +111,14 @@ class Login extends Component {
             ></img>
           </div>
           <div>
+            <div
+              id="errorLogin"
+              hidden={this.state.error.length > 0 ? false : true}
+              className="alert alert-danger"
+              role="alert"
+            >
+              {this.state.error}
+            </div>
             <h3>WELCOME TO SPLITWISE</h3>
             <Form onSubmit={this.handleSubmit} className="form-stacked">
               <FormGroup>
@@ -107,7 +131,9 @@ class Login extends Component {
                   name="email"
                   placeholder="Email"
                   onChange={this.emailEventHandler}
+                  invalid={this.state.formerror.email ? true : false}
                 ></Input>
+                <FormFeedback>{this.state.formerror.email}</FormFeedback>
               </FormGroup>
 
               <FormGroup>
@@ -118,7 +144,9 @@ class Login extends Component {
                   name="password"
                   placeholder="Password"
                   onChange={this.passEventHandler}
+                  invalid={this.state.formerror.password ? true : false}
                 ></Input>
+                <FormFeedback>{this.state.formerror.password}</FormFeedback>
               </FormGroup>
               <FormGroup row>
                 <Col>

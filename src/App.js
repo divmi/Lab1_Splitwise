@@ -9,6 +9,7 @@ import Login from "./Components/LoginComponent";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Dashboard from "./Components/DashBoard";
 import CreateGroup from "./Components/Group/CreateGroupComponent";
+import UpdateProfile from "./Components/UpdateProfile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/createGroup" component={CreateGroup} />
+          <Route path="/updateProfile" component={UpdateProfile} />
         </Switch>
       </Router>
     </div>
