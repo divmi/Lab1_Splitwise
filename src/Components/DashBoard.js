@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect, Link } from "react-router-dom";
 import { Nav, NavLink, NavItem } from "reactstrap";
 
 class Dashboard extends Component {

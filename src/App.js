@@ -1,10 +1,7 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React from "react";
-import Navbar from "reactstrap";
 import Register from "./Components/RegisterComponent";
 import Header from "./Components/Header";
-import { Row, Col, Container } from "reactstrap";
 import Login from "./Components/LoginComponent";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Dashboard from "./Components/DashBoard";

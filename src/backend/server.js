@@ -5,6 +5,10 @@ var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 
+app.use("/group_pic", express.static("public/assets"));
+
+const multer = require("multer"); //upload image on server
+
 //require express session
 var session = require("express-session");
 var cookieParser = require("cookie-parser");
@@ -20,9 +24,26 @@ app.use(
   })
 );
 
+const storage = multer.diskStorage({
+  destination: "./../public/upload/",
+  filename: function (req, file, cb) {
+    console.log(file);
+    cb(null, `${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
+  },
+});
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({ storage });
 const insert = require("./insert");
 const login = require("./login");
 const group = require("./group");
+const update = require("./update");
 
 app.set("view engine", "ejs");
 const con = mysql.createConnection({
@@ -78,6 +99,14 @@ app.post("/signupUser", function (req, res) {
   ins.insert_user(con, req.body, res);
 });
 
+app.post("/upload", upload.single("file"), (req, res, next) => {
+  console.log("Req Body : ", req.body);
+  res.writeHead(200, {
+    "Content-Type": "application/json",
+  });
+  res.end(`${new Date()}-${req.body.name}`);
+});
+
 app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   console.log("Divya 11111:" + req.body.name);
@@ -93,6 +122,12 @@ app.get("/signupUser", function (req, res) {
 app.post("/loginUser", function (req, res) {
   console.log("Req Body : ", req.body);
   var loginUser = new login.login();
+  loginUser.UserLogin(con, req.body, res);
+});
+
+app.post("/updateProfile", function (req, res) {
+  console.log("Req Body : ", req.body);
+  var update = new update.update();
   loginUser.UserLogin(con, req.body, res);
 });
 

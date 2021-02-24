@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
   Form,
   FormGroup,
   Label,
   Input,
   Col,
-  Row,
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
@@ -85,7 +82,7 @@ class Register extends Component {
             });
           }
         })
-        .catch((e) => {
+        .catch(() => {
           this.setState({
             loginError: "User is already registered",
           });
@@ -110,7 +107,7 @@ class Register extends Component {
     return (
       <>
         <div className="container-fluid form-cont">
-          <div class="flex-container">
+          <div className="flex-container">
             <div>
               <img
                 src="./assets/Logo.png"
@@ -146,7 +143,7 @@ class Register extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="email">
-                    Here's my <strong>email address</strong>
+                    Here&apos;s my <strong>email address</strong>
                   </Label>
                   <Input
                     type="email"
@@ -161,7 +158,7 @@ class Register extends Component {
 
                 <FormGroup>
                   <Label htmlFor="password">
-                    And here's my <strong>password</strong>
+                    And here&apos;s my <strong>password</strong>
                   </Label>
                   <Input
                     type="password"

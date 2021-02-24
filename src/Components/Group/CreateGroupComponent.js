@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { NotificationContainer } from "react-notifications";
 import NewUser from "./NewUser";
 import axios from "axios";
@@ -19,16 +19,59 @@ class CreateGroup extends Component {
     };
   }
 
-  handleChange = (e) => {
-    if (["userName", "email"].includes(e.target.name)) {
+  handleNameChange = (e) => {
+    //if (["userName"].includes(e.target.id)) {
+    if (e.target.innerText != "") {
       let userData = [...this.state.userData];
-      userData[e.target.dataset.id][e.target.name] = e.target.value;
-    } else {
-      this.setState({ [e.target.name]: e.target.value });
+      //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
+      let found = this.state.allUser[0].find(
+        (element) => element.Name == e.target.innerText
+      );
+      if (found) {
+        let item = {
+          ...userData[userData.length - 1],
+          userName: found.Name,
+          email: found.Email,
+        };
+        userData[userData.length - 1] = item;
+        this.setState({
+          userData,
+        });
+      }
+    }
+    //}
+    else {
+      this.setState({ ["userName"]: e.target.value });
     }
   };
 
-  addNewRow = (e) => {
+  handleEmailChange = (e) => {
+    //if (["userName"].includes(e.target.id)) {
+    if (e.target.innerText != "") {
+      let userData = [...this.state.userData];
+      //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
+      let found = this.state.allUser[0].find(
+        (element) => element.Name == e.target.innerText
+      );
+      if (found) {
+        let item = {
+          ...userData[userData.length - 1],
+          userName: found.Name,
+          email: found.Email,
+        };
+        userData[userData.length - 1] = item;
+        this.setState({
+          userData,
+        });
+      }
+    }
+    //}
+    else {
+      this.setState({ ["email"]: e.target.value });
+    }
+  };
+
+  addNewRow = () => {
     this.setState((prevState) => ({
       userData: [
         ...prevState.userData,
@@ -37,7 +80,21 @@ class CreateGroup extends Component {
     }));
   };
 
+  addMainUserToList() {
+    this.setState(() => ({
+      userData: [
+        ...this.state.userData,
+        {
+          index: Math.random(),
+          userName: cookie.load("cookie").Name,
+          email: cookie.load("cookie").Email,
+        },
+      ],
+    }));
+  }
+
   deleteRow = (index) => {
+    index.preventDefault();
     this.setState({
       userData: this.state.userData.filter((s, sindex) => index !== sindex),
     });
@@ -50,6 +107,7 @@ class CreateGroup extends Component {
     //set the with credentials to true
     axios.defaults.withCredentials = true;
     //make a post request with the user data
+    this.addMainUserToList();
     axios
       .post("http://localhost:8000/createGroup", this.state)
       .then((response) => {
@@ -81,61 +139,13 @@ class CreateGroup extends Component {
     });
   };
 
-  // getUserDetail(cookie) {
-  //   this.setState((prevState) => ({
-  //     userData: [
-  //       ...prevState.userData,
-  //       {
-  //         index: Math.random(),
-  //         userName: cookie.Name,
-  //         email: cookie.Email,
-  //       },
-  //     ],
-  //   }));
-  // }
-
-  // async getUserDetail(email) {
-  //   await axios
-  //     .get("http://localhost:8000/getUserInfo", {
-  //       params: {
-  //         userEmail: email,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         console.log("Got response data :" + response.data);
-  //         this.setState((prevState) => ({
-  //           userData: [
-  //             ...prevState.userData,
-  //             {
-  //               index: Math.random(),
-  //               userName: response.data[0].Name,
-  //               email: response.data[0].Email,
-  //             },
-  //           ],
-  //         }));
-  //       } else {
-  //         this.setState({
-  //           error:
-  //             "<p style={{color: red}}>Please enter correct credentials</p>",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //       });
-  //     });
-  // }
-
   async getAllUser() {
     await axios
       .get("http://localhost:8000/getAllUser")
       .then((response) => {
         if (response.status === 200) {
           console.log("All user:" + response.data);
-          this.setState((prevState) => ({
+          this.setState(() => ({
             allUser: [response.data],
           }));
         } else {
@@ -164,16 +174,30 @@ class CreateGroup extends Component {
     this.setState({ allUser: this.getAllUser() });
   }
 
+  handleFileUpload = (event) => {
+    let data = new FormData();
+    console.log(event.target.files[0]);
+    data.append("file", event.target.files[0]);
+    data.append("name", "group_pic");
+    axios
+      .post("http://localhost:8000/upload", data)
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          groupPhoto: response.data,
+        });
+      })
+      .catch((error) => console.log("error " + error));
+  };
+
   render() {
     let redirectVar = null;
-    let getDetail = null;
     let { userData } = this.state;
     console.log(userData);
     console.log(cookie.load("cookie"));
     if (cookie.load("cookie")) {
       {
         redirectVar = <Redirect to="/createGroup" />;
-        getDetail = true;
       }
     } else redirectVar = <Redirect to="/login" />;
     //if (this.state.userData.length != 0) {
@@ -181,13 +205,25 @@ class CreateGroup extends Component {
       <div className="container-fluid form-cont">
         {redirectVar}
         <div className="flex-container">
-          <div>
+          <div className="col-sm-2">
             <img
               src="./assets/Logo.png"
               alt="..."
               width={200}
               height={200}
             ></img>
+            <label>Select your profile picture:</label>{" "}
+            <input
+              className="btn btn-secondary"
+              style={{
+                margin: 20,
+                width: 250,
+                textAlign: "left",
+              }}
+              type="file"
+              name="image"
+              onChange={this.handleFileUpload}
+            />
           </div>
           <div>
             <h3>Start a group Name</h3>
@@ -228,7 +264,7 @@ class CreateGroup extends Component {
                                   id="userName"
                                   value={cookie.load("cookie").Name}
                                   className="form-control "
-                                  readonly
+                                  readOnly
                                 />
                               </td>
                               <td>
@@ -239,7 +275,7 @@ class CreateGroup extends Component {
                                   data-id="0"
                                   value={cookie.load("cookie").Email}
                                   className="form-control "
-                                  readonly
+                                  readOnly
                                 />
                               </td>
                             </tr>
@@ -248,6 +284,8 @@ class CreateGroup extends Component {
                               delete={this.clickOnDelete.bind(this)}
                               userData={userData}
                               tableData={this.state.allUser}
+                              change={this.handleNameChange.bind(this)}
+                              emailChange={this.handleEmailChange.bind(this)}
                             />
                           </tbody>
                           <tfoot>

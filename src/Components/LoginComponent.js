@@ -3,15 +3,12 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import { isEmail } from "validator";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
   Form,
   FormGroup,
   Label,
   Input,
   Col,
-  Row,
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
@@ -83,7 +80,7 @@ class Login extends Component {
             });
           }
         })
-        .catch((e) => {
+        .catch(() => {
           this.setState({
             error: "Please enter correct credentials",
           });

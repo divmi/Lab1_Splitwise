@@ -1,17 +1,7 @@
 import React, { Component } from "react";
-import {
-  Navbar,
-  Nav,
-  Form,
-  FormControl,
-  NavDropdown,
-  DropdownMenu,
-  DropdownItem,
-  Dropdown,
-} from "reactstrap";
 import cookie from "react-cookies";
 
-import { Redirect, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
   handleLogout = () => {
@@ -41,40 +31,7 @@ class Header extends Component {
             <Link to="/login">
               <button className="btn btn-login ">Login</button>
             </Link>
-            <select class="selectpicker">
-              <option>Mustard</option>
-              <option>Ketchup</option>
-              <option>Relish</option>
-            </select>
             <button onClick={this.handleLogout}>Logout</button>
-            {/* <Nav>
-                <DropdownMenu
-                  title={
-                    <img
-                      src="" //{prof_pic}
-                      alt="user pic"
-                      style={{ width: 40 + "px", borderRadius: 50 + "%" }}
-                    />
-                  }
-                  id="collasible-nav-dropdown"
-                >
-                  <DropdownItem>
-                    <Link to="/stud_prof">Profile</Link>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <Link to="/myapp">My Applications</Link>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <Link to="/myevents">My Events</Link>
-                  </DropdownItem>
-                  {/* <DropdownItem Divider /> */}
-            {/* <DropdownItem>
-                    <Link to="/" onClick={this.handleLogout}>
-                      Logout
-                    </Link>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Nav> */}{" "}
           </div>
         </div>
       </div>

@@ -1,25 +1,16 @@
 import React, { Component } from "react";
 import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Dropdown,
   Button,
   Form,
   FormGroup,
   Label,
   Input,
   Col,
-  Row,
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
 import cookie from "react-cookies";
-import { Redirect } from "react-router-dom";
-//import "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css";
-//import TimezonePicker from "react-bootstrap-timezone-picker";
 import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
-import ReactDOM from "react-dom";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -60,24 +51,6 @@ class UpdateProfile extends Component {
     });
   };
 
-  // nameEventHandler = (e) => {
-  //   this.setState({
-  //     name: e.target.value,
-  //   });
-  // };
-
-  // emailEventHandler = (e) => {
-  //   this.setState({
-  //     email: e.target.value,
-  //   });
-  // };
-
-  // passEventHandler = (e) => {
-  //   this.setState({
-  //     password: e.target.value,
-  //   });
-  // };
-
   submitForm = (e) => {
     //prevent page from refresh
     e.preventDefault();
@@ -89,7 +62,7 @@ class UpdateProfile extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/signupUser", userInfo)
+        .post("http://localhost:8000/updateProfile", userInfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -106,7 +79,7 @@ class UpdateProfile extends Component {
             });
           }
         })
-        .catch((e) => {
+        .catch(() => {
           this.setState({
             loginError: "User is already registered",
           });
@@ -127,22 +100,6 @@ class UpdateProfile extends Component {
     return error;
   };
 
-  buildFileSelector() {
-    const fileSelector = document.createElement("input");
-    fileSelector.setAttribute("type", "file");
-    fileSelector.setAttribute("multiple", "multiple");
-    return fileSelector;
-  }
-
-  componentDidMount() {
-    this.fileSelector = this.buildFileSelector();
-  }
-
-  handleFileSelect = (e) => {
-    e.preventDefault();
-    this.fileSelector.click();
-  };
-
   handleChange(newValue) {
     this.setState({ timeZone: newValue });
   }
@@ -152,14 +109,28 @@ class UpdateProfile extends Component {
     }));
   }
 
+  handleFileUpload = (event) => {
+    let data = new FormData();
+    console.log(event.target.files[0]);
+    data.append("file", event.target.files[0]);
+    data.append("name", "prof_pic");
+    axios
+      .post("http://localhost:8000/upload", data)
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          groupPhoto: response.data,
+        });
+      })
+      .catch((error) => console.log("error " + error));
+  };
+
   render() {
-    let redirectVar = null;
     console.log(cookie.load("cookie"));
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/updateProfile" />;
-    else redirectVar = <Redirect to="/login" />;
     return (
+      // if (cookie.load("cookie"))    else
       <div className="container-fluid">
-        <div class="container">
+        <div className="container">
           <h2 style={{ textAlign: "left" }}>Your Account</h2>
           <div className="row">
             <div className="col col-sm-2">
@@ -169,21 +140,18 @@ class UpdateProfile extends Component {
                 width={200}
                 height={200}
               ></img>
-              <a
-                className="button btn-primary"
-                href=""
-                width={80}
-                height={60}
-                onClick={this.handleFileSelect}
-              >
-                Select your avatar
-              </a>
-              {/* <TimezonePicker
-                placeholder="Select timezone..."
-                onChange={this.handleChange}
-                absolute={this.state.absolute}
-                value={this.state.currentValue}
-              /> */}
+              <label>Change your avatar</label>
+              <input
+                className="btn btn-secondary"
+                style={{
+                  margin: 10,
+                  width: 150,
+                  textAlign: "left",
+                }}
+                type="file"
+                name="image"
+                onChange={this.handleFileUpload}
+              />
               <div>
                 Current Value: <b>{this.state.timeZone}</b>
               </div>
@@ -259,13 +227,13 @@ class UpdateProfile extends Component {
                           GBP
                         </option>
                         <option data-symbol="¥" data-placeholder="0">
-                          JPY
+                          KWD
                         </option>
                         <option data-symbol="$" data-placeholder="0.00">
                           CAD
                         </option>
                         <option data-symbol="$" data-placeholder="0.00">
-                          AUD
+                          BHD
                         </option>
                       </select>
                       <FormFeedback>{this.state.error.name}</FormFeedback>
@@ -289,7 +257,15 @@ class UpdateProfile extends Component {
 
                     <FormGroup>
                       <Label htmlFor="language">Language</Label>
-                      <Input
+                      <select className="form-control" data-width="fit">
+                        <option>English</option>
+                        <option>Español</option>
+                        <option>Spanish</option>
+                        <option>French</option>
+                        <option>Russian</option>
+                      </select>
+
+                      {/* <Input
                         type="text"
                         id="language"
                         name="language"
@@ -297,7 +273,7 @@ class UpdateProfile extends Component {
                         value={cookie.load("cookie").Language}
                         onChange={this.handleChange}
                         invalid={this.state.error.password ? true : false}
-                      ></Input>
+                      ></Input> */}
 
                       <FormFeedback>{this.state.error.password}</FormFeedback>
                     </FormGroup>
