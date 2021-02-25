@@ -12,7 +12,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-import Dashboard from "./DashBoard";
+import Dashboard from "../User/DashBoard";
 
 class Login extends Component {
   constructor(props) {

@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
-import { NotificationContainer } from "react-notifications";
 import NewUser from "./NewUser";
 import axios from "axios";
-import Dashboard from "../DashBoard";
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -104,10 +102,9 @@ class CreateGroup extends Component {
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
+    //this.addMainUserToList();
     //set the with credentials to true
     axios.defaults.withCredentials = true;
-    //make a post request with the user data
-    this.addMainUserToList();
     axios
       .post("http://localhost:8000/createGroup", this.state)
       .then((response) => {
@@ -117,7 +114,6 @@ class CreateGroup extends Component {
             error: "",
             authFlag: true,
           });
-          <Dashboard></Dashboard>;
         } else {
           this.setState({
             error:
@@ -170,7 +166,6 @@ class CreateGroup extends Component {
   }
 
   componentDidMount() {
-    //this.getUserDetail(cookie.load("cookie"));
     this.setState({ allUser: this.getAllUser() });
   }
 
@@ -228,7 +223,6 @@ class CreateGroup extends Component {
           <div>
             <h3>Start a group Name</h3>
             <div className="content">
-              <NotificationContainer />
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
                 <div className="row" style={{ marginTop: 20 }}>
                   <div className="col-sm-1"></div>
@@ -308,7 +302,6 @@ class CreateGroup extends Component {
                         </table>
                       </div>
                       <div className="card-footer text-center">
-                        {" "}
                         <button
                           type="submit"
                           className="btn btn-primary text-center"
