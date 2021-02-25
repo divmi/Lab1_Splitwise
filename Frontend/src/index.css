@@ -28,8 +28,18 @@
   margin: 5px;
 }
 
+.btn.btn-profile {
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
 .image-div {
-  margin-right: 150px;
+  margin-right: 100px;
+  text-align: center;
 }
 
 .flex-container {
@@ -39,8 +49,7 @@
 }
 .label-custom {
   color: #ffffff;
-  margin: -30px;
-  text-align: center;
+  margin: -20px -20px;
 }
 
 .flex-container > div {
