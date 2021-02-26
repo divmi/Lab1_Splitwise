@@ -39,6 +39,7 @@
 }
 .image-div {
   margin-right: 100px;
+  margin-top: 10px;
   text-align: center;
 }
 
@@ -49,7 +50,7 @@
 }
 .label-custom {
   color: #ffffff;
-  margin: -20px -20px;
+  margin: -30px -20px;
 }
 
 .flex-container > div {

@@ -21,7 +21,7 @@ var update = class update {
       req.body.timeZone +
       `',
       Language = '` +
-      req.body.toYr;
+      req.body.language;
     console.log(sql);
     con.query(sql, function (err, result, fields) {
       if (err) throw err;

@@ -3,7 +3,6 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import NewUser from "./NewUser";
 import axios from "axios";
-
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
@@ -11,9 +10,11 @@ class CreateGroup extends Component {
       groupName: "",
       error: "",
       groupPhoto: "",
-      auth: true,
+      auth: false,
       userData: [],
       allUser: [],
+      name: "",
+      email: "",
     };
   }
 
@@ -71,25 +72,13 @@ class CreateGroup extends Component {
 
   addNewRow = () => {
     this.setState((prevState) => ({
+      i: prevState.i + 1,
       userData: [
         ...prevState.userData,
         { index: Math.random(), userName: "", email: "" },
       ],
     }));
   };
-
-  addMainUserToList() {
-    this.setState(() => ({
-      userData: [
-        ...this.state.userData,
-        {
-          index: Math.random(),
-          userName: cookie.load("cookie").Name,
-          email: cookie.load("cookie").Email,
-        },
-      ],
-    }));
-  }
 
   deleteRow = (index) => {
     index.preventDefault();
@@ -102,31 +91,38 @@ class CreateGroup extends Component {
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
-    //this.addMainUserToList();
+    let error = this.validateForm();
     //set the with credentials to true
-    axios.defaults.withCredentials = true;
-    axios
-      .post("http://localhost:8000/createGroup", this.state)
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
+    if (Object.keys(error).length == 0) {
+      axios.defaults.withCredentials = true;
+      axios
+        .post("http://localhost:8000/createGroup", this.state)
+        .then((response) => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            this.setState({
+              error: "",
+              authFlag: true,
+            });
+          } else {
+            this.setState({
+              error: "Group is already registered",
+              authFlag: false,
+            });
+          }
+        })
+        .catch(() => {
           this.setState({
-            error: "",
-            authFlag: true,
-          });
-        } else {
-          this.setState({
-            error:
-              "<p style={{color: red}}>Please enter correct credentials</p>",
+            error: "Group is already registered",
             authFlag: false,
           });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
         });
+    } else {
+      this.setState({
+        error: error,
+        authFlag: false,
       });
+    }
   };
 
   groupNameEventHandler = (e) => {
@@ -146,8 +142,7 @@ class CreateGroup extends Component {
           }));
         } else {
           this.setState({
-            error:
-              "<p style={{color: red}}>Please enter correct credentials</p>",
+            error: "Please enter correct credentials",
             authFlag: false,
           });
         }
@@ -167,7 +162,15 @@ class CreateGroup extends Component {
 
   componentDidMount() {
     this.setState({ allUser: this.getAllUser() });
+    this.setState({ name: cookie.load("cookie").Name });
+    this.setState({ email: cookie.load("cookie").Email });
   }
+
+  validateForm = () => {
+    let error = "";
+    if (this.state.groupName === "") error = "Group Name should not be blank";
+    return error;
+  };
 
   handleFileUpload = (event) => {
     let data = new FormData();
@@ -187,20 +190,36 @@ class CreateGroup extends Component {
 
   render() {
     let redirectVar = null;
-    let { userData } = this.state;
-    console.log(userData);
-    console.log(cookie.load("cookie"));
+    let message = null;
+    if (this.state.authFlag) {
+      message = <Redirect to="/home" />;
+    }
+    let x = this.state.userData.map((val, idx) => {
+      return (
+        <NewUser
+          key={idx}
+          val={val}
+          delete={this.clickOnDelete.bind(this)}
+          tableData={this.state.allUser}
+          change={this.handleNameChange.bind(this)}
+          emailChange={this.handleEmailChange.bind(this)}
+        />
+      );
+    });
     if (cookie.load("cookie")) {
       {
         redirectVar = <Redirect to="/createGroup" />;
       }
     } else redirectVar = <Redirect to="/login" />;
-    //if (this.state.userData.length != 0) {
     return (
-      <div className="container-fluid form-cont">
+      <div className="container-fluid">
+        {message}
         {redirectVar}
-        <div className="flex-container">
-          <div className="col-sm-2">
+        <div className="row" style={{ alignContent: "center" }}>
+          <div
+            className="col-sm-2"
+            style={{ marginLeft: "100px", marginTop: "100px" }}
+          >
             <img
               src="./assets/Logo.png"
               alt="..."
@@ -209,10 +228,10 @@ class CreateGroup extends Component {
             ></img>
             <label>Select your profile picture:</label>{" "}
             <input
-              className="btn btn-secondary"
+              className="btn"
               style={{
-                margin: 20,
-                width: 250,
+                marginLeft: "-20px",
+                width: 230,
                 textAlign: "left",
               }}
               type="file"
@@ -220,13 +239,21 @@ class CreateGroup extends Component {
               onChange={this.handleFileUpload}
             />
           </div>
-          <div>
-            <h3>Start a group Name</h3>
-            <div className="content">
+          <div className="col-sm-9">
+            <div
+              className="help-block alert"
+              style={{ color: "red", width: "30%" }}
+            >
+              {this.state.error}
+            </div>
+            <div className="content" style={{ width: "80%", margin: "20px" }}>
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
-                <div className="row" style={{ marginTop: 20 }}>
+                <h3 style={{ textAlign: "left", marginLeft: "70px" }}>
+                  Start a group Name
+                </h3>
+                <div className="row">
                   <div className="col-sm-1"></div>
-                  <div className="col-sm-10">
+                  <div className="col-sm-8">
                     <div className="card">
                       <div className="card-body">
                         <div className="row">
@@ -256,7 +283,7 @@ class CreateGroup extends Component {
                                   name="userName"
                                   data-id="0"
                                   id="userName"
-                                  value={cookie.load("cookie").Name}
+                                  value={this.state.name}
                                   className="form-control "
                                   readOnly
                                 />
@@ -267,20 +294,13 @@ class CreateGroup extends Component {
                                   name="email"
                                   id="email"
                                   data-id="0"
-                                  value={cookie.load("cookie").Email}
+                                  value={this.state.email}
                                   className="form-control "
                                   readOnly
                                 />
                               </td>
                             </tr>
-                            <NewUser
-                              add={this.addNewRow}
-                              delete={this.clickOnDelete.bind(this)}
-                              userData={userData}
-                              tableData={this.state.allUser}
-                              change={this.handleNameChange.bind(this)}
-                              emailChange={this.handleEmailChange.bind(this)}
-                            />
+                            {x}
                           </tbody>
                           <tfoot>
                             <tr>
@@ -320,9 +340,6 @@ class CreateGroup extends Component {
         </div>
       </div>
     );
-    //} else {
-    //return <div></div>;
-    //}
   }
 }
 

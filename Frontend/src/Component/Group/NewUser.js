@@ -10,89 +10,92 @@ class NewUser extends Component {
       email: "",
     };
   }
+
   onNameChange = (e) => {
     var value = this.props.tableData[0].find(
       (x) => x.Name == e.target.innerText
     );
     console.log(value);
+    //let email = [...this.state.email];
+    //email[idx] = value.Email;
     this.setState({
       email: value.Email,
     });
     this.props.change(e);
   };
+
   render() {
-    if (this.props.userData.length > 0) {
-      return this.props.userData.map((val, idx) => {
-        let userName = `userName-${idx}`;
-        console.log("userName" + userName);
-        return (
-          <tr key={val.index}>
-            <td>
-              <Autocomplete
-                className="pding"
-                id="free-solo-Name"
-                freeSolo
-                options={this.props.tableData[0]}
-                onChange={this.onNameChange} //(e) => props.change(e)
-                getOptionLabel={(option) => option.Name}
-                style={{ width: 200 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    name="username"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
+    //return this.props.userData.map((val, idx) => {
+    //let userName = `userName-${idx}`;
+    //console.log("userName" + userName);
+    return (
+      <tr>
+        <td>
+          <Autocomplete
+            className="pding"
+            id="free-solo-Name"
+            freeSolo
+            options={this.props.tableData[0]}
+            onChange={(e) => this.onNameChange(e)} //(e) => props.change(e)
+            getOptionLabel={(option) => option.Name}
+            style={{ width: 200 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name="username"
+                variant="outlined"
+                size="small"
               />
-              {/* <input
+            )}
+          />
+          {/* <input
           type="text"
           name="userName"
           data-id={idx}
           id={userName + 1}
           className="form-control "
         /> */}
-            </td>
-            <td>
-              <Autocomplete
-                className="pding"
-                id="free-solo-Email"
-                freeSolo
-                options={this.props.tableData[0]}
-                inputValue={this.state.email}
-                getOptionLabel={(option) => option.Email}
-                onChange={(e) => this.props.emailChange(e)}
-                style={{ width: 200 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    name="email"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
+        </td>
+        <td>
+          <Autocomplete
+            className="pding"
+            id="free-solo-Email"
+            freeSolo
+            options={this.props.tableData[0]}
+            getOptionLabel={(option) => option.Email}
+            onChange={(e) => this.props.emailChange(e)}
+            inputValue={this.state.email}
+            style={{ width: 200 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                name="email"
+                variant="outlined"
+                size="small"
               />
-              {/* <input 
+            )}
+          />
+          {/* <input 
           type="text"
           name="email"
           id={email + 1}
           data-id={idx}
           className="form-control "
         /> */}
-            </td>
-            <td>
-              {
-                <button className="btn" onClick={() => this.props.delete(val)}>
-                  <i className="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              }
-            </td>
-          </tr>
-        );
-      });
-    } else {
-      return <div></div>;
-    }
+        </td>
+        <td>
+          {
+            <button
+              className="btn"
+              onClick={() => this.props.delete(this.props.val)}
+            >
+              <i className="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          }
+        </td>
+      </tr>
+    );
+    //});
   }
 }
 // const NewUser = (props) => {

@@ -43,7 +43,7 @@ const upload = multer({ storage });
 const insert = require("./insert");
 const login = require("./login");
 const group = require("./group");
-const update = require("./update");
+const Update = require("./update");
 
 app.set("view engine", "ejs");
 const con = mysql.createConnection({
@@ -127,8 +127,8 @@ app.post("/loginUser", function (req, res) {
 
 app.post("/updateProfile", function (req, res) {
   console.log("Req Body : ", req.body);
-  var update = new update.update();
-  loginUser.UserLogin(con, req.body, res);
+  var update = new Update.update();
+  update.updateUserProfile(con, req.body, res);
 });
 
 app.get("/getUserInfo", function (req, res) {

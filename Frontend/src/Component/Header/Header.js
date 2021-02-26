@@ -88,7 +88,7 @@ class Header extends Component {
     }
     let redirectVar = null;
     if (cookie.load("cookie")) {
-      redirectVar = <Redirect to="/dashboard" />;
+      redirectVar = <Redirect to="/home" />;
     }
     return (
       <div className="container-fluid custom-header">
@@ -98,10 +98,8 @@ class Header extends Component {
             <img
               src="./assets/Logo.png"
               className="rounded float-center image-div"
-              alt="Splitwise"
               width={30}
               height={30}
-              title="Splitwise"
             ></img>
             <h3 className="label-custom">Splitwise</h3>
           </div>

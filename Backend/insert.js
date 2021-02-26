@@ -62,6 +62,16 @@ var insert = class insert {
               console.log("1 record inserted" + result);
             });
           });
+
+          var insGroupLink =
+            "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
+          var insGroupLink1 =
+            "'" + body.groupName + "','" + body.email + "','" + false + "')";
+          con.query(insGroupLink + insGroupLink1, function (err, result) {
+            if (err) throw err;
+            console.log("1 record inserted" + result);
+          });
+
           res.writeHead(200, {
             "Content-Type": "text/plain",
           });

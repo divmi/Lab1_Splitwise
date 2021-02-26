@@ -20,10 +20,10 @@ class UpdateProfile extends Component {
       userInfo: {
         name: "",
         email: "",
-        password: "",
-        contactNumber: "",
+        contactNo: "",
         currency: "",
         timeZone: "",
+        language: "",
       },
       error: {},
       loginError: "",
@@ -33,6 +33,24 @@ class UpdateProfile extends Component {
     this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({ allUser: this.getAllUser() });
+    if (cookie.load("cookie")) {
+      // var item = {
+      //   name: cookie.load("cookie").Name,
+      //   email: cookie.load("cookie").Email,
+      //   contactNo: "",
+      //   currency: "",
+      //   timeZone: "",
+      //   language: "",
+      // };
+      // this.setState
+      // (userInfo:{
+      //  [name: ,  ]});
+      // this.setState({ email: l });
+    }
   }
 
   handletimeZoneChange(newValue) {
@@ -91,13 +109,13 @@ class UpdateProfile extends Component {
   };
 
   validateForm = () => {
-    const { userInfo } = this.state;
+    // const { userInfo } = this.state;
     let error = {};
-    if (userInfo.name === "") error.name = "First Name should not be blank";
-    //if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
-    if (userInfo.email === "") error.email = "Email should not be blank";
-    if (userInfo.password === "")
-      error.password = "Password should not be blank";
+    // if (userInfo.name === "") error.name = "First Name should not be blank";
+    // //if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
+    // if (userInfo.email === "") error.email = "Email should not be blank";
+    // if (userInfo.password === "")
+    //   error.password = "Password should not be blank";
     return error;
   };
 
@@ -135,8 +153,11 @@ class UpdateProfile extends Component {
     return (
       <div>
         {redirectVar}
-        <div className="container-fluid">
-          <div className="container">
+        <div
+          className="container-fluid"
+          style={{ marginLeft: "250px", marginTop: "90px" }}
+        >
+          <div className="content">
             <h2 style={{ textAlign: "left" }}>Your Account</h2>
             <div className="row">
               <div className="col col-sm-2">
@@ -148,10 +169,10 @@ class UpdateProfile extends Component {
                 ></img>
                 <label>Change your avatar</label>
                 <input
-                  className="btn btn-secondary"
+                  className="btn"
                   style={{
-                    margin: 10,
-                    width: 150,
+                    marginLeft: "-10px",
+                    width: 250,
                     textAlign: "left",
                   }}
                   type="file"
@@ -162,7 +183,7 @@ class UpdateProfile extends Component {
                   Current Value: <b>{this.state.timeZone}</b>
                 </div>
               </div>
-              <div className="col col-sm-8" style={{ margin: "30px" }}>
+              <div className="col col-sm-8">
                 <Form onSubmit={this.handleSubmit}>
                   <div className="row">
                     <div className="col col-sm-5" style={{ textAlign: "left" }}>
@@ -219,6 +240,7 @@ class UpdateProfile extends Component {
                         </Label>
                         <select
                           className="form-control bfh-currencies"
+                          name="currency"
                           data-currency="EUR"
                           defaultValue="USD"
                         >
@@ -266,24 +288,17 @@ class UpdateProfile extends Component {
 
                       <FormGroup>
                         <Label htmlFor="language">Language</Label>
-                        <select className="form-control" data-width="fit">
+                        <select
+                          className="form-control"
+                          name="language"
+                          data-width="fit"
+                        >
                           <option>English</option>
                           <option>Español</option>
                           <option>Spanish</option>
                           <option>French</option>
                           <option>Russian</option>
                         </select>
-
-                        {/* <Input
-                        type="text"
-                        id="language"
-                        name="language"
-                        placeholder="Contact Number"
-                        value={cookie.load("cookie").Language}
-                        onChange={this.handleChange}
-                        invalid={this.state.error.password ? true : false}
-                      ></Input> */}
-
                         <FormFeedback>{this.state.error.password}</FormFeedback>
                       </FormGroup>
                     </div>
@@ -293,7 +308,7 @@ class UpdateProfile extends Component {
                       <Button
                         type="submit"
                         onClick={this.submitForm}
-                        color="btn btn-primary"
+                        color="btn btn-signup "
                       >
                         Save
                       </Button>

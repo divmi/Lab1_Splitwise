@@ -12,7 +12,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-import Dashboard from "../User/DashBoard";
+import Home from "../Header/HomeComponent";
 
 class Login extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ class Login extends Component {
               error: "",
               authFlag: true,
             });
-            <Dashboard></Dashboard>;
+            <Home></Home>;
           } else {
             this.setState({
               error: "Please enter correct credentials",
@@ -93,7 +93,7 @@ class Login extends Component {
   render() {
     let redirectVar = null;
     console.log(cookie.load("cookie"));
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/dashboard" />;
+    if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
     return (
       <div className="container-fluid form-cont">

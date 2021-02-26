@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Nav, NavLink, NavItem } from "reactstrap";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -9,39 +8,12 @@ class Dashboard extends Component {
   render() {
     return (
       <div className="container-fluid">
-        <div
-          className="col-sm-3"
-          id="dashboard-div"
-          style={{ padding: 0, margin: 0, textAlign: "left" }}
-        >
-          <Nav vertical>
-            <NavItem>
-              <NavLink href="#">Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#">Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#">Another Link</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink disabled href="#">
-                Disabled Link
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <hr />
-          <p>Link based</p>
-          <Nav vertical>
-            <NavLink href="#">Link</NavLink> <NavLink href="#">Link</NavLink>{" "}
-            <NavLink href="#">Another Link</NavLink>{" "}
-            <NavLink disabled href="#">
-              Disabled Link
-            </NavLink>
-          </Nav>
+        <div className="row">
+          <div className="col-sm-3"></div>
+          <div className="col-sm-3">
+            <h3>Dashboard</h3>
+          </div>
         </div>
-        <div className="col com-sm-6"></div>
-        <div className="col com-sm-3"></div>
       </div>
     );
   }
