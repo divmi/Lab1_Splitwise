@@ -25,9 +25,6 @@ class NewUser extends Component {
   };
 
   render() {
-    //return this.props.userData.map((val, idx) => {
-    //let userName = `userName-${idx}`;
-    //console.log("userName" + userName);
     return (
       <tr>
         <td>
@@ -48,13 +45,6 @@ class NewUser extends Component {
               />
             )}
           />
-          {/* <input
-          type="text"
-          name="userName"
-          data-id={idx}
-          id={userName + 1}
-          className="form-control "
-        /> */}
         </td>
         <td>
           <Autocomplete
@@ -75,13 +65,6 @@ class NewUser extends Component {
               />
             )}
           />
-          {/* <input 
-          type="text"
-          name="email"
-          id={email + 1}
-          data-id={idx}
-          className="form-control "
-        /> */}
         </td>
         <td>
           {
@@ -95,27 +78,6 @@ class NewUser extends Component {
         </td>
       </tr>
     );
-    //});
   }
 }
-// const NewUser = (props) => {
-//   let allUser = props.tableData;
-//   let email;
-//   console.log("all users :" + JSON.stringify(allUser));
-
-//   function Name(e) {
-//     props.change(e);
-//     var data = allUser[0].find((x) => x.Name == e.target.innerText);
-//     if (data) {
-//       email = data.Email;
-//     }
-//   }
-//   return props.userData.map((val, idx) => {
-//     let userName = `userName-${idx}`;
-//     console.log("userName" + userName);
-//     return (
-
-//     );
-//   });
-//};
 export default NewUser;
