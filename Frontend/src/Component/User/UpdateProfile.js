@@ -134,7 +134,7 @@ class UpdateProfile extends Component {
     data.append("file", event.target.files[0]);
     data.append("name", "prof_pic");
     axios
-      .post("http://localhost:8000/upload", data)
+      .post("http://localhost:8000/upload")
       .then((response) => {
         console.log(response);
         this.setState({

@@ -125,6 +125,12 @@ app.post("/loginUser", function (req, res) {
   loginUser.UserLogin(con, req.body, res);
 });
 
+app.get("/getCurrentUserGroup", function (req, res) {
+  console.log("Req Body : ", req.query.email);
+  var userDetail = new group.group();
+  userDetail.getGroupDetail(con, req.query.email, res);
+});
+
 app.post("/updateProfile", function (req, res) {
   console.log("Req Body : ", req.body);
   var update = new Update.update();

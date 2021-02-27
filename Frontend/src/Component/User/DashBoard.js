@@ -9,7 +9,7 @@ class Dashboard extends Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-sm-3"></div>
+          <div className="col-sm-3">Page development in progress</div>
           <div className="col-sm-3">
             <h3>Dashboard</h3>
           </div>

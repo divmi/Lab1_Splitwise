@@ -7,6 +7,8 @@ import CreateGroup from "./Group/CreateGroupComponent";
 import UpdateProfile from "./User/UpdateProfile";
 import Header from "./Header/Header";
 import Home from "./Header/HomeComponent";
+import GroupInfo from "./Group/GroupInfoComponent";
+
 //Create a Main Component
 class Main extends Component {
   render() {
@@ -15,6 +17,7 @@ class Main extends Component {
         {/*Render Different Component based on Route*/}
         <Route path="/" component={Header} />
         <Route path="/home" component={Home} />
+        <Route path="/groupInfo" component={GroupInfo}></Route>
         <Route path="/register" component={Register} />
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={Dashboard} />

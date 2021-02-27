@@ -206,11 +206,7 @@ class CreateGroup extends Component {
         />
       );
     });
-    if (cookie.load("cookie")) {
-      {
-        redirectVar = <Redirect to="/createGroup" />;
-      }
-    } else redirectVar = <Redirect to="/login" />;
+    if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     return (
       <div className="container-fluid">
         {message}
