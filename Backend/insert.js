@@ -31,14 +31,8 @@ var insert = class insert {
     });
   }
 
-  checkUserExist(con, email, res) {
-    console.log("Connected!");
-  }
-
   insert_Group(con, body, res) {
     console.log("Connected!");
-    let id;
-    let findGroup;
     con.query(
       "Select * from GroupInfo where GroupName='" + body.groupName + "'",
       function (err, result) {
@@ -84,6 +78,33 @@ var insert = class insert {
         }
       }
     );
+  }
+
+  insert_Transaction(con, body, res) {
+    console.log("Connected!");
+    var insGroupLink =
+      "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount) VALUES (";
+    var insGroupLink1 =
+      "'" +
+      body.transactionDetail +
+      "','" +
+      `${new Date().toISOString().slice(0, 19).replace("T", " ")}` +
+      "','" +
+      body.memberID +
+      "','" +
+      body.groupname +
+      "','" +
+      body.amount +
+      "')";
+    console.log(insGroupLink + insGroupLink1);
+    con.query(insGroupLink + insGroupLink1, function (err, result) {
+      if (err) throw err;
+      console.log("1 record inserted" + result);
+      res.writeHead(200, {
+        "Content-Type": "text/plain",
+      });
+      res.end(JSON.stringify(result));
+    });
   }
 };
 

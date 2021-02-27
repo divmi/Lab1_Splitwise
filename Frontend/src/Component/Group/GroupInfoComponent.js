@@ -8,18 +8,27 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
+import axios from "axios";
+import cookie from "react-cookies";
+
 class GroupInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
       transaction_description: "",
+      transactionDetail: [],
       amount: 0,
+      error: "",
+      uiUpdated: false,
     };
   }
 
   openModal = () => this.setState({ isOpen: true });
-  closeModal = () => this.setState({ isOpen: false });
+  closeModal = () => {
+    this.setState({ isOpen: false });
+    this.getTransactionDetail();
+  };
 
   handleTransactionChange = (e) => {
     console.log("Control reached :" + e.target.value);
@@ -28,18 +37,107 @@ class GroupInfo extends Component {
     });
   };
 
+  componentDidMount() {
+    this.setState({ transactionDetail: this.getTransactionDetail() });
+    console.log(JSON.stringify(this.state.transactionDetail));
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.transactionDetail !== this.state.transactionDetail) {
+      console.log("pokemons state has changed.");
+      this.setState({ transactionDetail: this.state.transactionDetail });
+    }
+  }
+
+  getTransactionDetail() {
+    axios
+      .get("http://localhost:8000/getTransactionInfo", {
+        params: {
+          groupName: this.props.name,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("All user:" + response.data);
+          this.setState(() => ({
+            transactionDetail: [response.data],
+          }));
+          console.log("Group info" + this.state.transactionDetail);
+        } else {
+          this.setState({
+            error: "Please enter correct credentials",
+            authFlag: false,
+          });
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          error: "Please enter correct credentials" + e,
+        });
+      });
+  }
+
   handleAmountChange = (e) => {
     this.setState({
       amount: e.target.value,
     });
   };
 
-  handleSubmit = () => {
-    console.log("Submit button " + this.state.transaction_description);
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const data = {
+      transactionDetail: this.state.transaction_description,
+      amount: this.state.amount,
+      groupname: this.props.name,
+      memberID: cookie.load("cookie").Email,
+    };
+    //set the with credentials to true
+    axios.defaults.withCredentials = true;
+    //make a post request with the user data
+    axios
+      .post("http://localhost:8000/insertGroupTransaction", data)
+      .then((response) => {
+        console.log("Status Code : ", response.status);
+        if (response.status === 200) {
+          this.setState({
+            error: "",
+            authFlag: true,
+          });
+        } else {
+          this.setState({
+            error: "Please enter correct credentials",
+            authFlag: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({
+          error: "Please enter correct credentials",
+        });
+      });
     this.closeModal();
   };
 
   render() {
+    let showTransaction = null;
+    if (
+      this.state.transactionDetail != null &&
+      this.state.transactionDetail.length > 0
+    ) {
+      showTransaction = this.state.transactionDetail[0].map((name, idx) => {
+        return (
+          <tr key={idx}>
+            <button
+              key={idx}
+              onClick={() => this.OpenGroupInfo(name.GroupName)}
+            >
+              {name.TransactionDetail}
+            </button>
+          </tr>
+        );
+      });
+    }
+
     return (
       <div className="container-fluid">
         <div className="row">
@@ -84,6 +182,7 @@ class GroupInfo extends Component {
                           type="text"
                           onChange={this.handleTransactionChange}
                           placeholder="Enter a description"
+                          required
                         />
                       </Form.Group>
                       <Form.Group>
@@ -96,6 +195,7 @@ class GroupInfo extends Component {
                           type="number"
                           onChange={this.handleAmountChange}
                           placeholder="0.00"
+                          required
                         />
                       </Form.Group>
                       <Form.Group>
@@ -121,6 +221,9 @@ class GroupInfo extends Component {
                 </Button>
               </Modal.Footer>
             </Modal>
+            <table className="table">
+              <tbody>{showTransaction}</tbody>
+            </table>
           </div>
         </div>
       </div>

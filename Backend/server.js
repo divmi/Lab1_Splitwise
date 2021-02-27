@@ -137,10 +137,22 @@ app.post("/updateProfile", function (req, res) {
   update.updateUserProfile(con, req.body, res);
 });
 
+app.post("/insertGroupTransaction", function (req, res) {
+  console.log("Req Body : ", req.body);
+  var insertTransaction = new insert.insert();
+  insertTransaction.insert_Transaction(con, req.body, res);
+});
+
 app.get("/getUserInfo", function (req, res) {
   console.log("Req Body : ", req.query.userEmail);
   var userDetail = new group.group();
   userDetail.getUserDetail(con, req.query.userEmail, res);
+});
+
+app.get("/getTransactionInfo", function (req, res) {
+  console.log("Req Body : ", req.query.groupName);
+  var userDetail = new group.group();
+  userDetail.gettransactionDetail(con, req.query.groupName, res);
 });
 
 app.get("/getAllUser", function (req, res) {

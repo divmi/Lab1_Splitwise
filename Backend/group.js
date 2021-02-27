@@ -92,6 +92,31 @@ var group = class group {
       }
     });
   }
+
+  gettransactionDetail(con, name, res) {
+    console.log("Connected!");
+    var sql =
+      "Select * from TransactionDetail where GroupName='" +
+      name +
+      "'" +
+      "order by Time desc";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("the record is " + JSON.stringify(result));
+      if (result) {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      } else {
+        res.writeHead(401, {
+          "Content-Type": "text/plain",
+        });
+        res.end("UnSuccessful Login");
+      }
+    });
+  }
 };
 
 module.exports = {
