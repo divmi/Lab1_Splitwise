@@ -96,7 +96,7 @@ var group = class group {
   gettransactionDetail(con, name, res) {
     console.log("Connected!");
     var sql =
-      "Select * from TransactionDetail where GroupName='" +
+      "Select detail.*, userinfo.Name , userinfo.Currency from TransactionDetail as detail INNER JOIN UserRegistration as userinfo ON (detail.MemberID=userinfo.Email) where GroupName='" +
       name +
       "'" +
       "order by Time desc";

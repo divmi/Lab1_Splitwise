@@ -42,13 +42,6 @@ class GroupInfo extends Component {
     console.log(JSON.stringify(this.state.transactionDetail));
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.transactionDetail !== this.state.transactionDetail) {
-      console.log("pokemons state has changed.");
-      this.setState({ transactionDetail: this.state.transactionDetail });
-    }
-  }
-
   getTransactionDetail() {
     axios
       .get("http://localhost:8000/getTransactionInfo", {
@@ -62,7 +55,7 @@ class GroupInfo extends Component {
           this.setState(() => ({
             transactionDetail: [response.data],
           }));
-          console.log("Group info" + this.state.transactionDetail);
+          console.log("Group info" + this.state.transactionDetail.length);
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -75,6 +68,12 @@ class GroupInfo extends Component {
           error: "Please enter correct credentials" + e,
         });
       });
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.name !== this.props.name) {
+      this.getTransactionDetail();
+    }
   }
 
   handleAmountChange = (e) => {
@@ -103,6 +102,7 @@ class GroupInfo extends Component {
             error: "",
             authFlag: true,
           });
+          this.getTransactionDetail();
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -122,33 +122,93 @@ class GroupInfo extends Component {
     let showTransaction = null;
     if (
       this.state.transactionDetail != null &&
-      this.state.transactionDetail.length > 0
+      this.state.transactionDetail.length > 0 &&
+      this.state.transactionDetail[0].length > 0
     ) {
+      console.log("Came inside");
       showTransaction = this.state.transactionDetail[0].map((name, idx) => {
         return (
-          <tr key={idx}>
-            <button
-              key={idx}
-              onClick={() => this.OpenGroupInfo(name.GroupName)}
-            >
+          <tr key={idx} style={{ verticalAlign: "center" }}>
+            <td style={{ width: "8.33%" }}>
+              {new Date(name.Time).toLocaleDateString("default", {
+                month: "short",
+                day: "numeric",
+              })}
+            </td>
+            <td style={{ width: "90%" }}>
+              <i
+                className="fa fa-shopping-cart fa-lg"
+                style={{ color: "green", marginRight: 3 }}
+              ></i>
               {name.TransactionDetail}
-            </button>
+            </td>
+            <td style={{ width: "15%" }}>
+              <div className="row">
+                <div
+                  className="col"
+                  style={{
+                    textAlign: "right",
+                    fontSize: 12,
+                    color: "GrayText",
+                  }}
+                >
+                  {name.Name} <label>paid</label>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  {name.Currency}
+                  {name.Amount}
+                </div>
+              </div>
+            </td>
           </tr>
         );
       });
+    } else {
+      console.log("Came inside 11111111");
+      showTransaction = (
+        <tr>
+          <img src="./assets/shopping.jpg" height={300} width={300}></img>
+          <h3>
+            You have not added any expenses yet <i className="fas fa-frown"></i>
+          </h3>
+
+          <h5>Click on Add Expense button to start</h5>
+        </tr>
+      );
     }
 
     return (
       <div className="container-fluid">
         <div className="row">
           <div className="col col-sm-3">
-            <h3>{this.props.name}</h3>
+            <div
+              className="row"
+              style={{ alignItems: "center", marginTop: 15 }}
+            >
+              <img
+                src="./assets/Logo.png"
+                width={30}
+                height={30}
+                className="rounded-circle"
+              ></img>
+              <h4>{this.props.name}</h4>
+            </div>
           </div>
-          <div className="col col-sm-9">
-            <button onClick={this.openModal}>Add an expense</button>
-            <button>Settle Up</button>
-            <Button variant="primary" onClick={this.openModal}>
-              Launch demo modal
+          <hr></hr>
+          <div className="col col-sm-3"></div>
+          <div className="col col-sm-6" style={{ alignContent: "center" }}>
+            <Button
+              variant="primary"
+              className="btn float-right"
+              style={{
+                width: 100,
+                height: 40,
+                textAlign: "center",
+                fontSize: 12,
+              }}
+              onClick={this.openModal}
+            >
+              Add an Expense
             </Button>
             <Modal show={this.state.isOpen} onHide={this.closeModal}>
               <Modal.Header className="custom-header" closeButton>
@@ -193,6 +253,8 @@ class GroupInfo extends Component {
                             textDecoration: "none",
                           }}
                           type="number"
+                          step="0.1"
+                          min="0"
                           onChange={this.handleAmountChange}
                           placeholder="0.00"
                           required
@@ -221,10 +283,13 @@ class GroupInfo extends Component {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <table className="table">
-              <tbody>{showTransaction}</tbody>
-            </table>
           </div>
+        </div>
+        <hr></hr>
+        <div className="row shadow p-3 mb-5 bg-light rounded">
+          <table className="table">
+            <tbody>{showTransaction}</tbody>
+          </table>
         </div>
       </div>
     );

@@ -140,7 +140,7 @@ app.post("/updateProfile", function (req, res) {
 app.post("/insertGroupTransaction", function (req, res) {
   console.log("Req Body : ", req.body);
   var insertTransaction = new insert.insert();
-  insertTransaction.insert_Transaction(con, req.body, res);
+  insertTransaction.insert_TransactionForUserAndGroup(con, req.body, res);
 });
 
 app.get("/getUserInfo", function (req, res) {

@@ -36,6 +36,9 @@
   font-size: 12px;
   margin: 5px;
 }
+#custom-row-active td {
+  background-color: red !important;
+}
 
 .btn.btn-profile {
   color: white;

@@ -59,17 +59,18 @@ class Home extends Component {
     console.log(cookie.load("cookie"));
     if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
-
     if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {
       groupName = this.state.groupInfo[0].map((name, idx) => {
         return (
-          <tr key={idx}>
-            <button
-              key={idx}
-              onClick={() => this.OpenGroupInfo(name.GroupName)}
-            >
-              {name.GroupName}
-            </button>
+          <tr
+            key={idx}
+            style={{ verticalAlign: "center" }}
+            onClick={() => this.OpenGroupInfo(name.GroupName)}
+          >
+            <td>
+              <i className="fa fa-users"></i>
+              <a key={idx}>{name.GroupName}</a>
+            </td>
           </tr>
         );
       });
@@ -91,7 +92,7 @@ class Home extends Component {
               </Link>
               <hr />
               <Label>All Groups</Label>
-              <table className="table">
+              <table className="table table-hover">
                 <tbody>{groupName}</tbody>
               </table>
             </div>
