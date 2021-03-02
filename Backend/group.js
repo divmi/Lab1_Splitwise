@@ -117,6 +117,32 @@ var group = class group {
       }
     });
   }
+
+  getTransactionFromUser(con, email, res) {
+    console.log("Connected!");
+    var sql =
+      "Select detail.*, userinfo.Name , userinfo.Currency from TransactionDetail as detail INNER JOIN UserRegistration " +
+      "as userinfo ON (detail.MemberID=userinfo.Email) where GroupName In(Select GroupName " +
+      "from GroupMemberInfo where MemberID='" +
+      email +
+      "') ORDER BY Time desc";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("the record is " + JSON.stringify(result));
+      if (result) {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      } else {
+        res.writeHead(401, {
+          "Content-Type": "text/plain",
+        });
+        res.end("UnSuccessful Login");
+      }
+    });
+  }
 };
 
 module.exports = {

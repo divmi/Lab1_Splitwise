@@ -4,6 +4,7 @@ import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
+import TransactionDetail from "../Transaction/TransactionDetail";
 
 class Home extends Component {
   constructor(props) {
@@ -53,6 +54,12 @@ class Home extends Component {
     });
   }
 
+  OpenRecentActivity = () => {
+    this.setState({
+      component: <TransactionDetail email={cookie.load("cookie").Email} />,
+    });
+  };
+
   render() {
     let redirectVar = null;
     let groupName = null;
@@ -79,6 +86,7 @@ class Home extends Component {
       <div className="container">
         {redirectVar}
         <div className="row">
+          <div className="col col-sm-1"></div>
           <div className=" col col-sm-2 shadow-sm p-3 mb-3 bg-light rounded">
             <div
               id="dashboard-div"
@@ -86,10 +94,9 @@ class Home extends Component {
             >
               <Link to=".\dashboard">DashBoard</Link>
               <hr />
-              <Link to=".\dashboard">
-                {" "}
+              <button onClick={this.OpenRecentActivity}>
                 <i className="fas fa-flag"></i> Recent activity
-              </Link>
+              </button>
               <hr />
               <Label>All Groups</Label>
               <table className="table table-hover">

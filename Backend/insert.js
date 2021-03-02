@@ -88,10 +88,6 @@ class insert {
     //   const result4 = this.insertDataBasedOnDetail(con, result3);
     //}
   }
-  // res.writeHead(200, {
-  //   "Content-Type": "text/plain",
-  // });
-  // res.end(JSON.stringify(result));
 
   async insert_Promise(con, body, res) {
     var insertDetail = "";
@@ -120,9 +116,9 @@ class insert {
         function (err, memberInfo) {
           if (err) throw err;
           if (memberInfo.length > 0) {
-            let ows = body.amount / memberInfo.length;
-            let gets = body.amount - ows;
-            memberInfo.forEach((value) => {
+            var ows = body.amount / memberInfo.length;
+            var gets = body.amount - ows;
+            for (let value of memberInfo) {
               con.query(
                 "Select * from UserTransactionDetail where GroupName ='" +
                   body.groupname +
@@ -131,6 +127,10 @@ class insert {
                   "'",
                 function (error, dataFromUserTransactionTable) {
                   if (error) throw error;
+                  console.log(
+                    "Data from db:" +
+                      JSON.stringify(dataFromUserTransactionTable)
+                  );
                   if (value.MemberID == body.memberID) {
                     if (dataFromUserTransactionTable.length == 0) {
                       insertDetail =
@@ -152,13 +152,12 @@ class insert {
                           (x) => x.MemberID == value.MemberID
                         );
                         if (getValue) {
-                          gets = gets + getValue.gets;
-                          ows = getValue.ows;
+                          var new_gets = gets + getValue.gets;
                           insertDetail =
                             `Update UserTransactionDetail SET ows='` +
-                            ows +
+                            getValue.ows +
                             `', gets='` +
-                            gets +
+                            new_gets +
                             "'Where MemberID ='" +
                             value.MemberID +
                             "'";
@@ -185,13 +184,12 @@ class insert {
                         (x) => x.MemberID == value.MemberID
                       );
                       if (getValue) {
-                        gets = getValue.gets;
-                        ows = getValue.ows + ows;
+                        var new_ows = getValue.ows + ows;
                         insertDetail =
                           `Update UserTransactionDetail SET ows='` +
-                          ows +
+                          new_ows +
                           `', gets='` +
-                          gets +
+                          getValue.gets +
                           "' Where MemberID ='" +
                           value.MemberID +
                           "'";
@@ -204,7 +202,9 @@ class insert {
                   });
                 }
               );
-            });
+            }
+
+            // memberInfo.forEach((value) => {});
           }
         }
       );
@@ -228,6 +228,7 @@ class insert {
     if (memberInfo.length > 0) {
       let ows = body.amount / memberInfo.length;
       let gets = body.amount - ows;
+      console.log("-------------------------" + ows + "--------" + gets);
       const dataFromUserTransactionTable = con.query(
         "Select * from UserTransactionDetail where GroupName ='" +
           body.groupname +
@@ -253,17 +254,20 @@ class insert {
               (x) => x.MemberID == value.MemberID
             );
             if (getValue.length > 0) {
-              gets = gets + getValue.gets;
+              var newgets = gets + getValue.gets;
               ows = getValue.ows;
+              console.log(
+                "-------------------------" + newows + "--------" + newgets
+              );
               memberTransactionQuery =
                 `Update UserTransactionDetail SET MemberID='` +
                 value.MemberID +
                 `', GroupName='` +
                 body.groupname +
                 `', ows='` +
-                share +
+                ows +
                 `', gets='` +
-                gets;
+                newgets;
             }
           }
         } else {
@@ -286,14 +290,17 @@ class insert {
             );
             if (getValue.length > 0) {
               gets = getValue.gets;
-              ows = getValue.ows + ows;
+              var newows = getValue.ows + ows;
+              console.log(
+                "-------------------------" + newows + "--------" + gets
+              );
               memberTransactionQuery =
                 `Update UserTransactionDetail SET MemberID='` +
                 value.MemberID +
                 `', GroupName='` +
                 body.groupname +
                 `', ows='` +
-                ows +
+                newows +
                 `', gets='` +
                 gets;
             }

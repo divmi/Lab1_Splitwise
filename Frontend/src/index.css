@@ -49,11 +49,11 @@
   margin: 4px 2px;
   cursor: pointer;
 }
-.image-div {
-  margin-right: 100px;
+/* .image-div {
+  margin-right: 150px;
   margin-top: 10px;
   text-align: center;
-}
+} */
 
 .flex-container {
   display: flex;
@@ -62,7 +62,7 @@
 }
 .label-custom {
   color: #ffffff;
-  margin: -30px -20px;
+  margin-left: 20;
 }
 
 .flex-container > div {

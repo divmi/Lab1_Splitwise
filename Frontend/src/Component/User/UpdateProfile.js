@@ -29,6 +29,7 @@ class UpdateProfile extends Component {
       loginError: "",
       auth: true,
       dropdownOpen: true,
+      profilePhoto: "",
     };
     this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -36,7 +37,7 @@ class UpdateProfile extends Component {
   }
 
   componentDidMount() {
-    this.setState({ allUser: this.getAllUser() });
+    // this.setState({ allUser: this.getAllUser() });
     if (cookie.load("cookie")) {
       // var item = {
       //   name: cookie.load("cookie").Name,
@@ -129,16 +130,16 @@ class UpdateProfile extends Component {
   }
 
   handleFileUpload = (event) => {
+    event.preventDefault();
     let data = new FormData();
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
-    data.append("name", "prof_pic");
     axios
-      .post("http://localhost:8000/upload")
+      .post("http://localhost:8000/upload", data)
       .then((response) => {
         console.log(response);
         this.setState({
-          groupPhoto: response.data,
+          profilePhoto: "./assets/" + response.data,
         });
       })
       .catch((error) => console.log("error " + error));
@@ -162,7 +163,7 @@ class UpdateProfile extends Component {
             <div className="row">
               <div className="col col-sm-2">
                 <img
-                  src="./assets/userIcon.jpg"
+                  src={this.state.profilePhoto}
                   alt="..."
                   width={200}
                   height={200}

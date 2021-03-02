@@ -5,7 +5,7 @@ var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 
-app.use("/group_pic", express.static("public/assets"));
+app.use("/prof_pic", express.static("../Frontend/public/assets/"));
 
 const multer = require("multer"); //upload image on server
 
@@ -25,10 +25,11 @@ app.use(
 );
 
 const storage = multer.diskStorage({
-  destination: "./../public/upload/",
+  destination: "../Frontend/public/assets/",
   filename: function (req, file, cb) {
     console.log(file);
-    cb(null, `${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
+    console.log(Date.now() + file.originalname);
+    cb(null, `${Date.now() + file.originalname}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
   },
 });
 const fileFilter = (req, file, cb) => {
@@ -104,7 +105,7 @@ app.post("/upload", upload.single("file"), (req, res, next) => {
   res.writeHead(200, {
     "Content-Type": "application/json",
   });
-  res.end(`${new Date()}-${req.body.name}`);
+  res.end(`${Date.now() + file.originalname}`);
 });
 
 app.post("/createGroup", function (req, res) {
@@ -153,6 +154,12 @@ app.get("/getTransactionInfo", function (req, res) {
   console.log("Req Body : ", req.query.groupName);
   var userDetail = new group.group();
   userDetail.gettransactionDetail(con, req.query.groupName, res);
+});
+
+app.get("/getTransactionFromUser", function (req, res) {
+  console.log("Req Body : ", req.query.email);
+  var userDetail = new group.group();
+  userDetail.getTransactionFromUser(con, req.query.email, res);
 });
 
 app.get("/getAllUser", function (req, res) {

@@ -65,13 +65,6 @@ class Header extends Component {
             </Link>
           </Menu>
         </div>
-        // <ul className="nav navbar-nav navbar-right">
-        //   <li>
-        //     <Link to="/" onClick={this.handleLogout}>
-        //       <span className="glyphicon glyphicon-user"></span>Logout
-        //     </Link>
-        //   </li>
-        // </ul>
       );
     } else {
       registerOrLogin = (
@@ -93,16 +86,23 @@ class Header extends Component {
       <div className="container-fluid custom-header">
         {redirectVar}
         <div className="row">
-          <div className="col-sm-5" style={{ textAlign: "right" }}>
-            <img
-              src="./assets/Logo.png"
-              className="rounded float-center image-div"
-              width={30}
-              height={30}
-            ></img>
-            <h3 className="label-custom">Splitwise</h3>
+          <div className="col col-sm-1"></div>
+          <div className="col col-sm-5" style={{ textAlign: "center" }}>
+            <div
+              className="row "
+              style={{ flexWrap: "nowrap", marginTop: 10, marginLeft: 60 }}
+            >
+              <img
+                src="./assets/Logo.png"
+                className="rounded float-center image-div"
+                width={30}
+                height={30}
+                alt="Splitwise"
+              ></img>
+              <h3 className="label-custom">Splitwise</h3>
+            </div>
           </div>
-          <div className="col col-sm-4"></div>
+          <div className="col col-sm-3"></div>
           {registerOrLogin}
         </div>
       </div>
