@@ -10,9 +10,21 @@ class insert {
       if (result.length == 0) {
         console.log("Connected!");
         var sql =
-          "INSERT INTO UserRegistration (Name, Password, Email) VALUES (";
+          "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language) VALUES (";
         var sql1 =
-          "'" + body.name + "','" + body.password + "','" + body.email + "')";
+          "'" +
+          body.name +
+          "','" +
+          body.password +
+          "','" +
+          body.email +
+          "','" +
+          "USD" +
+          "','" +
+          "(GMT-08:00) Pacific Time" +
+          "','" +
+          "English" +
+          "')";
         console.log(sql + sql1);
         con.query(sql + sql1, function (err, result) {
           if (err) throw err;

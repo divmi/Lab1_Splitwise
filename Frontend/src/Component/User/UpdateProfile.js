@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import cookie from "react-cookies";
+
 import { Redirect } from "react-router-dom";
 import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
 
@@ -27,9 +28,9 @@ class UpdateProfile extends Component {
       },
       error: {},
       loginError: "",
-      auth: true,
+      auth: false,
       dropdownOpen: true,
-      profilePhoto: "",
+      profilePhoto: "./assets/userIcon.jpg",
     };
     this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -39,18 +40,17 @@ class UpdateProfile extends Component {
   componentDidMount() {
     // this.setState({ allUser: this.getAllUser() });
     if (cookie.load("cookie")) {
-      // var item = {
-      //   name: cookie.load("cookie").Name,
-      //   email: cookie.load("cookie").Email,
-      //   contactNo: "",
-      //   currency: "",
-      //   timeZone: "",
-      //   language: "",
-      // };
-      // this.setState
-      // (userInfo:{
-      //  [name: ,  ]});
-      // this.setState({ email: l });
+      this.setState({
+        userInfo: {
+          name: cookie.load("cookie").Name,
+          email: cookie.load("cookie").Email,
+          contactNo: "",
+          currency: "",
+          timeZone: "",
+          language: "",
+          auth: true,
+        },
+      });
     }
   }
 
@@ -139,7 +139,7 @@ class UpdateProfile extends Component {
       .then((response) => {
         console.log(response);
         this.setState({
-          profilePhoto: "./assets/" + response.data,
+          profilePhoto: "localhost:8000/assets/" + response.data,
         });
       })
       .catch((error) => console.log("error " + error));
@@ -148,9 +148,8 @@ class UpdateProfile extends Component {
   render() {
     console.log(cookie.load("cookie"));
     let redirectVar = null;
-    if (!cookie.load("cookie")) {
-      redirectVar = <Redirect to="/login" />;
-    }
+    if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
+    else redirectVar = <Redirect to="/updateProfile" />;
     return (
       <div>
         {redirectVar}
@@ -185,7 +184,7 @@ class UpdateProfile extends Component {
                 </div>
               </div>
               <div className="col col-sm-8">
-                <Form onSubmit={this.handleSubmit}>
+                <Form>
                   <div className="row">
                     <div className="col col-sm-5" style={{ textAlign: "left" }}>
                       <FormGroup>
@@ -198,7 +197,7 @@ class UpdateProfile extends Component {
                           name="name"
                           placeholder="First Name"
                           invalid={this.state.error.name ? true : false}
-                          value={cookie.load("cookie").Name}
+                          value={this.state.userInfo.name}
                           onChange={this.handleChange}
                         ></Input>
                         <FormFeedback>{this.state.error.name}</FormFeedback>
@@ -224,7 +223,7 @@ class UpdateProfile extends Component {
                           id="contactNo"
                           name="contactNo"
                           placeholder="Contact Number"
-                          value={cookie.load("cookie").ContactNo}
+                          // value={cookie.load("cookie").ContactNo}
                           onChange={this.handleChange}
                           invalid={this.state.error.password ? true : false}
                         ></Input>
@@ -279,6 +278,8 @@ class UpdateProfile extends Component {
                           style={{ boxSizing: "content-box" }}
                         >
                           <TimezonePicker
+                            style={{}}
+                            width={200}
                             placeholder="Select timezone..."
                             onChange={this.handletimeZoneChange}
                             value={this.state.timeZone}
@@ -294,7 +295,7 @@ class UpdateProfile extends Component {
                           name="language"
                           data-width="fit"
                         >
-                          <option>English</option>
+                          <option selected>English</option>
                           <option>Español</option>
                           <option>Spanish</option>
                           <option>French</option>

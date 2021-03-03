@@ -5,8 +5,7 @@ var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 
-app.use("/prof_pic", express.static("../Frontend/public/assets/"));
-
+app.use("/assets", express.static("../Frontend/public/assets/"));
 const multer = require("multer"); //upload image on server
 
 //require express session
@@ -28,7 +27,7 @@ const storage = multer.diskStorage({
   destination: "../Frontend/public/assets/",
   filename: function (req, file, cb) {
     console.log(file);
-    console.log(Date.now() + file.originalname);
+    console.log("Divya :" + Date.now() + file.originalname);
     cb(null, `${Date.now() + file.originalname}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
   },
 });
@@ -105,7 +104,7 @@ app.post("/upload", upload.single("file"), (req, res, next) => {
   res.writeHead(200, {
     "Content-Type": "application/json",
   });
-  res.end(`${Date.now() + file.originalname}`);
+  res.end(Date.now() + req.file.originalname);
 });
 
 app.post("/createGroup", function (req, res) {
