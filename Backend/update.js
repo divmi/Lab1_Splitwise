@@ -6,22 +6,22 @@ var update = class update {
       UserRegistration
       SET 
       Name = '` +
-      req.body.name +
+      req.Name +
       `', 
-      Email = '` +
-      req.body.email +
-      `',
       ContactNo = '` +
-      req.body.contactNumber +
+      req.ContactNo +
       `',
       Currency = '` +
-      req.body.currency +
+      req.Currency +
       `',
       Timezone = '` +
-      req.body.timeZone +
+      req.Timezone +
       `',
       Language = '` +
-      req.body.language;
+      req.Language +
+      "'Where Email ='" +
+      req.Email +
+      "'";
     console.log(sql);
     con.query(sql, function (err, result, fields) {
       if (err) throw err;

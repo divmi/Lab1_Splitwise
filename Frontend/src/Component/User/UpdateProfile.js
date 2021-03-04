@@ -12,7 +12,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
-
+import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 //import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
 
@@ -20,14 +20,7 @@ class UpdateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: {
-        name: "",
-        email: "",
-        contactNo: "",
-        currency: "",
-        timeZone: "",
-        language: "",
-      },
+      userinfo: {},
       error: {},
       loginError: "",
       auth: false,
@@ -40,23 +33,6 @@ class UpdateProfile extends Component {
     this.handleToggle = this.handleToggle.bind(this);
   }
 
-  componentDidMount() {
-    // this.setState({ allUser: this.getAllUser() });
-    if (cookie.load("cookie")) {
-      this.setState({
-        userInfo: {
-          name: cookie.load("cookie").Name,
-          email: cookie.load("cookie").Email,
-          contactNo: "",
-          currency: "",
-          timeZone: "",
-          language: "",
-          auth: true,
-        },
-      });
-    }
-  }
-
   handletimeZoneChange(newValue) {
     this.setState({ timeZone: newValue });
   }
@@ -67,25 +43,29 @@ class UpdateProfile extends Component {
 
   handleChange = (e) => {
     this.setState({
-      userInfo: {
-        ...this.state.userInfo,
+      userinfo: {
+        ...this.state.userinfo,
         [e.target.name]: e.target.value,
       },
     });
   };
 
+  componentDidMount() {
+    this.setState({
+      userinfo: this.props.userinfo,
+    });
+  }
+
   submitForm = (e) => {
     //prevent page from refresh
     e.preventDefault();
-
-    const { userInfo } = this.state;
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
       //set the with credentials to true
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/updateProfile", userInfo)
+        .post("http://localhost:8000/updateProfile", this.state.userinfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -133,24 +113,19 @@ class UpdateProfile extends Component {
   }
 
   handleFileUpload = (event) => {
+    event.preventDefault();
     let data = new FormData();
+    console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
-    this.setState({
-      photoPath: data,
-    });
-    // event.preventDefault();
-    // let data = new FormData();
-    // console.log(event.target.files[0]);
-    // data.append("file", event.target.files[0]);
-    // axios
-    //   .post("http://localhost:8000/upload", data)
-    //   .then((response) => {
-    //     console.log(response);
-    //     this.setState({
-    //       profilePhoto: "localhost:8000/assets/" + response.data,
-    //     });
-    //   })
-    //   .catch((error) => console.log("error " + error));
+    axios
+      .post("http://localhost:8000/upload", data)
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          profilePhoto: "localhost:8000/assets/" + response.data,
+        });
+      })
+      .catch((error) => console.log("error " + error));
   };
 
   render() {
@@ -198,7 +173,7 @@ class UpdateProfile extends Component {
                 </div>
               </div>
               <div className="col col-sm-8">
-                <Form>
+                <Form onChange={this.handleChange}>
                   <div className="row">
                     <div className="col col-sm-5" style={{ textAlign: "left" }}>
                       <FormGroup>
@@ -207,12 +182,11 @@ class UpdateProfile extends Component {
                         </Label>
                         <Input
                           type="text"
-                          id="name"
-                          name="name"
+                          id="Name"
+                          name="Name"
                           placeholder="First Name"
                           invalid={this.state.error.name ? true : false}
-                          value={this.state.userInfo.name}
-                          onChange={this.handleChange}
+                          value={this.state.userinfo.Name}
                         ></Input>
                         <FormFeedback>{this.state.error.name}</FormFeedback>
                       </FormGroup>
@@ -220,11 +194,10 @@ class UpdateProfile extends Component {
                         <Label htmlFor="email">Email</Label>
                         <Input
                           type="email"
-                          id="email"
-                          name="email"
+                          id="Email"
+                          name="Email"
                           placeholder="Email"
                           value={cookie.load("cookie").Email}
-                          onChange={this.handleChange}
                           invalid={this.state.error.email ? true : false}
                         ></Input>
                       </FormGroup>
@@ -234,14 +207,13 @@ class UpdateProfile extends Component {
                         <Label htmlFor="contactNo">Your Phone number</Label>
                         <Input
                           type="number"
-                          id="contactNo"
-                          name="contactNo"
+                          id="ContactNo"
+                          name="ContactNo"
                           minLength="10"
                           maxLength="10"
                           min="0"
                           placeholder="Contact Number"
-                          // value={cookie.load("cookie").ContactNo}
-                          onChange={this.handleChange}
+                          value={this.state.userinfo.ContactNo}
                           invalid={this.state.error.contactNo ? true : false}
                         ></Input>
                         <FormFeedback>
@@ -259,9 +231,9 @@ class UpdateProfile extends Component {
                         </Label>
                         <select
                           className="form-control bfh-currencies"
-                          name="currency"
+                          name="Currency"
                           data-currency="EUR"
-                          defaultValue="USD"
+                          value={this.state.userinfo.Currency}
                         >
                           <option
                             data-symbol="$"
@@ -293,9 +265,8 @@ class UpdateProfile extends Component {
                           <label className="control-label">Timezone</label>
                           <select
                             className="form-control"
-                            name="timezone"
-                            onChange={this.onChange}
-                            value={this.state.timezone}
+                            name="Timezone"
+                            value={this.state.userinfo.Timezone}
                           >
                             <option value="" disabled>
                               Choose Your Timezone
@@ -357,4 +328,8 @@ class UpdateProfile extends Component {
   }
 }
 
-export default UpdateProfile;
+const mapStateToProps = (state) => {
+  return { userinfo: state.login.userinfo[0] };
+};
+
+export default connect(mapStateToProps)(UpdateProfile);
