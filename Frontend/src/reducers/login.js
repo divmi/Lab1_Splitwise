@@ -1,6 +1,14 @@
-export const login = (state = [], action) => {
-  switch (action.type) {
-    default:
-      return state;
+import * as aType from "../actions/actionTypes";
+const defaultState = {
+  userinfo: [],
+};
+
+export const login = (state = defaultState, action) => {
+  if (action.type == aType.Login_USER) {
+    console.log("processing in reducer");
+    return Object.assign({}, state, {
+      userinfo: state.userinfo.concat(action.payload),
+    });
   }
+  return state;
 };

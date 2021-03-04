@@ -3,3 +3,9 @@ export const REGISTER_USER = () => {
     type: "REGISTER_USER",
   };
 };
+
+export const Login_USER = () => {
+  return {
+    type: "Login_USER",
+  };
+};

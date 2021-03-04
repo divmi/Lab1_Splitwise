@@ -3,7 +3,10 @@ var mysql = require("mysql");
 var group = class group {
   getUserDetail(con, email, res) {
     console.log("Connected!");
-    var sql = "Select * from UserRegistration where Email='" + email + "'";
+    var sql =
+      "Select Name, Email, ContactNo, Currency, Timezone, Language, UserProfilePic from UserRegistration where Email='" +
+      email +
+      "'";
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;

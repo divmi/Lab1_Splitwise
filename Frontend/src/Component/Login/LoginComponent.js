@@ -12,7 +12,9 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-import Home from "../Header/HomeComponent";
+//import Home from "../Header/HomeComponent";
+import { connect } from "react-redux";
+import * as Action from "../../actions/index";
 
 class Login extends Component {
   constructor(props) {
@@ -72,7 +74,8 @@ class Login extends Component {
               error: "",
               authFlag: true,
             });
-            <Home></Home>;
+            this.getCurrentUserInfo();
+            //<Home></Home>;
           } else {
             this.setState({
               error: "Please enter correct credentials",
@@ -89,6 +92,26 @@ class Login extends Component {
       this.setState({ formerror });
     }
   };
+
+  getCurrentUserInfo() {
+    axios
+      .get("http://localhost:8000/getUserInfo", {
+        params: {
+          userEmail: this.state.email,
+        },
+      })
+      .then((response) => {
+        console.log("Status Code : ", response.status);
+        if (response.status === 200) {
+          this.props.UserState(response.data);
+        }
+      })
+      .catch(() => {
+        this.setState({
+          error: "Not able to find user",
+        });
+      });
+  }
 
   render() {
     let redirectVar = null;
@@ -164,4 +187,10 @@ class Login extends Component {
   }
 }
 
-export default Login;
+function mapDispatchToProps(dispatch) {
+  return {
+    UserState: (data) => dispatch(Action.UserState(data)),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Login);

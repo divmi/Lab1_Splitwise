@@ -21,16 +21,5 @@ class App extends Component {
     );
   }
 }
-// function App() {
-//   return (
-//     //Use Browser Router to route to different pages
-//     <Router>
-//       <div>
-//         {/* App Component Has a Child Component called Main*/}
-//         <Main />
-//       </div>
-//     </Router>
-//   );
-// }
 
 export default App;

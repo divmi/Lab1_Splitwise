@@ -1,8 +1,12 @@
 "use strict";
 var mysql = require("mysql");
+const bcrypt = require("bcrypt");
 
 class insert {
-  insert_user(con, body, res) {
+  async insert_user(con, body, res) {
+    const salt = await bcrypt.genSalt(10);
+    // now we set user password to hashed password
+    body.password = await bcrypt.hash(body.password, salt);
     var checkUser =
       "Select * from UserRegistration where Email='" + body.email + "'";
     con.query(checkUser, function (err, result) {

@@ -45,10 +45,8 @@ class CreateGroup extends Component {
   };
 
   handleEmailChange = (e) => {
-    //if (["userName"].includes(e.target.id)) {
     if (e.target.innerText != "") {
       let userData = [...this.state.userData];
-      //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
       let found = this.state.allUser[0].find(
         (element) => element.Name == e.target.innerText
       );
@@ -81,7 +79,6 @@ class CreateGroup extends Component {
   };
 
   deleteRow = (index) => {
-    index.preventDefault();
     this.setState({
       userData: this.state.userData.filter((s, sindex) => index !== sindex),
     });
@@ -155,6 +152,7 @@ class CreateGroup extends Component {
   }
 
   clickOnDelete(record) {
+    console.log("record received" + record.email);
     this.setState({
       userData: this.state.userData.filter((r) => r !== record),
     });
@@ -200,6 +198,7 @@ class CreateGroup extends Component {
           key={idx}
           val={val}
           delete={this.clickOnDelete.bind(this)}
+          userData={this.state.userData}
           tableData={this.state.allUser}
           change={this.handleNameChange.bind(this)}
           emailChange={this.handleEmailChange.bind(this)}

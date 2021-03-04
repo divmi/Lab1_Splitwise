@@ -1,66 +1,104 @@
 import React, { Component } from "react";
-import { Button, Row, Label, Col } from "reactstrap";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Col,
+  FormFeedback,
+} from "reactstrap";
 import axios from "axios";
-import { Control, LocalForm, Errors } from "react-redux-form";
+import { isEmail } from "validator";
 import { connect } from "react-redux";
-import { registerUser } from "../../actions/actionCreators";
+import * as Action from "../../actions/actionCreators";
 
-const mapDispatchToProps = (dispatch) => ({
-  registerUser: (name, email, password) =>
-    dispatch(registerUser(name, email, password)),
-});
-
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !val || val.length <= len;
-const minLength = (len) => (val) => val && val.length >= len;
-const validEmail = (val) =>
-  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
-
-const mapStateToProps = (state) => {
-  return {
-    name: state.name,
-    email: state.email,
-    password: state.password,
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     name: state.name,
+//     email: state.email,
+//     password: state.password,
+//   };
+// };
 class Register extends Component {
   constructor(props) {
     super(props);
     {
       this.state = {
+        userInfo: {
+          name: "",
+          email: "",
+          password: "",
+        },
+        error: {},
+        loginError: "",
         auth: true,
       };
     }
   }
 
-  handleSubmit(values) {
-    const { userInfo } = values;
-    axios.defaults.withCredentials = true;
-    //make a post request with the user data
-    axios
-      .post("http://localhost:8000/signupUser", userInfo)
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
+  handleChange = (e) => {
+    this.setState({
+      userInfo: {
+        ...this.state.userInfo,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
+  submitForm = (e) => {
+    //prevent page from refresh
+    e.preventDefault();
+
+    const { userInfo } = this.state;
+    const data = {
+      name: userInfo.name,
+      email: userInfo.email,
+    };
+    const error = this.validateForm();
+    if (Object.keys(error).length == 0) {
+      //set the with credentials to true
+      axios.defaults.withCredentials = true;
+      //make a post request with the user data
+      axios
+        .post("http://localhost:8000/signupUser", userInfo)
+        .then((response) => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            this.setState({
+              loginError: "",
+              authFlag: true,
+            });
+            this.props.RegisterUser({ data });
+            alert("Successfully Created! Please Conitnue to Login");
+          } else {
+            this.setState({
+              loginError:
+                "<p style={{color: red}}>User is already registered</p>",
+              authFlag: false,
+            });
+          }
+        })
+        .catch(() => {
           this.setState({
-            loginError: "",
-            authFlag: true,
+            loginError: "User is already registered",
           });
-          alert("Successfully Created! Please Conitnue to Login");
-        } else {
-          this.setState({
-            loginError:
-              "<p style={{color: red}}>User is already registered</p>",
-            authFlag: false,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          loginError: "User is already registered",
         });
-      });
-  }
+    } else {
+      this.setState({ error });
+    }
+  };
+
+  validateForm = () => {
+    const { userInfo } = this.state;
+    let error = {};
+    if (userInfo.name === "") error.name = "First Name should not be blank";
+    if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
+    if (userInfo.email === "") error.email = "Email should not be blank";
+    if (userInfo.password === "")
+      error.password = "Password should not be blank";
+    return error;
+  };
 
   render() {
     return (
@@ -75,111 +113,83 @@ class Register extends Component {
                 height={200}
               ></img>
             </div>
-            <h3>Introduce Yourself</h3>
-            <LocalForm
-              onSubmit={(values) => this.handleSubmit(values)}
-              className="form-stacked"
-            >
-              <Row className="form-group">
-                <Label htmlfor="firstname" style={{ fontSize: "24px" }}>
-                  Hi there!My name is
-                </Label>
-                <Col>
-                  <Control.text
-                    model=".name"
-                    className="form-control"
-                    validators={{
-                      required,
-                      minLength: minLength(3),
-                      maxLength: maxLength(15),
-                    }}
+            <div>
+              <div
+                id="errorLogin"
+                hidden={this.state.loginError.length > 0 ? false : true}
+                className="alert alert-danger"
+                role="alert"
+              >
+                {this.state.loginError}
+              </div>
+              <h3>Introduce Yourself</h3>
+              <Form onSubmit={this.handleSubmit} className="form-stacked">
+                <FormGroup>
+                  <Label for="firstname" style={{ fontSize: "24px" }}>
+                    Hi there!My name is
+                  </Label>
+                  <Input
+                    type="text"
                     id="name"
                     name="name"
                     placeholder="First Name"
-                  />
-                  <Errors
-                    className="text-danger"
-                    model=".name"
-                    show="touched"
-                    messages={{
-                      required: "Required",
-                      minLength: "Must be greater than 2 characters",
-                      maxLength: "Must be 15 characters or less",
-                    }}
-                  ></Errors>
-                </Col>
-              </Row>
-              <Row className="form-group">
-                <Label htmlFor="email">
-                  Here&apos;s my <strong>email address</strong>
-                </Label>
-                <Col>
-                  <Control.text
-                    model=".email"
-                    className="form-control"
-                    validators={{
-                      required,
-                      validEmail,
-                    }}
+                    invalid={this.state.error.name ? true : false}
+                    onChange={this.handleChange}
+                  ></Input>
+                  <FormFeedback>{this.state.error.name}</FormFeedback>
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="email">
+                    Here&apos;s my <strong>email address</strong>
+                  </Label>
+                  <Input
                     type="email"
                     id="email"
                     name="email"
                     placeholder="Email"
-                  />
-                  <Errors
-                    className="text-danger"
-                    model=".email"
-                    show="touched"
-                    messages={{
-                      required: "Required",
-                      validEmail: "Please enter valid email",
-                    }}
-                  ></Errors>
-                </Col>
-              </Row>
+                    onChange={this.handleChange}
+                    invalid={this.state.error.email ? true : false}
+                  ></Input>
+                </FormGroup>
+                <FormFeedback>{this.state.error.email}</FormFeedback>
 
-              <Row className="form-group">
-                <Label htmlFor="password">
-                  And here&apos;s my <strong>password</strong>
-                </Label>
-                <Col>
-                  <Control.text
-                    model=".password"
-                    className="form-control"
-                    validators={{
-                      required,
-                      minLength: minLength(3),
-                      maxLength: maxLength(10),
-                    }}
+                <FormGroup>
+                  <Label htmlFor="password">
+                    And here&apos;s my <strong>password</strong>
+                  </Label>
+                  <Input
+                    type="password"
                     id="password"
                     name="password"
                     placeholder="Password"
-                  />
-                  <Errors
-                    className="text-danger"
-                    model=".email"
-                    show="touched"
-                    messages={{
-                      required: "Required",
-                      minLength: "Must be greater than 2 characters",
-                      maxLength: "Must be 10 characters or less",
-                    }}
-                  ></Errors>
-                </Col>
-              </Row>
-              <Row className="form-group">
-                <Col>
-                  <Button type="submit" color="btn btn-primary">
-                    Sign me up!
-                  </Button>
-                </Col>
-              </Row>
-            </LocalForm>
+                    onChange={this.handleChange}
+                    invalid={this.state.error.password ? true : false}
+                  ></Input>
+                  <FormFeedback>{this.state.error.password}</FormFeedback>
+                </FormGroup>
+                <FormGroup row>
+                  <Col>
+                    <Button
+                      type="submit"
+                      onClick={this.submitForm}
+                      color="btn btn-primary"
+                    >
+                      Sign me up!
+                    </Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </div>
           </div>
         </div>
       </>
     );
   }
 }
+function mapDispatchToProps(dispatch) {
+  return {
+    RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
+  };
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(null, mapDispatchToProps)(Register);

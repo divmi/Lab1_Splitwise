@@ -10,9 +10,11 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import cookie from "react-cookies";
+import timezones from "../../data/timezone";
+import map from "lodash/map";
 
 import { Redirect } from "react-router-dom";
-import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
+//import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -31,6 +33,7 @@ class UpdateProfile extends Component {
       auth: false,
       dropdownOpen: true,
       profilePhoto: "./assets/userIcon.jpg",
+      photoPath: "",
     };
     this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -130,19 +133,24 @@ class UpdateProfile extends Component {
   }
 
   handleFileUpload = (event) => {
-    event.preventDefault();
     let data = new FormData();
-    console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
-    axios
-      .post("http://localhost:8000/upload", data)
-      .then((response) => {
-        console.log(response);
-        this.setState({
-          profilePhoto: "localhost:8000/assets/" + response.data,
-        });
-      })
-      .catch((error) => console.log("error " + error));
+    this.setState({
+      photoPath: data,
+    });
+    // event.preventDefault();
+    // let data = new FormData();
+    // console.log(event.target.files[0]);
+    // data.append("file", event.target.files[0]);
+    // axios
+    //   .post("http://localhost:8000/upload", data)
+    //   .then((response) => {
+    //     console.log(response);
+    //     this.setState({
+    //       profilePhoto: "localhost:8000/assets/" + response.data,
+    //     });
+    //   })
+    //   .catch((error) => console.log("error " + error));
   };
 
   render() {
@@ -150,6 +158,12 @@ class UpdateProfile extends Component {
     let redirectVar = null;
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     else redirectVar = <Redirect to="/updateProfile" />;
+    const { error } = this.state;
+    const options = map(timezones, (val, key) => (
+      <option key={val} value={val}>
+        {key}
+      </option>
+    ));
     return (
       <div>
         {redirectVar}
@@ -222,12 +236,17 @@ class UpdateProfile extends Component {
                           type="number"
                           id="contactNo"
                           name="contactNo"
+                          minLength="10"
+                          maxLength="10"
+                          min="0"
                           placeholder="Contact Number"
                           // value={cookie.load("cookie").ContactNo}
                           onChange={this.handleChange}
-                          invalid={this.state.error.password ? true : false}
+                          invalid={this.state.error.contactNo ? true : false}
                         ></Input>
-                        <FormFeedback>{this.state.error.password}</FormFeedback>
+                        <FormFeedback>
+                          {this.state.error.contactNo}
+                        </FormFeedback>
                       </FormGroup>
                     </div>
                     <div
@@ -270,20 +289,22 @@ class UpdateProfile extends Component {
                         <FormFeedback>{this.state.error.name}</FormFeedback>
                       </FormGroup>
                       <FormGroup>
-                        <div className="row col-sm-3">
-                          <Label htmlFor="timeZone">Timezone</Label>
-                        </div>
-                        <div
-                          className="row col-sm-12"
-                          style={{ boxSizing: "content-box" }}
-                        >
-                          <TimezonePicker
-                            style={{}}
-                            width={200}
-                            placeholder="Select timezone..."
-                            onChange={this.handletimeZoneChange}
-                            value={this.state.timeZone}
-                          />
+                        <div className="form-group">
+                          <label className="control-label">Timezone</label>
+                          <select
+                            className="form-control"
+                            name="timezone"
+                            onChange={this.onChange}
+                            value={this.state.timezone}
+                          >
+                            <option value="" disabled>
+                              Choose Your Timezone
+                            </option>
+                            {options}
+                          </select>
+                          {error.timezone && (
+                            <span className="help-block">{error.timezone}</span>
+                          )}
                         </div>
                       </FormGroup>
                       <FormFeedback>{this.state.error.email}</FormFeedback>

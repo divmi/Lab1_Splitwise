@@ -70,6 +70,34 @@ class GroupInfo extends Component {
       });
   }
 
+  getHowmuch() {
+    axios
+      .get("http://localhost:8000/getTransactionInfo", {
+        params: {
+          groupName: this.props.name,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("All user:" + response.data);
+          this.setState(() => ({
+            transactionDetail: [response.data],
+          }));
+          console.log("Group info" + this.state.transactionDetail.length);
+        } else {
+          this.setState({
+            error: "Please enter correct credentials",
+            authFlag: false,
+          });
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          error: "Please enter correct credentials" + e,
+        });
+      });
+  }
+
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
       this.getTransactionDetail();
@@ -164,7 +192,6 @@ class GroupInfo extends Component {
         );
       });
     } else {
-      console.log("Came inside 11111111");
       showTransaction = (
         <tr>
           <img src="./assets/shopping.jpg" height={300} width={300}></img>
@@ -286,10 +313,19 @@ class GroupInfo extends Component {
           </div>
         </div>
         <hr></hr>
-        <div className="row shadow p-3 mb-5 bg-light rounded">
-          <table className="table">
-            <tbody>{showTransaction}</tbody>
-          </table>
+        <div className="row">
+          <div className="col col-sm-6">
+            <div className="row shadow p-3 mb-5 bg-light rounded">
+              <table className="table">
+                <tbody>{showTransaction}</tbody>
+              </table>
+            </div>
+          </div>
+          <div className="col col-sm-6">
+            <table className="table">
+              <tbody>{showTransaction}</tbody>
+            </table>
+          </div>
         </div>
       </div>
     );

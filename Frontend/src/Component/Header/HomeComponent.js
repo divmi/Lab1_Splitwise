@@ -104,7 +104,7 @@ class Home extends Component {
               </table>
             </div>
           </div>
-          <div className="col col-sm-6 shadow-sm p-3 mb-5 bg-light rounded">
+          <div className="col col-sm-9 shadow-sm p-3 mb-5 bg-light rounded">
             {this.state.component}
           </div>
         </div>

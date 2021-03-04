@@ -15,13 +15,26 @@ class NewUser extends Component {
     var value = this.props.tableData[0].find(
       (x) => x.Name == e.target.innerText
     );
-    console.log(value);
-    //let email = [...this.state.email];
-    //email[idx] = value.Email;
-    this.setState({
-      email: value.Email,
-    });
-    this.props.change(e);
+    if (value) {
+      this.setState({
+        email: value.Email,
+        name: e.target.innerText,
+      });
+      this.props.change(e);
+    }
+  };
+
+  onEmailChange = (e) => {
+    var value = this.props.tableData[0].find(
+      (x) => x.Email == e.target.innerText
+    );
+    if (value) {
+      this.setState({
+        name: value.Name,
+        email: e.target.innerText,
+      });
+      this.props.change(e);
+    }
   };
 
   render() {
@@ -33,7 +46,7 @@ class NewUser extends Component {
             id="free-solo-Name"
             freeSolo
             options={this.props.tableData[0]}
-            onChange={(e) => this.onNameChange(e)} //(e) => props.change(e)
+            onChange={(e) => this.onNameChange(e)}
             getOptionLabel={(option) => option.Name}
             style={{ width: 200 }}
             renderInput={(params) => (
@@ -53,7 +66,7 @@ class NewUser extends Component {
             freeSolo
             options={this.props.tableData[0]}
             getOptionLabel={(option) => option.Email}
-            onChange={(e) => this.props.emailChange(e)}
+            onChange={(e) => this.onEmailChange(e)}
             inputValue={this.state.email}
             style={{ width: 200 }}
             renderInput={(params) => (
