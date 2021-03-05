@@ -98,11 +98,37 @@ class insert {
 
   insert_TransactionForUserAndGroup(con, body, res) {
     const result = this.insert_Promise(con, body, res);
-    // if (typeof result != "undefined") {
-    //   //const result2 = this.getTransactionDetailFromMemberTable(body);
-    //   const result3 = this.insertTransactionIntoMemberTable(con, result2);
-    //   const result4 = this.insertDataBasedOnDetail(con, result3);
-    //}
+    con.query(
+      "Select MemberID from GroupMemberInfo where GroupName ='" +
+        body.groupname +
+        "'",
+      function (err, memberInfo) {
+        if (err) throw err;
+        if (memberInfo.length > 0) {
+          var ows = body.amount / memberInfo.length;
+          for (let value of memberInfo) {
+            if (value.MemberID != body.memberID) {
+              var insertDetail =
+                "INSERT INTO UserTransactionBasedOnGroup ( GroupName, MemberPaid, MemberOws, Amount) VALUES (";
+              insertDetail =
+                insertDetail +
+                "'" +
+                body.groupname +
+                "','" +
+                body.memberID +
+                "','" +
+                value.MemberID +
+                "','" +
+                ows +
+                "')";
+              con.query(insertDetail, function (err, result) {
+                if (err) throw err;
+              });
+            }
+          }
+        }
+      }
+    );
   }
 
   async insert_Promise(con, body, res) {
@@ -230,15 +256,6 @@ class insert {
       res.end(JSON.stringify(result));
     });
   }
-
-  // getTransactionDetailFromMemberTable:function(con, body) {
-  //   const result = con.query(
-  //     "Select MemberID from GroupMemberInfo where GroupName ='" +
-  //       body.groupname +
-  //       "'"
-  //   );
-  //   return result;
-  // }
 
   insertTransactionIntoMemberTable(con, memberInfo) {
     if (memberInfo.length > 0) {

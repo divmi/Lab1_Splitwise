@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import cookie from "react-cookies";
+import OwsGetAmount from "./OwsGetsInfo";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class GroupInfo extends Component {
       transactionDetail: [],
       amount: 0,
       error: "",
-      uiUpdated: false,
+      component: null,
     };
   }
 
@@ -39,6 +40,7 @@ class GroupInfo extends Component {
 
   componentDidMount() {
     this.setState({ transactionDetail: this.getTransactionDetail() });
+    this.OpenOwsGetsAmount();
     console.log(JSON.stringify(this.state.transactionDetail));
   }
 
@@ -70,38 +72,17 @@ class GroupInfo extends Component {
       });
   }
 
-  getHowmuch() {
-    axios
-      .get("http://localhost:8000/getTransactionInfo", {
-        params: {
-          groupName: this.props.name,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            transactionDetail: [response.data],
-          }));
-          console.log("Group info" + this.state.transactionDetail.length);
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  }
-
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
       this.getTransactionDetail();
+      this.OpenOwsGetsAmount();
     }
+  }
+
+  OpenOwsGetsAmount() {
+    this.setState({
+      component: <OwsGetAmount name={this.props.name} />,
+    });
   }
 
   handleAmountChange = (e) => {
@@ -131,6 +112,7 @@ class GroupInfo extends Component {
             authFlag: true,
           });
           this.getTransactionDetail();
+          this.getHowmuch();
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -314,17 +296,16 @@ class GroupInfo extends Component {
         </div>
         <hr></hr>
         <div className="row">
-          <div className="col col-sm-6">
+          <div className="col col-sm-8">
             <div className="row shadow p-3 mb-5 bg-light rounded">
               <table className="table">
                 <tbody>{showTransaction}</tbody>
               </table>
             </div>
           </div>
-          <div className="col col-sm-6">
-            <table className="table">
-              <tbody>{showTransaction}</tbody>
-            </table>
+          <div className="col col-sm-4">
+            GroupSummary
+            {this.state.component}
           </div>
         </div>
       </div>

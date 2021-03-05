@@ -44,6 +44,7 @@ const insert = require("./insert");
 const login = require("./login");
 const group = require("./group");
 const Update = require("./update");
+const transaction = require("./transactionDetail");
 
 app.set("view engine", "ejs");
 const con = mysql.createConnection({
@@ -164,4 +165,10 @@ app.get("/getTransactionFromUser", function (req, res) {
 app.get("/getAllUser", function (req, res) {
   var user = new group.group();
   user.getAllUser(con, req, res);
+});
+
+app.get("/getOwsDetail", function (req, res) {
+  console.log("Req Body : ", req.query.groupName);
+  var tdetail = new transaction.transactionDetail();
+  tdetail.getOwsGetsDetail(con, req.query.groupName, res);
 });
