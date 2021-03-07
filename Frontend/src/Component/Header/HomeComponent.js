@@ -5,7 +5,6 @@ import axios from "axios";
 import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
-
 class Home extends Component {
   constructor(props) {
     super(props);

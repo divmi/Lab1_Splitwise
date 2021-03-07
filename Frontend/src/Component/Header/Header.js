@@ -58,6 +58,9 @@ class Header extends Component {
             <Link to="/createGroup" style={{ textDecoration: "none" }}>
               <MenuItem onClick={this.handleClose}>Create Group</MenuItem>
             </Link>
+            <Link to="/myGroup" style={{ textDecoration: "none" }}>
+              <MenuItem onClick={this.handleClose}>My Group</MenuItem>
+            </Link>
             <Link to="/login" style={{ textDecoration: "none" }}>
               <MenuItem id="logout" onClick={this.handleClose}>
                 Logout

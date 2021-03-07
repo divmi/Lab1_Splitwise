@@ -162,6 +162,12 @@ app.get("/getTransactionFromUser", function (req, res) {
   userDetail.getTransactionFromUser(con, req.query.email, res);
 });
 
+app.get("/getGroupNotification", function (req, res) {
+  console.log("Req Body : ", req.query.memberID);
+  var userDetail = new group.group();
+  userDetail.getGroupNotification(con, req.query.memberID, res);
+});
+
 app.get("/getAllUser", function (req, res) {
   var user = new group.group();
   user.getAllUser(con, req, res);

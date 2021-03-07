@@ -4,10 +4,11 @@ import Login from "./Login/LoginComponent";
 import Register from "./Login/RegisterComponent";
 import Dashboard from "./User/DashBoard";
 import CreateGroup from "./Group/CreateGroupComponent";
-import UpdateProfile from "./User/UpdateProfile";
 import Header from "./Header/Header";
 import Home from "./Header/HomeComponent";
 import GroupInfo from "./Group/GroupInfoComponent";
+import MyGroup from "./Group/MyGroup";
+import UpdateProfile from "./User/UpdateProfile";
 
 //Create a Main Component
 class Main extends Component {
@@ -23,6 +24,7 @@ class Main extends Component {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/createGroup" component={CreateGroup} />
         <Route path="/updateProfile" component={UpdateProfile} />
+        <Route path="/myGroup" component={MyGroup} />
       </div>
     );
   }

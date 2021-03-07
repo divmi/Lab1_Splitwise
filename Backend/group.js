@@ -96,6 +96,30 @@ var group = class group {
     });
   }
 
+  getGroupNotification(con, email, res) {
+    console.log("Connected!");
+    var sql =
+      "Select * from GroupMemberInfo where MemberID='" +
+      email +
+      "' and Accepted=false";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("the record is " + JSON.stringify(result));
+      if (result) {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      } else {
+        res.writeHead(401, {
+          "Content-Type": "text/plain",
+        });
+        res.end("UnSuccessful Login");
+      }
+    });
+  }
+
   gettransactionDetail(con, name, res) {
     console.log("Connected!");
     var sql =

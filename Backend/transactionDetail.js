@@ -63,10 +63,6 @@ class transactionDetail {
                 value.Amount = sum - sum2;
               }
               console.log(transactionlist);
-              res.writeHead(200, {
-                "Content-Type": "text/plain",
-              });
-
               res.end(JSON.stringify(transactionlist));
             }
           }
