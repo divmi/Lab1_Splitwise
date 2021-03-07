@@ -9,3 +9,9 @@ export const Login_USER = () => {
     type: "Login_USER",
   };
 };
+
+export const Logout_USER = () => {
+  return {
+    type: "Logout_USER",
+  };
+};

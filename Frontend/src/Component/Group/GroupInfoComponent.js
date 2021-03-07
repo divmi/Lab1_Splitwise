@@ -208,10 +208,10 @@ class GroupInfo extends Component {
           <div className="col col-sm-6" style={{ alignContent: "center" }}>
             <Button
               variant="primary"
-              className="btn float-right"
+              className="btn btn-Normal"
               style={{
                 width: 100,
-                height: 40,
+                height: 50,
                 textAlign: "center",
                 fontSize: 12,
               }}

@@ -101,7 +101,7 @@ class insert {
     con.query(
       "Select MemberID from GroupMemberInfo where GroupName ='" +
         body.groupname +
-        "'",
+        "' and Accepted=true",
       function (err, memberInfo) {
         if (err) throw err;
         if (memberInfo.length > 0) {
@@ -154,7 +154,7 @@ class insert {
       con.query(
         "Select MemberID from GroupMemberInfo where GroupName ='" +
           body.groupname +
-          "'",
+          "' and Accepted=true",
         function (err, memberInfo) {
           if (err) throw err;
           if (memberInfo.length > 0) {

@@ -16,7 +16,7 @@ class transactionDetail {
         con.query(
           "Select MemberID from GroupMemberInfo where GroupName ='" +
             groupName +
-            "'",
+            "'and Accepted=true",
           function (err, memberInfo) {
             if (err) throw err;
             if (memberInfo.length > 0) {
@@ -63,6 +63,47 @@ class transactionDetail {
                 value.Amount = sum - sum2;
               }
               console.log(transactionlist);
+              transactionlist.map((value) => {
+                con.query(
+                  "Delete from  OwsGetsDetail where GroupName ='" +
+                    groupName +
+                    "', MemberPaid='" +
+                    value.MemberPaid +
+                    "'and MemberOws='" +
+                    value.MemberOws +
+                    "'",
+                  function (err, memberInfo) {
+                    if (err) throw err;
+                    console.log("1 record Deleted" + result);
+                  }
+                );
+                // if (value.Amount < 0) {
+                //   let memberPaid = value.MemberOws;
+                //   value.MemberOws = value.MemberPaid;
+                //   value.MemberPaid = memberPaid;
+                // }
+
+                var insGroupLink =
+                  "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName) VALUES (";
+                var insGroupLink1 =
+                  "'" +
+                  value.MemberPaid +
+                  "','" +
+                  value.MemberOws +
+                  "','" +
+                  value.Amount +
+                  "','" +
+                  groupName +
+                  "','" +
+                  value.Amount +
+                  "','" +
+                  value.Amount +
+                  "')";
+                con.query(insGroupLink + insGroupLink1, function (err, result) {
+                  if (err) throw err;
+                  console.log("1 record inserted" + result);
+                });
+              });
               res.end(JSON.stringify(transactionlist));
             }
           }
@@ -73,6 +114,24 @@ class transactionDetail {
         });
         res.end("UnSuccessful Login");
       }
+    });
+  }
+
+  groupJoinRequest(con, body, res) {
+    var sql =
+      "UPDATE GroupMemberInfo SET Accepted = true Where MemberId ='" +
+      body.MemberID +
+      "' AND GroupName = '" +
+      body.GroupName +
+      "'";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+      });
+      console.log(JSON.stringify(result));
+      res.end(JSON.stringify(result));
     });
   }
 }

@@ -77,7 +77,10 @@ var group = class group {
 
   getGroupDetail(con, email, res) {
     console.log("Connected!");
-    var sql = "Select * from GroupMemberInfo where MemberID='" + email + "'";
+    var sql =
+      "Select * from GroupMemberInfo where MemberID='" +
+      email +
+      "' and Accepted=true";
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;

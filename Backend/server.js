@@ -24,7 +24,7 @@ app.use(
 );
 
 const storage = multer.diskStorage({
-  destination: "../Frontend/public/assets/",
+  destination: "../Backend/uploads/",
   filename: function (req, file, cb) {
     console.log(file);
     console.log("Divya :" + Date.now() + file.originalname);
@@ -136,6 +136,12 @@ app.post("/updateProfile", function (req, res) {
   console.log("Req Body : ", req.body);
   var update = new Update.update();
   update.updateUserProfile(con, req.body, res);
+});
+
+app.post("/joinedGroup", function (req, res) {
+  console.log("Req Body : ", req.body);
+  var trans = new transaction.transactionDetail();
+  trans.groupJoinRequest(con, req.body, res);
 });
 
 app.post("/insertGroupTransaction", function (req, res) {

@@ -4,6 +4,8 @@ import { Redirect, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import { connect } from "react-redux";
+import * as Action from "../../actions/actionCreators";
 
 class Header extends Component {
   constructor(props) {
@@ -23,6 +25,7 @@ class Header extends Component {
     this.setState({ anchorEl: null });
     if (e.target.id == "logout") {
       cookie.remove("cookie", { path: "/" });
+      this.props.LogoutUser();
     }
   };
 
@@ -31,12 +34,20 @@ class Header extends Component {
     if (cookie.load("cookie")) {
       registerOrLogin = (
         <div className="col col-sm-3">
+          <Link
+            to="/home"
+            style={{ textDecoration: "none", color: "white", marginRight: 50 }}
+          >
+            {" "}
+            Home{" "}
+          </Link>
           <img
             src="./assets/Logo.png"
             width={30}
             height={30}
             className="rounded-circle"
           ></img>
+
           <Button
             className="btn btn-profile"
             aria-controls="simple-menu"
@@ -113,4 +124,10 @@ class Header extends Component {
   }
 }
 
-export default Header;
+function mapDispatchToProps(dispatch) {
+  return {
+    LogoutUser: () => dispatch(Action.LogoutUser()),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Header);

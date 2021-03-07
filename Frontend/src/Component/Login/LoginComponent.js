@@ -122,64 +122,62 @@ class Login extends Component {
       <div className="container-fluid form-cont">
         {redirectVar}
         <div className="flex-container">
-          <div>
-            <img
-              src="./assets/Logo.png"
-              alt="..."
-              width={200}
-              height={200}
-            ></img>
-          </div>
-          <div>
-            <div
-              id="errorLogin"
-              hidden={this.state.error.length > 0 ? false : true}
-              className="alert alert-danger"
-              role="alert"
-            >
-              {this.state.error}
+          <div className="row">
+            <div className="col col-sm-6">
+              <img src="./assets/splitwiselogo-01.png" alt="..."></img>
             </div>
-            <h3>WELCOME TO SPLITWISE</h3>
-            <Form onSubmit={this.handleSubmit} className="form-stacked">
-              <FormGroup>
-                <Label htmlFor="email" className="Lable-align">
-                  Email address
-                </Label>
-                <Input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  onChange={this.emailEventHandler}
-                  invalid={this.state.formerror.email ? true : false}
-                ></Input>
-                <FormFeedback>{this.state.formerror.email}</FormFeedback>
-              </FormGroup>
+            <div className="col col-sm-6">
+              <div
+                id="errorLogin"
+                hidden={this.state.error.length > 0 ? false : true}
+                className="alert alert-danger"
+                role="alert"
+              >
+                {this.state.error}
+              </div>
+              <h3>WELCOME TO SPLITWISE</h3>
+              <Form onSubmit={this.handleSubmit} className="form-stacked">
+                <FormGroup>
+                  <Label htmlFor="email" className="Lable-align">
+                    Email address
+                  </Label>
+                  <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Email"
+                    onChange={this.emailEventHandler}
+                    invalid={this.state.formerror.email ? true : false}
+                  ></Input>
+                  <FormFeedback>{this.state.formerror.email}</FormFeedback>
+                </FormGroup>
 
-              <FormGroup>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  onChange={this.passEventHandler}
-                  invalid={this.state.formerror.password ? true : false}
-                ></Input>
-                <FormFeedback>{this.state.formerror.password}</FormFeedback>
-              </FormGroup>
-              <FormGroup row>
-                <Col>
-                  <Button
-                    type="submit"
-                    onClick={this.submitForm}
-                    color="btn btn-primary"
-                  >
-                    Login
-                  </Button>
-                </Col>
-              </FormGroup>
-            </Form>
+                <FormGroup>
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={this.passEventHandler}
+                    invalid={this.state.formerror.password ? true : false}
+                  ></Input>
+                  <FormFeedback>{this.state.formerror.password}</FormFeedback>
+                </FormGroup>
+                <FormGroup row>
+                  <Col>
+                    <Button
+                      type="submit"
+                      className="btn btn-Normal"
+                      onClick={this.submitForm}
+                      color="btn btn-primary"
+                    >
+                      Login
+                    </Button>
+                  </Col>
+                </FormGroup>
+              </Form>
+            </div>
           </div>
         </div>
       </div>

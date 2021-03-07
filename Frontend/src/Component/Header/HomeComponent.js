@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
+import Dashboard from "../User/DashBoard";
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -46,6 +47,12 @@ class Home extends Component {
     this.setState({ groupInfo: this.getUserDetails() });
     console.log(JSON.stringify(this.state.groupInfo));
   }
+
+  OpenDashBoard = () => {
+    this.setState({
+      component: <Dashboard email={cookie.load("cookie").Email} />,
+    });
+  };
 
   OpenGroupInfo(param) {
     this.setState({
@@ -91,9 +98,23 @@ class Home extends Component {
               id="dashboard-div"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
             >
-              <Link to=".\dashboard">DashBoard</Link>
+              {/* <Link
+                to=".\dashboard"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                DashBoard
+              </Link> */}
+              <button
+                onClick={this.OpenDashBoard}
+                style={{ textDecoration: "none" }}
+              >
+                DashBoard
+              </button>
               <hr />
-              <button onClick={this.OpenRecentActivity}>
+              <button
+                onClick={this.OpenRecentActivity}
+                style={{ textDecoration: "none" }}
+              >
                 <i className="fas fa-flag"></i> Recent activity
               </button>
               <hr />
