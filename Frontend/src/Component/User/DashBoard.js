@@ -10,39 +10,49 @@ class Dashboard extends Component {
       ows: 0,
       gets: 0,
       total: 0,
+      show: [],
     };
   }
 
   calculateOwsGetsBasedOnDataReceived() {
     let sumOws = 0;
     let sumGets = 0;
-    let show = [];
-    if (this.state.owsgetsDetail.length > 0)
+    if (this.state.owsgetsDetail.length > 0) {
       this.state.owsgetsDetail[0].map((value) => {
         if (value.Amount < 0) {
-          show.push({
+          this.state.show.push({
             MemberOws: value.MemberGets,
             MemberGets: value.MemberOws,
             Amount: -value.Amount,
           });
         } else {
-          show.push(value);
+          this.state.show.push(value);
         }
       });
-    show.map((detail) => {
-      if (detail.MemberGets == this.props.email) {
-        sumGets += detail.Amount;
-      } else {
-        sumOws += detail.Amount;
-      }
-      this.setState({
-        ows: sumOws,
-        gets: sumGets,
-        total: sumGets - sumOws,
+      this.state.show.map((detail) => {
+        if (detail.MemberGets == this.props.email) {
+          sumGets += detail.Amount;
+          // this.setState({
+          //   component: (
+
+          //   ),
+          // });
+        } else {
+          sumOws += detail.Amount;
+          //   this.setState({
+          //     component: (
+
+          //     ),
+          //   });
+          // }
+        }
+        this.setState({
+          ows: sumOws,
+          gets: sumGets,
+          total: sumGets - sumOws,
+        });
       });
-    });
-    console.log(sumOws);
-    console.log(sumGets);
+    }
   }
 
   getUserSpecificTransactionDetail() {
@@ -82,6 +92,55 @@ class Dashboard extends Component {
   }
 
   render() {
+    let component = null;
+    let component1 = null;
+    const getAmount = Object.values(
+      this.state.show.reduce(
+        (r, o) => (
+          r[o.MemberGets]
+            ? (r[o.MemberGets].Amount += o.Amount)
+            : (r[o.MemberGets] = { ...o }),
+          r
+        ),
+        {}
+      )
+    );
+
+    const owAmount = Object.values(
+      this.state.show.reduce(
+        (r, o) => (
+          r[o.MemberOws]
+            ? (r[o.MemberOws].Amount += o.Amount)
+            : (r[o.MemberOws] = { ...o }),
+          r
+        ),
+        {}
+      )
+    );
+    component = getAmount.map((detail, idx) => {
+      if (detail.MemberOws != this.props.email)
+        return (
+          <tr key={idx}>
+            <td style={{ color: "#5bc5a7" }}>
+              you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
+              {detail.MemberOws}
+            </td>
+          </tr>
+        );
+    });
+
+    component1 = owAmount.map((detail, idx) => {
+      if (detail.MemberGets != this.props.email)
+        return (
+          <tr key={idx}>
+            <td style={{ color: "orange" }}>
+              you ows <strong>{detail.Amount.toFixed(2)}</strong> to{" "}
+              {detail.MemberGets}
+            </td>
+          </tr>
+        );
+    });
+
     return (
       <div className="container">
         <div
@@ -136,7 +195,14 @@ class Dashboard extends Component {
           </div>
         </div>
 
-        <div className="row top-buffer shadow p-5 mb-8 bg-white rounded"></div>
+        <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
+          <table>
+            <thead>Details:</thead>
+          </table>
+          <tbody>
+            {component} {component1}
+          </tbody>
+        </div>
       </div>
     );
   }

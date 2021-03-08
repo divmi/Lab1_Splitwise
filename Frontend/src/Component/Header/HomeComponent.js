@@ -48,6 +48,11 @@ class Home extends Component {
   componentDidMount() {
     this.setState({ groupInfo: this.getUserDetails() });
     console.log(JSON.stringify(this.state.groupInfo));
+    if (this.state.component == null) {
+      this.setState({
+        component: <Dashboard email={cookie.load("cookie").Email} />,
+      });
+    }
   }
 
   OpenDashBoard = () => {

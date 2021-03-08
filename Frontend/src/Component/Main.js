@@ -21,7 +21,7 @@ class Main extends Component {
         <Route path="/groupInfo" component={GroupInfo}></Route>
         <Route path="/register" component={Register} />
         <Route path="/login" component={Login} />
-        <Route path="/home" component={Dashboard} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/createGroup" component={CreateGroup} />
         <Route path="/updateProfile" component={UpdateProfile} />
         <Route path="/myGroup" component={MyGroup} />
