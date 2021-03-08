@@ -67,7 +67,7 @@ class transactionDetail {
                 con.query(
                   "Delete from  OwsGetsDetail where GroupName ='" +
                     groupName +
-                    "', MemberPaid='" +
+                    "'and MemberGets='" +
                     value.MemberPaid +
                     "'and MemberOws='" +
                     value.MemberOws +
@@ -131,6 +131,21 @@ class transactionDetail {
         "Content-Type": "application/json",
       });
       console.log(JSON.stringify(result));
+      res.end(JSON.stringify(result));
+    });
+  }
+
+  getUserSpecificGetOwsInfo(con, email, res) {
+    var sql =
+      "SELECT * FROM SplitwiseDB.OwsGetsDetail where MemberGets='" +
+      email +
+      "'OR MemberOws='" +
+      email +
+      "'";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("found record" + result);
       res.end(JSON.stringify(result));
     });
   }

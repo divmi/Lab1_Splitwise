@@ -83,7 +83,7 @@ class NewUser extends Component {
           {
             <button
               className="btn"
-              onClick={() => this.props.delete(this.props.val)}
+              onClick={() => this.props.delete(this.props.val.index)}
             >
               <i className="fa fa-remove" aria-hidden="true"></i>
             </button>

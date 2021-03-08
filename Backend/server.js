@@ -184,3 +184,9 @@ app.get("/getOwsDetail", function (req, res) {
   var tdetail = new transaction.transactionDetail();
   tdetail.getOwsGetsDetail(con, req.query.groupName, res);
 });
+
+app.get("/getUserSpecificGetOwsInfo", function (req, res) {
+  console.log("Req Body : ", req.query.email);
+  var tdetail = new transaction.transactionDetail();
+  tdetail.getUserSpecificGetOwsInfo(con, req.query.email, res);
+});

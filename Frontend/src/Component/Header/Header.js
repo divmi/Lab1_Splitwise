@@ -63,16 +63,28 @@ class Header extends Component {
             open={Boolean(this.state.anchorEl)}
             onClose={this.handleClose}
           >
-            <Link to="/updateProfile" style={{ textDecoration: "none" }}>
+            <Link
+              to="/updateProfile"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem onClick={this.handleClose}> My account</MenuItem>
             </Link>
-            <Link to="/createGroup" style={{ textDecoration: "none" }}>
+            <Link
+              to="/createGroup"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem onClick={this.handleClose}>Create Group</MenuItem>
             </Link>
-            <Link to="/myGroup" style={{ textDecoration: "none" }}>
+            <Link
+              to="/myGroup"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem onClick={this.handleClose}>My Group</MenuItem>
             </Link>
-            <Link to="/login" style={{ textDecoration: "none" }}>
+            <Link
+              to="/login"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem id="logout" onClick={this.handleClose}>
                 Logout
               </MenuItem>

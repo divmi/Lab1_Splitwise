@@ -146,8 +146,8 @@ class Register extends Component {
                       onChange={this.handleChange}
                       invalid={this.state.error.email ? true : false}
                     ></Input>
+                    <FormFeedback>{this.state.error.email}</FormFeedback>
                   </FormGroup>
-                  <FormFeedback>{this.state.error.email}</FormFeedback>
 
                   <FormGroup>
                     <Label htmlFor="password">
@@ -168,7 +168,7 @@ class Register extends Component {
                       <Button
                         type="submit"
                         onClick={this.submitForm}
-                        color="btn btn-primary"
+                        color="btn btn-Normal"
                       >
                         Sign me up!
                       </Button>

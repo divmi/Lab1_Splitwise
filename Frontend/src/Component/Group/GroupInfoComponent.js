@@ -29,6 +29,7 @@ class GroupInfo extends Component {
   closeModal = () => {
     this.setState({ isOpen: false });
     this.getTransactionDetail();
+    this.OpenOwsGetsAmount();
   };
 
   handleTransactionChange = (e) => {
@@ -112,7 +113,7 @@ class GroupInfo extends Component {
             authFlag: true,
           });
           this.getTransactionDetail();
-          this.getHowmuch();
+          this.OpenOwsGetsAmount();
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -176,12 +177,14 @@ class GroupInfo extends Component {
     } else {
       showTransaction = (
         <tr>
-          <img src="./assets/shopping.jpg" height={300} width={300}></img>
-          <h3>
-            You have not added any expenses yet <i className="fas fa-frown"></i>
-          </h3>
-
-          <h5>Click on Add Expense button to start</h5>
+          <td>
+            <img src="./assets/shopping.jpg" height={300} width={300}></img>
+            <h3>
+              You have not added any expenses yet{" "}
+              <i className="fas fa-frown"></i>
+            </h3>
+            <h5>Click on Add Expense button to start</h5>
+          </td>
         </tr>
       );
     }

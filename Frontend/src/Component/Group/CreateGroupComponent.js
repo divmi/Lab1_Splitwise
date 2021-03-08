@@ -36,6 +36,7 @@ class CreateGroup extends Component {
         this.setState({
           userData,
         });
+        console.log(JSON.stringify(this.state.userData));
       }
     }
     //}
@@ -76,12 +77,6 @@ class CreateGroup extends Component {
         { index: Math.random(), userName: "", email: "" },
       ],
     }));
-  };
-
-  deleteRow = (index) => {
-    this.setState({
-      userData: this.state.userData.filter((s, sindex) => index !== sindex),
-    });
   };
 
   ///LoginUser'
@@ -151,10 +146,9 @@ class CreateGroup extends Component {
       });
   }
 
-  clickOnDelete(record) {
-    console.log("record received" + record.email);
+  clickOnDelete(index) {
     this.setState({
-      userData: this.state.userData.filter((r) => r !== record),
+      userData: this.state.userData.filter((r) => index !== r.index),
     });
   }
 
@@ -241,7 +235,7 @@ class CreateGroup extends Component {
             >
               {this.state.error}
             </div>
-            <div className="content" style={{ width: "80%", margin: "20px" }}>
+            <div className="content" style={{ width: "90%" }}>
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
                 <h3 style={{ textAlign: "left", marginLeft: "70px" }}>
                   Start a group Name

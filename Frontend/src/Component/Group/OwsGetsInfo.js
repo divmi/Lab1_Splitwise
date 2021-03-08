@@ -6,14 +6,21 @@ class OwsGetDetail extends Component {
     super(props);
     this.state = {
       owsGetDetail: [],
+      componentMounted: false,
     };
   }
 
   componentDidMount() {
+    console.log("compoment mounted");
     this.getHowmuch();
     console.log(JSON.stringify(this.state.owsGetDetail));
   }
 
+  componentDidUpdate(prevState) {
+    if (prevState.name != this.props.name) {
+      this.getHowmuch();
+    }
+  }
   getHowmuch() {
     axios
       .get("http://localhost:8000/getOwsDetail", {
@@ -34,12 +41,14 @@ class OwsGetDetail extends Component {
           this.setState({
             error: "Please enter correct credentials",
             authFlag: false,
+            owsGetDetail: [],
           });
         }
       })
       .catch((e) => {
         this.setState({
           error: "Please enter correct credentials" + e,
+          owsGetDetail: [],
         });
       });
   }
@@ -60,7 +69,7 @@ class OwsGetDetail extends Component {
         }
       });
     }
-    if (typeof show != "undefined" && show.length > 0) {
+    if (show.length > 0) {
       showOwsgetAmount = show.map((value, idx) => {
         return (
           <div key={idx}>
@@ -71,6 +80,8 @@ class OwsGetDetail extends Component {
           </div>
         );
       });
+    } else {
+      showOwsgetAmount = <div>Nothing found</div>;
     }
     return (
       <div className="container">

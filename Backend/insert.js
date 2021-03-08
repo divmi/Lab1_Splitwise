@@ -131,9 +131,7 @@ class insert {
     );
   }
 
-  async insert_Promise(con, body, res) {
-    var insertDetail = "";
-    var dataFromUserTransactionTable;
+  insert_Promise(con, body, res) {
     var insGroupLink =
       "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount) VALUES (";
     var insGroupLink1 =
@@ -151,111 +149,113 @@ class insert {
     console.log(insGroupLink + insGroupLink1);
     con.query(insGroupLink + insGroupLink1, function (err, result) {
       if (err) throw err;
-      con.query(
-        "Select MemberID from GroupMemberInfo where GroupName ='" +
-          body.groupname +
-          "' and Accepted=true",
-        function (err, memberInfo) {
-          if (err) throw err;
-          if (memberInfo.length > 0) {
-            var ows = body.amount / memberInfo.length;
-            var gets = body.amount - ows;
-            for (let value of memberInfo) {
-              con.query(
-                "Select * from UserTransactionDetail where GroupName ='" +
-                  body.groupname +
-                  "' and MemberID= '" +
-                  value.MemberID +
-                  "'",
-                function (error, dataFromUserTransactionTable) {
-                  if (error) throw error;
-                  console.log(
-                    "Data from db:" +
-                      JSON.stringify(dataFromUserTransactionTable)
-                  );
-                  if (value.MemberID == body.memberID) {
-                    if (dataFromUserTransactionTable.length == 0) {
-                      insertDetail =
-                        "INSERT INTO UserTransactionDetail ( MemberID, GroupName, ows,gets) VALUES (";
-                      insertDetail =
-                        insertDetail +
-                        "'" +
-                        value.MemberID +
-                        "','" +
-                        body.groupname +
-                        "','" +
-                        0 +
-                        "','" +
-                        gets +
-                        "')";
-                    } else {
-                      if (dataFromUserTransactionTable.length > 0) {
-                        var getValue = dataFromUserTransactionTable.find(
-                          (x) => x.MemberID == value.MemberID
-                        );
-                        if (getValue) {
-                          var new_gets = gets + getValue.gets;
-                          insertDetail =
-                            `Update UserTransactionDetail SET ows='` +
-                            getValue.ows +
-                            `', gets='` +
-                            new_gets +
-                            "'Where MemberID ='" +
-                            value.MemberID +
-                            "'";
-                        }
-                      }
-                    }
-                  } else {
-                    if (dataFromUserTransactionTable.length == 0) {
-                      insertDetail =
-                        "INSERT INTO UserTransactionDetail ( MemberID, GroupName, ows,gets) VALUES (";
-                      insertDetail =
-                        insertDetail +
-                        "'" +
-                        value.MemberID +
-                        "','" +
-                        body.groupname +
-                        "','" +
-                        ows +
-                        "','" +
-                        0 +
-                        "')";
-                    } else {
-                      var getValue = dataFromUserTransactionTable.find(
-                        (x) => x.MemberID == value.MemberID
-                      );
-                      if (getValue) {
-                        var new_ows = getValue.ows + ows;
-                        insertDetail =
-                          `Update UserTransactionDetail SET ows='` +
-                          new_ows +
-                          `', gets='` +
-                          getValue.gets +
-                          "' Where MemberID ='" +
-                          value.MemberID +
-                          "'";
-                      }
-                    }
-                  }
-                  console.log(insertDetail);
-                  con.query(insertDetail, function (err, memberInfo) {
-                    if (err) throw err;
-                  });
-                }
-              );
-            }
-
-            // memberInfo.forEach((value) => {});
-          }
-        }
-      );
       res.writeHead(200, {
         "Content-Type": "text/plain",
       });
       res.end(JSON.stringify(result));
     });
   }
+  // con.query(
+  //   "Select MemberID from GroupMemberInfo where GroupName ='" +
+  //     body.groupname +
+  //     "' and Accepted=true",
+  //   function (err, memberInfo) {
+  //     if (err) throw err;
+  //     if (memberInfo.length > 0) {
+  //       var ows = body.amount / memberInfo.length;
+  //       var gets = body.amount - ows;
+  //       for (let value of memberInfo) {
+  //         con.query(
+  //           "Select * from UserTransactionDetail where GroupName ='" +
+  //             body.groupname +
+  //             "' and MemberID= '" +
+  //             value.MemberID +
+  //             "'",
+  //           function (error, dataFromUserTransactionTable) {
+  //             if (error) throw error;
+  //             console.log(
+  //               "Data from db:" +
+  //                 JSON.stringify(dataFromUserTransactionTable)
+  //             );
+  //             if (value.MemberID == body.memberID) {
+  //               if (dataFromUserTransactionTable.length == 0) {
+  //                 insertDetail =
+  //                   "INSERT INTO UserTransactionDetail ( MemberID, GroupName, ows,gets) VALUES (";
+  //                 insertDetail =
+  //                   insertDetail +
+  //                   "'" +
+  //                   value.MemberID +
+  //                   "','" +
+  //                   body.groupname +
+  //                   "','" +
+  //                   0 +
+  //                   "','" +
+  //                   gets +
+  //                   "')";
+  //               } else {
+  //                 if (dataFromUserTransactionTable.length > 0) {
+  //                   var getValue = dataFromUserTransactionTable.find(
+  //                     (x) => x.MemberID == value.MemberID
+  //                   );
+  //                   if (getValue) {
+  //                     var new_gets = gets + getValue.gets;
+  //                     insertDetail =
+  //                       `Update UserTransactionDetail SET ows='` +
+  //                       getValue.ows +
+  //                       `', gets='` +
+  //                       new_gets +
+  //                       "'Where MemberID ='" +
+  //                       value.MemberID +
+  //                       "'";
+  //                   }
+  //                 }
+  //               }
+  //             } else {
+  //               if (dataFromUserTransactionTable.length == 0) {
+  //                 insertDetail =
+  //                   "INSERT INTO UserTransactionDetail ( MemberID, GroupName, ows,gets) VALUES (";
+  //                 insertDetail =
+  //                   insertDetail +
+  //                   "'" +
+  //                   value.MemberID +
+  //                   "','" +
+  //                   body.groupname +
+  //                   "','" +
+  //                   ows +
+  //                   "','" +
+  //                   0 +
+  //                   "')";
+  //               } else {
+  //                 var getValue = dataFromUserTransactionTable.find(
+  //                   (x) => x.MemberID == value.MemberID
+  //                 );
+  //                 if (getValue) {
+  //                   var new_ows = getValue.ows + ows;
+  //                   insertDetail =
+  //                     `Update UserTransactionDetail SET ows='` +
+  //                     new_ows +
+  //                     `', gets='` +
+  //                     getValue.gets +
+  //                     "' Where MemberID ='" +
+  //                     value.MemberID +
+  //                     "'";
+  //                 }
+  //               }
+  //             }
+  //             console.log(insertDetail);
+  //             con.query(insertDetail, function (err, memberInfo) {
+  //               if (err) throw err;
+  //             });
+  //           }
+  //         );
+  // }
+
+  // memberInfo.forEach((value) => {});
+  //     }
+  //   }
+  // );
+
+  // }
 
   insertTransactionIntoMemberTable(con, memberInfo) {
     if (memberInfo.length > 0) {

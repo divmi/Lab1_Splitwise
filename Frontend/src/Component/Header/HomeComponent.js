@@ -6,12 +6,14 @@ import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
 import Dashboard from "../User/DashBoard";
+import OwsGetDetail from "../Group/OwsGetsInfo";
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       groupInfo: [],
       component: null,
+      summary: null,
     };
   }
 
@@ -57,6 +59,7 @@ class Home extends Component {
   OpenGroupInfo(param) {
     this.setState({
       component: <GroupInfo name={param} />,
+      summary: <OwsGetDetail name={param} />,
     });
   }
 
@@ -98,22 +101,18 @@ class Home extends Component {
               id="dashboard-div"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
             >
-              {/* <Link
-                to=".\dashboard"
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                DashBoard
-              </Link> */}
               <button
+                className="btn btn-link"
                 onClick={this.OpenDashBoard}
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: "none", color: "black", fontSize: 13 }}
               >
-                DashBoard
+                <i className="fas fa-bars"></i> DashBoard
               </button>
               <hr />
               <button
+                className="btn btn-link"
                 onClick={this.OpenRecentActivity}
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: "none", color: "black", fontSize: 13 }}
               >
                 <i className="fas fa-flag"></i> Recent activity
               </button>
