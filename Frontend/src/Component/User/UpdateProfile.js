@@ -12,7 +12,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 //import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
 
@@ -25,7 +25,7 @@ class UpdateProfile extends Component {
       loginError: "",
       auth: false,
       dropdownOpen: true,
-      profilePhoto: "./assets/userIcon.jpg",
+      UserProfilePic: "",
       photoPath: "",
     };
     this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
@@ -51,21 +51,48 @@ class UpdateProfile extends Component {
   };
 
   componentDidMount() {
-    this.setState({
-      userinfo: this.props.userinfo,
-    });
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData"))
+        console.log(JSON.parse(localStorage.getItem("userData")));
+      this.setState({
+        userinfo: Object.assign(
+          this.state.userinfo,
+          JSON.parse(localStorage.getItem("userData"))
+        ),
+      });
+      if (this.state.userinfo.UserProfilePic == "") {
+        this.setState({
+          UserProfilePic: `./assets/userIcon.jpg`,
+        });
+      } else {
+        this.setState({
+          UserProfilePic: this.state.userinfo.UserProfilePic,
+        });
+      }
+    }
+    console.log(this.state.UserProfilePic);
+  }
+
+  SetLocalStorage(data) {
+    if (typeof Storage !== "undefined") {
+      localStorage.clear();
+      localStorage.setItem("userData", data);
+    }
   }
 
   submitForm = (e) => {
     //prevent page from refresh
     e.preventDefault();
     const error = this.validateForm();
+    const data = this.state.userinfo;
+    data.UserProfilePic = this.state.UserProfilePic;
     if (Object.keys(error).length == 0) {
       //set the with credentials to true
       axios.defaults.withCredentials = true;
+      console.log(JSON.stringify(this.state.userinfo));
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/updateProfile", this.state.userinfo)
+        .post("http://localhost:8000/updateProfile", data)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -73,7 +100,7 @@ class UpdateProfile extends Component {
               loginError: "",
               authFlag: true,
             });
-            alert("Successfully Created! Please Conitnue to Login");
+            this.SetLocalStorage(JSON.stringify(data));
           } else {
             this.setState({
               loginError:
@@ -93,13 +120,7 @@ class UpdateProfile extends Component {
   };
 
   validateForm = () => {
-    // const { userInfo } = this.state;
-    let error = {};
-    // if (userInfo.name === "") error.name = "First Name should not be blank";
-    // //if (!isEmail(userInfo.email)) error.email = "Please enter valid mail";
-    // if (userInfo.email === "") error.email = "Email should not be blank";
-    // if (userInfo.password === "")
-    //   error.password = "Password should not be blank";
+    var error = {};
     return error;
   };
 
@@ -122,14 +143,14 @@ class UpdateProfile extends Component {
       .then((response) => {
         console.log(response);
         this.setState({
-          profilePhoto: "localhost:8000/assets/" + response.data,
+          UserProfilePic: "http://localhost:8000/" + response.data,
         });
       })
       .catch((error) => console.log("error " + error));
   };
 
   render() {
-    console.log(cookie.load("cookie"));
+    let picture = "";
     let redirectVar = null;
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     else redirectVar = <Redirect to="/updateProfile" />;
@@ -139,6 +160,12 @@ class UpdateProfile extends Component {
         {key}
       </option>
     ));
+    // if (this.state.UserProfilePic == "") {
+    //   picture = `./assets/userIcon.jpg`;
+    // } else {
+    //   picture = this.state.UserProfilePic;
+    // }
+    console.log("Divya Picture :" + picture);
     return (
       <div>
         {redirectVar}
@@ -151,7 +178,7 @@ class UpdateProfile extends Component {
             <div className="row">
               <div className="col col-sm-2">
                 <img
-                  src={this.state.profilePhoto}
+                  src={this.state.UserProfilePic}
                   alt="..."
                   width={200}
                   height={200}
@@ -199,6 +226,7 @@ class UpdateProfile extends Component {
                           placeholder="Email"
                           value={cookie.load("cookie").Email}
                           invalid={this.state.error.email ? true : false}
+                          readOnly
                         ></Input>
                       </FormGroup>
                       <FormFeedback>{this.state.error.email}</FormFeedback>
@@ -328,8 +356,8 @@ class UpdateProfile extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return { userinfo: state.login.userinfo[0] };
-};
+// const mapStateToProps = (state) => {
+//   return { userinfo: state.login.userinfo[0] };
+// };
 
-export default connect(mapStateToProps)(UpdateProfile);
+export default UpdateProfile; //connect(mapStateToProps)

@@ -18,11 +18,9 @@ var login = class login {
         bcrypt.compare(body.password, result[0].Password)
       ) {
         res.cookie("cookie", JSON.stringify(result[0]));
-        console.log(res.cookie("cookie", JSON.stringify(result[0])));
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
-
         res.end(JSON.stringify(result));
       } else {
         res.writeHead(401, {

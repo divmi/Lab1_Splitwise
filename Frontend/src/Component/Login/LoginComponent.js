@@ -103,7 +103,8 @@ class Login extends Component {
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
-          this.props.UserState(response.data);
+          //this.props.UserState(response.data);
+          this.SetLocalStorage(JSON.stringify(response.data[0]));
         }
       })
       .catch(() => {
@@ -111,6 +112,13 @@ class Login extends Component {
           error: "Not able to find user",
         });
       });
+  }
+
+  SetLocalStorage(data) {
+    if (typeof Storage !== "undefined") {
+      localStorage.clear();
+      localStorage.setItem("userData", data);
+    }
   }
 
   render() {

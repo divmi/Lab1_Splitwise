@@ -12,7 +12,10 @@ class Header extends Component {
     super(props);
     this.state = {
       anchorEl: null,
+      userProfilePic: null,
+      Name: "",
     };
+    this.localStorageUpdated = this.localStorageUpdated.bind(this);
   }
 
   handleLogout = () => {};
@@ -29,6 +32,41 @@ class Header extends Component {
     }
   };
 
+  setProfilePic() {
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        var value = JSON.parse(localStorage.getItem("userData"));
+        console.log(value.UserProfilePic);
+        this.setState({
+          userProfilePic: value.UserProfilePic,
+          Name: value.Name,
+        });
+      }
+      if (this.state.userProfilePic == null) {
+        this.setState({
+          userProfilePic: `./assets/userIcon.jpg`,
+          Name: cookie.load("cookie").Name,
+        });
+      }
+    }
+  }
+
+  localStorageUpdated() {
+    console.log("state updated");
+    this.setProfilePic();
+  }
+
+  componentDidMount() {
+    this.setProfilePic();
+    window.addEventListener("storage", this.localStorageUpdated);
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.userProfilePic != this.state.userProfilePic) {
+      //this.setProfilePic();
+    }
+  }
+
   render() {
     var registerOrLogin = null;
     if (cookie.load("cookie")) {
@@ -42,7 +80,7 @@ class Header extends Component {
             Home{" "}
           </Link>
           <img
-            src="./assets/Logo.png"
+            src={this.state.userProfilePic}
             width={30}
             height={30}
             className="rounded-circle"
@@ -54,7 +92,8 @@ class Header extends Component {
             aria-haspopup="true"
             onClick={this.handleClick}
           >
-            {cookie.load("cookie").Name}
+            {this.state.Name}
+            {/* {cookie.load("cookie").Name} */}
           </Button>
           <Menu
             id="simple-menu"

@@ -17,6 +17,9 @@ var update = class update {
       Timezone = '` +
       req.Timezone +
       `',
+      UserProfilePic = '` +
+      req.UserProfilePic +
+      `',
       Language = '` +
       req.Language +
       "'Where Email ='" +

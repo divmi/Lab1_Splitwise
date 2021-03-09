@@ -5,7 +5,7 @@ var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 
-app.use("/assets", express.static("../Frontend/public/assets/"));
+app.use(express.static("uploads"));
 const multer = require("multer"); //upload image on server
 
 //require express session
@@ -20,16 +20,28 @@ app.use(
     secret: "SplitwiseSecretString",
     resave: false,
     saveUninitialized: true,
+    duration: 60 * 60 * 1000, // Overall duration of Session : 30 minutes : 1800 seconds
+    activeDuration: 5 * 60 * 1000,
   })
 );
 
 const storage = multer.diskStorage({
-  destination: "../Backend/uploads/",
-  filename: function (req, file, cb) {
-    console.log(file);
-    console.log("Divya :" + Date.now() + file.originalname);
-    cb(null, `${Date.now() + file.originalname}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
+  destination: function (req, file, cb) {
+    cb(null, "./uploads");
   },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+  // destination: "./uploads/",
+  // filename: function (req, file, cb) {
+  //   console.log(file);
+  //   console.log("Divya :" + Date.now() + file.originalname);
+  //   //cb(null, `${Date.now() + file.originalname}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
+  //   console.log(
+  //     `${Date.now()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
+  //   );
+  //   cb(null, `${Date.now()}-${file.fieldname}.${file.mimetype.split("/")[1]}`);
+  // },
 });
 const fileFilter = (req, file, cb) => {
   if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
@@ -39,7 +51,9 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
+  "file"
+);
 const insert = require("./insert");
 const login = require("./login");
 const group = require("./group");
@@ -100,13 +114,22 @@ app.post("/signupUser", function (req, res) {
   ins.insert_user(con, req.body, res);
 });
 
-app.post("/upload", upload.single("file"), (req, res, next) => {
-  console.log("Req Body : ", req.body);
-  res.writeHead(200, {
-    "Content-Type": "application/json",
+app.post("/upload", (req, res, next) => {
+  upload(req, res, (err) => {
+    if (err) {
+      res.sendStatus(500);
+    }
+    res.send(req.file.filename);
   });
-  res.end(Date.now() + req.file.originalname);
 });
+
+// console.log("Req Body : ", req.body);
+// res.writeHead(200, {
+//   "Content-Type": "application/json",
+// });
+// //res.end(Date.now() + req.file.originalname);
+// res.end(Date.now() + req.file.originalname);
+//});
 
 app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);

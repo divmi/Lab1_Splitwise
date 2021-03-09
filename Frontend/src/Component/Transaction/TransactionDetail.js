@@ -56,8 +56,12 @@ class TransactionDetail extends Component {
           <tr key={idx} style={{ verticalAlign: "center" }}>
             <td>
               <strong>{name.Name}</strong> added
-              <strong>&#34{name.TransactionDetail}&#34</strong>
+              <strong> {name.TransactionDetail} </strong>
               in <strong>{name.GroupName}</strong>
+            </td>
+            <td>
+              {name.Currency}
+              {name.Amount}
             </td>
           </tr>
         );
