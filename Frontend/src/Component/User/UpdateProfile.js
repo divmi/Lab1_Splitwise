@@ -24,17 +24,15 @@ class UpdateProfile extends Component {
       loginError: "",
       auth: false,
       dropdownOpen: true,
-      UserProfilePic: "",
-      photoPath: "",
     };
-    this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
+    // this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
 
-  handletimeZoneChange(newValue) {
-    this.setState({ timeZone: newValue });
-  }
+  // handletimeZoneChange(newValue) {
+  //   this.setState({ timeZone: newValue });
+  // }
 
   handleToggle() {
     this.setState({ absolute: !this.state.absolute });
@@ -60,7 +58,7 @@ class UpdateProfile extends Component {
           JSON.parse(localStorage.getItem("userData"))
         ),
       });
-      if (this.state.userinfo.UserProfilePic == "") {
+      if (this.state.userinfo.UserProfilePic == null) {
         this.setState({
           UserProfilePic: `./assets/userIcon.jpg`,
         });
@@ -124,9 +122,6 @@ class UpdateProfile extends Component {
     return error;
   };
 
-  handleChange(newValue) {
-    this.setState({ timeZone: newValue });
-  }
   toggle() {
     this.setState((prevState) => ({
       dropdownOpen: !prevState.dropdownOpen,
@@ -150,22 +145,16 @@ class UpdateProfile extends Component {
   };
 
   render() {
-    let picture = "";
     let redirectVar = null;
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
+    else if (this.state.authFlag) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/updateProfile" />;
-    // const { error } = this.state;
     const options = map(timezones, (val, key) => (
       <option key={val} value={val}>
         {key}
       </option>
     ));
-    // if (this.state.UserProfilePic == "") {
-    //   picture = `./assets/userIcon.jpg`;
-    // } else {
-    //   picture = this.state.UserProfilePic;
-    // }
-    console.log("Divya Picture :" + picture);
+
     return (
       <div>
         {redirectVar}
@@ -200,7 +189,7 @@ class UpdateProfile extends Component {
                 </div>
               </div>
               <div className="col col-sm-8">
-                <Form onChange={this.handleChange}>
+                <Form>
                   <div className="row">
                     <div className="col col-sm-5" style={{ textAlign: "left" }}>
                       <FormGroup>
@@ -214,7 +203,7 @@ class UpdateProfile extends Component {
                           placeholder="First Name"
                           // invalid={this.state.error.name ? true : false}
                           value={this.state.userinfo.Name}
-                          onChange={() => {}}
+                          onChange={this.handleChange}
                         ></Input>
                         {/* <FormFeedback>{this.state.error.name}</FormFeedback> */}
                       </FormGroup>
@@ -226,7 +215,7 @@ class UpdateProfile extends Component {
                           name="Email"
                           placeholder="Email"
                           value={cookie.load("cookie").Email}
-                          onChange={() => {}}
+                          onChange={this.handleChange}
                           //invalid={this.state.error.email ? true : false}
                           readOnly
                         ></Input>
@@ -243,8 +232,12 @@ class UpdateProfile extends Component {
                           maxLength="10"
                           min="0"
                           placeholder="Contact Number"
-                          onChange={() => {}}
-                          value={this.state.userinfo.ContactNo}
+                          onChange={this.handleChange}
+                          value={
+                            this.state.userinfo.ContactNo == null
+                              ? ""
+                              : this.state.userinfo.ContactNo
+                          }
                           // invalid={this.state.error.contactNo ? true : false}
                         ></Input>
                         {/* <FormFeedback>
@@ -264,6 +257,8 @@ class UpdateProfile extends Component {
                           className="form-control bfh-currencies"
                           name="Currency"
                           data-currency="EUR"
+                          value={this.state.userinfo.Currency}
+                          onChange={this.handleChange}
                         >
                           <option data-symbol="$" data-placeholder="0.00">
                             USD
@@ -288,7 +283,12 @@ class UpdateProfile extends Component {
                       </FormGroup>
                       <FormGroup>
                         <label className="control-label">Timezone</label>
-                        <select className="form-control" name="Timezone">
+                        <select
+                          className="form-control"
+                          name="Timezone"
+                          value={this.state.userinfo.Timezone}
+                          onChange={this.handleChange}
+                        >
                           <option value="" disabled>
                             Choose Your Timezone
                           </option>
@@ -303,9 +303,11 @@ class UpdateProfile extends Component {
                       <FormGroup>
                         <Label htmlFor="language">Language</Label>
                         <select
+                          value={this.state.userinfo.Language}
                           className="form-control"
                           name="Language"
                           data-width="fit"
+                          onChange={this.handleChange}
                         >
                           <option>English</option>
                           <option>Español</option>

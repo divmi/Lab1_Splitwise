@@ -144,14 +144,12 @@ class GroupInfo extends Component {
           this.setState({
             error: "Please enter correct credentials",
             authFlag: false,
-            //owsGetDetail: [],
           });
         }
       })
       .catch((e) => {
         this.setState({
           error: "Please enter correct credentials" + e,
-          //owsGetDetail: [],
         });
       });
   }

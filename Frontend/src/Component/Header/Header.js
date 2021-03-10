@@ -15,7 +15,6 @@ class Header extends Component {
       userProfilePic: null,
       Name: "",
     };
-    this.localStorageUpdated = this.localStorageUpdated.bind(this);
   }
 
   handleLogout = () => {};
@@ -28,47 +27,36 @@ class Header extends Component {
     this.setState({ anchorEl: null });
     if (e.target.id == "logout") {
       cookie.remove("cookie", { path: "/" });
+      this.RemoveDataFromLocalStorage();
       this.props.LogoutUser();
     }
   };
 
-  setProfilePic() {
+  RemoveDataFromLocalStorage() {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        var value = JSON.parse(localStorage.getItem("userData"));
-        console.log(value.UserProfilePic);
-        this.setState({
-          userProfilePic: value.UserProfilePic,
-          Name: value.Name,
-        });
-      }
-      if (this.state.userProfilePic == null) {
-        this.setState({
-          userProfilePic: `./assets/userIcon.jpg`,
-        });
+        localStorage.clear();
       }
     }
   }
 
-  localStorageUpdated() {
-    console.log("state updated");
-    this.setProfilePic();
-  }
-
-  componentDidMount() {
-    this.setProfilePic();
-    window.addEventListener("storage", this.localStorageUpdated);
-  }
-
-  componentDidUpdate(prevState) {
-    if (prevState.userProfilePic != this.state.userProfilePic) {
-      //this.setProfilePic();
+  setHeaderProfilePic() {
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        var value = JSON.parse(localStorage.getItem("userData"));
+        if (value != null && value.UserProfilePic != null)
+          return value.UserProfilePic;
+        else return "./assets/userIcon.jpg";
+      }
     }
   }
 
   render() {
     var registerOrLogin = null;
+    let picture = "";
     if (cookie.load("cookie")) {
+      picture = this.setHeaderProfilePic();
+      console.log(picture);
       registerOrLogin = (
         <div className="col col-sm-3">
           <Link
@@ -79,7 +67,7 @@ class Header extends Component {
             Home{" "}
           </Link>
           <img
-            src={this.state.userProfilePic}
+            src={picture}
             width={30}
             height={30}
             className="rounded-circle"
@@ -158,7 +146,7 @@ class Header extends Component {
               style={{ flexWrap: "nowrap", marginTop: 10, marginLeft: 60 }}
             >
               <img
-                src="./assets/Logo.png"
+                src={"./assets/Logo.png"}
                 className="rounded float-center image-div"
                 width={30}
                 height={30}

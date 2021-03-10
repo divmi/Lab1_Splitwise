@@ -168,6 +168,18 @@ class transactionDetail {
       res.end(JSON.stringify(result));
     });
   }
+
+  getGroupSummary(con, email, res) {
+    var sql =
+      "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" + +groupName;
+    ("'");
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("found record" + result);
+      res.end(JSON.stringify(result));
+    });
+  }
 }
 
 module.exports = {

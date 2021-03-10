@@ -110,41 +110,6 @@ class Dashboard extends Component {
         );
       }
     });
-
-    // const getAmount = Object.values(
-    //   this.state.show.reduce(
-    //     (r, o) => (
-    //       r[o.MemberGets]
-    //         ? (r[o.MemberGets].Amount += o.Amount)
-    //         : (r[o.MemberGets] = { ...o }),
-    //       r
-    //     ),
-    //     {}
-    //   )
-    // );
-
-    // const owAmount = Object.values(
-    //   this.state.show.reduce(
-    //     (r, o) => (
-    //       r[o.MemberOws]
-    //         ? (r[o.MemberOws].Amount += o.Amount)
-    //         : (r[o.MemberOws] = { ...o }),
-    //       r
-    //     ),
-    //     {}
-    //   )
-    // );
-    // component = getAmount.map((detail, idx) => {
-    //   if (detail.MemberOws != this.props.email)
-
-    // });
-
-    // component1 = owAmount.map((detail, idx) => {
-    //   if (detail.MemberGets != this.props.email)
-
-    //     );
-    // });
-
     return (
       <div className="container">
         <div
