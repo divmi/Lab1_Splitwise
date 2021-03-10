@@ -122,8 +122,10 @@ class Dashboard extends Component {
         return (
           <tr key={idx}>
             <td style={{ color: "#5bc5a7" }}>
-              you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
-              {detail.MemberOws}
+              <label>
+                you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
+                {detail.MemberOws}
+              </label>
             </td>
           </tr>
         );
@@ -134,8 +136,10 @@ class Dashboard extends Component {
         return (
           <tr key={idx}>
             <td style={{ color: "orange" }}>
-              you ows <strong>{detail.Amount.toFixed(2)}</strong> to{" "}
-              {detail.MemberGets}
+              <label>
+                you ows <strong>{detail.Amount.toFixed(2)}</strong> to{" "}
+                {detail.MemberGets}{" "}
+              </label>
             </td>
           </tr>
         );
@@ -197,11 +201,18 @@ class Dashboard extends Component {
 
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
           <table>
-            <thead>Details:</thead>
+            <thead>
+              <tr>
+                <td>
+                  <label>Details:</label>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {component}
+              {component1}
+            </tbody>
           </table>
-          <tbody>
-            {component} {component1}
-          </tbody>
         </div>
       </div>
     );

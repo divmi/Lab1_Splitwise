@@ -9,6 +9,7 @@ import Home from "./Header/HomeComponent";
 import GroupInfo from "./Group/GroupInfoComponent";
 import MyGroup from "./Group/MyGroup";
 import UpdateProfile from "./User/UpdateProfile";
+import LandingComponent from "./LandingPage/LandingComponent";
 
 //Create a Main Component
 class Main extends Component {
@@ -25,6 +26,7 @@ class Main extends Component {
         <Route path="/createGroup" component={CreateGroup} />
         <Route path="/updateProfile" component={UpdateProfile} />
         <Route path="/myGroup" component={MyGroup} />
+        <Route path="/landing" component={LandingComponent} />
       </div>
     );
   }

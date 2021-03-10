@@ -1,13 +1,5 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Col,
-  FormFeedback,
-} from "reactstrap";
+import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
 import axios from "axios";
 import cookie from "react-cookies";
 import timezones from "../../data/timezone";
@@ -20,7 +12,14 @@ class UpdateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userinfo: {},
+      userinfo: {
+        ContactNo: "",
+        Currency: "",
+        Language: "",
+        Name: "",
+        Timezone: "",
+        UserProfilePic: "",
+      },
       error: {},
       loginError: "",
       auth: false,
@@ -42,6 +41,7 @@ class UpdateProfile extends Component {
   }
 
   handleChange = (e) => {
+    console.log("handleChange :" + e.target.name);
     this.setState({
       userinfo: {
         ...this.state.userinfo,
@@ -154,7 +154,7 @@ class UpdateProfile extends Component {
     let redirectVar = null;
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     else redirectVar = <Redirect to="/updateProfile" />;
-    const { error } = this.state;
+    // const { error } = this.state;
     const options = map(timezones, (val, key) => (
       <option key={val} value={val}>
         {key}
@@ -212,10 +212,11 @@ class UpdateProfile extends Component {
                           id="Name"
                           name="Name"
                           placeholder="First Name"
-                          invalid={this.state.error.name ? true : false}
+                          // invalid={this.state.error.name ? true : false}
                           value={this.state.userinfo.Name}
+                          onChange={() => {}}
                         ></Input>
-                        <FormFeedback>{this.state.error.name}</FormFeedback>
+                        {/* <FormFeedback>{this.state.error.name}</FormFeedback> */}
                       </FormGroup>
                       <FormGroup>
                         <Label htmlFor="email">Email</Label>
@@ -225,11 +226,12 @@ class UpdateProfile extends Component {
                           name="Email"
                           placeholder="Email"
                           value={cookie.load("cookie").Email}
-                          invalid={this.state.error.email ? true : false}
+                          onChange={() => {}}
+                          //invalid={this.state.error.email ? true : false}
                           readOnly
                         ></Input>
                       </FormGroup>
-                      <FormFeedback>{this.state.error.email}</FormFeedback>
+                      {/* <FormFeedback>{this.state.error.email}</FormFeedback> */}
 
                       <FormGroup>
                         <Label htmlFor="contactNo">Your Phone number</Label>
@@ -241,12 +243,13 @@ class UpdateProfile extends Component {
                           maxLength="10"
                           min="0"
                           placeholder="Contact Number"
+                          onChange={() => {}}
                           value={this.state.userinfo.ContactNo}
-                          invalid={this.state.error.contactNo ? true : false}
+                          // invalid={this.state.error.contactNo ? true : false}
                         ></Input>
-                        <FormFeedback>
+                        {/* <FormFeedback>
                           {this.state.error.contactNo}
-                        </FormFeedback>
+                        </FormFeedback> */}
                       </FormGroup>
                     </div>
                     <div
@@ -261,13 +264,8 @@ class UpdateProfile extends Component {
                           className="form-control bfh-currencies"
                           name="Currency"
                           data-currency="EUR"
-                          value={this.state.userinfo.Currency}
                         >
-                          <option
-                            data-symbol="$"
-                            data-placeholder="0.00"
-                            selected
-                          >
+                          <option data-symbol="$" data-placeholder="0.00">
                             USD
                           </option>
                           <option data-symbol="€" data-placeholder="0.00">
@@ -286,42 +284,36 @@ class UpdateProfile extends Component {
                             BHD
                           </option>
                         </select>
-                        <FormFeedback>{this.state.error.name}</FormFeedback>
+                        {/* <FormFeedback>{this.state.error.name}</FormFeedback> */}
                       </FormGroup>
                       <FormGroup>
-                        <div className="form-group">
-                          <label className="control-label">Timezone</label>
-                          <select
-                            className="form-control"
-                            name="Timezone"
-                            value={this.state.userinfo.Timezone}
-                          >
-                            <option value="" disabled>
-                              Choose Your Timezone
-                            </option>
-                            {options}
-                          </select>
-                          {error.timezone && (
+                        <label className="control-label">Timezone</label>
+                        <select className="form-control" name="Timezone">
+                          <option value="" disabled>
+                            Choose Your Timezone
+                          </option>
+                          {options}
+                        </select>
+                        {/* {error.timezone && (
                             <span className="help-block">{error.timezone}</span>
-                          )}
-                        </div>
+                          )} */}
                       </FormGroup>
-                      <FormFeedback>{this.state.error.email}</FormFeedback>
+                      {/* <FormFeedback>{this.state.error.email}</FormFeedback> */}
 
                       <FormGroup>
                         <Label htmlFor="language">Language</Label>
                         <select
                           className="form-control"
-                          name="language"
+                          name="Language"
                           data-width="fit"
                         >
-                          <option selected>English</option>
+                          <option>English</option>
                           <option>Español</option>
                           <option>Spanish</option>
                           <option>French</option>
                           <option>Russian</option>
                         </select>
-                        <FormFeedback>{this.state.error.password}</FormFeedback>
+                        {/*<FormFeedback>{this.state.error.password}</FormFeedback> */}
                       </FormGroup>
                     </div>
                   </div>

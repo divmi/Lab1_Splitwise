@@ -45,7 +45,6 @@ class Header extends Component {
       if (this.state.userProfilePic == null) {
         this.setState({
           userProfilePic: `./assets/userIcon.jpg`,
-          Name: cookie.load("cookie").Name,
         });
       }
     }
@@ -146,7 +145,8 @@ class Header extends Component {
     let redirectVar = null;
     if (cookie.load("cookie")) {
       redirectVar = <Redirect to="/home" />;
-    }
+    } else redirectVar = <Redirect to="/landing" />;
+
     return (
       <div className="container-fluid custom-header">
         {redirectVar}
