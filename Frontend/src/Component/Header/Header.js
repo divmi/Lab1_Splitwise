@@ -91,8 +91,8 @@ class Header extends Component {
             aria-haspopup="true"
             onClick={this.handleClick}
           >
-            {this.state.Name}
-            {/* {cookie.load("cookie").Name} */}
+            {/* {this.state.Name} */}
+            {cookie.load("cookie").Name}
           </Button>
           <Menu
             id="simple-menu"

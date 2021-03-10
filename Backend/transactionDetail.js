@@ -20,16 +20,41 @@ class transactionDetail {
           function (err, memberInfo) {
             if (err) throw err;
             if (memberInfo.length > 0) {
-              for (let value = 0; value < memberInfo.length; value++) {
+              for (let member1 = 0; member1 < memberInfo.length; member1++) {
                 for (
-                  let member = value + 1;
-                  member < memberInfo.length;
-                  member++
+                  let member2 = member1 + 1;
+                  member2 < memberInfo.length;
+                  member2++
                 ) {
+                  let member1ToMember2TransList = result.filter(
+                    (x) =>
+                      x.MemberPaid == memberInfo[member1].MemberID &&
+                      x.MemberOws == memberInfo[member2].MemberID
+                  );
+                  let member1GetsFromMember2 = 0;
+                  let member2GetsFromMember1 = 0;
+                  if (member1ToMember2TransList.length > 0) {
+                    member1ToMember2TransList.forEach((element) => {
+                      member1GetsFromMember2 += element.Amount;
+                    });
+                  }
+
+                  let member2ToMember1TransList = result.filter(
+                    (x) =>
+                      x.MemberPaid == memberInfo[member2].MemberID &&
+                      x.MemberOws == memberInfo[member1].MemberID
+                  );
+                  if (member2ToMember1TransList.length > 0) {
+                    member2ToMember1TransList.forEach((element) => {
+                      member2GetsFromMember1 += element.Amount;
+                    });
+                  }
+                  let finalValue =
+                    member1GetsFromMember2 - member2GetsFromMember1;
                   transactionlist.push({
-                    MemberPaid: memberInfo[value].MemberID,
-                    MemberOws: memberInfo[member].MemberID,
-                    Amount: 0,
+                    MemberPaid: memberInfo[member1].MemberID,
+                    MemberOws: memberInfo[member2].MemberID,
+                    Amount: finalValue,
                   });
                 }
               }
@@ -62,7 +87,6 @@ class transactionDetail {
                 }
                 value.Amount = sum - sum2;
               }
-              console.log(transactionlist);
               transactionlist.map((value) => {
                 con.query(
                   "Delete from  OwsGetsDetail where GroupName ='" +
@@ -77,11 +101,6 @@ class transactionDetail {
                     console.log("1 record Deleted" + result);
                   }
                 );
-                // if (value.Amount < 0) {
-                //   let memberPaid = value.MemberOws;
-                //   value.MemberOws = value.MemberPaid;
-                //   value.MemberPaid = memberPaid;
-                // }
 
                 var insGroupLink =
                   "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName) VALUES (";

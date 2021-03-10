@@ -17,39 +17,30 @@ class Dashboard extends Component {
   calculateOwsGetsBasedOnDataReceived() {
     let sumOws = 0;
     let sumGets = 0;
+    console.log(this.props.email);
     if (this.state.owsgetsDetail.length > 0) {
       this.state.owsgetsDetail[0].map((value) => {
-        if (value.Amount < 0) {
+        if (value.MemberOws == this.props.email) {
           this.state.show.push({
-            MemberOws: value.MemberGets,
             MemberGets: value.MemberOws,
+            MemberOws: value.MemberGets,
             Amount: -value.Amount,
           });
         } else {
           this.state.show.push(value);
         }
       });
+      console.log(JSON.stringify(this.state.show));
       this.state.show.map((detail) => {
-        if (detail.MemberGets == this.props.email) {
+        if (detail.Amount > 0) {
           sumGets += detail.Amount;
-          // this.setState({
-          //   component: (
-
-          //   ),
-          // });
         } else {
           sumOws += detail.Amount;
-          //   this.setState({
-          //     component: (
-
-          //     ),
-          //   });
-          // }
         }
         this.setState({
           ows: sumOws,
           gets: sumGets,
-          total: sumGets - sumOws,
+          total: sumGets + sumOws,
         });
       });
     }
@@ -93,32 +84,20 @@ class Dashboard extends Component {
 
   render() {
     let component = null;
-    let component1 = null;
-    const getAmount = Object.values(
-      this.state.show.reduce(
-        (r, o) => (
-          r[o.MemberGets]
-            ? (r[o.MemberGets].Amount += o.Amount)
-            : (r[o.MemberGets] = { ...o }),
-          r
-        ),
-        {}
-      )
-    );
-
-    const owAmount = Object.values(
-      this.state.show.reduce(
-        (r, o) => (
-          r[o.MemberOws]
-            ? (r[o.MemberOws].Amount += o.Amount)
-            : (r[o.MemberOws] = { ...o }),
-          r
-        ),
-        {}
-      )
-    );
-    component = getAmount.map((detail, idx) => {
-      if (detail.MemberOws != this.props.email)
+    //let component1 = null;
+    component = this.state.show.map((detail, idx) => {
+      if (detail.Amount < 0) {
+        return (
+          <tr key={idx}>
+            <td style={{ color: "#f07343" }}>
+              <label>
+                you ows <strong>{-detail.Amount.toFixed(2)}</strong> to{" "}
+                {detail.MemberOws}{" "}
+              </label>
+            </td>
+          </tr>
+        );
+      } else {
         return (
           <tr key={idx}>
             <td style={{ color: "#5bc5a7" }}>
@@ -129,21 +108,42 @@ class Dashboard extends Component {
             </td>
           </tr>
         );
+      }
     });
 
-    component1 = owAmount.map((detail, idx) => {
-      if (detail.MemberGets != this.props.email)
-        return (
-          <tr key={idx}>
-            <td style={{ color: "orange" }}>
-              <label>
-                you ows <strong>{detail.Amount.toFixed(2)}</strong> to{" "}
-                {detail.MemberGets}{" "}
-              </label>
-            </td>
-          </tr>
-        );
-    });
+    // const getAmount = Object.values(
+    //   this.state.show.reduce(
+    //     (r, o) => (
+    //       r[o.MemberGets]
+    //         ? (r[o.MemberGets].Amount += o.Amount)
+    //         : (r[o.MemberGets] = { ...o }),
+    //       r
+    //     ),
+    //     {}
+    //   )
+    // );
+
+    // const owAmount = Object.values(
+    //   this.state.show.reduce(
+    //     (r, o) => (
+    //       r[o.MemberOws]
+    //         ? (r[o.MemberOws].Amount += o.Amount)
+    //         : (r[o.MemberOws] = { ...o }),
+    //       r
+    //     ),
+    //     {}
+    //   )
+    // );
+    // component = getAmount.map((detail, idx) => {
+    //   if (detail.MemberOws != this.props.email)
+
+    // });
+
+    // component1 = owAmount.map((detail, idx) => {
+    //   if (detail.MemberGets != this.props.email)
+
+    //     );
+    // });
 
     return (
       <div className="container">
@@ -208,10 +208,7 @@ class Dashboard extends Component {
                 </td>
               </tr>
             </thead>
-            <tbody>
-              {component}
-              {component1}
-            </tbody>
+            <tbody>{component}</tbody>
           </table>
         </div>
       </div>

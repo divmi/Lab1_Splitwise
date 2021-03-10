@@ -113,6 +113,7 @@ class GroupInfo extends Component {
             authFlag: true,
           });
           this.getTransactionDetail();
+          this.insertMemberSpecificTransaction();
           this.OpenOwsGetsAmount();
         } else {
           this.setState({
@@ -128,6 +129,32 @@ class GroupInfo extends Component {
       });
     this.closeModal();
   };
+
+  insertMemberSpecificTransaction() {
+    axios
+      .get("http://localhost:8000/getOwsDetail", {
+        params: {
+          groupName: this.props.name,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Ows get detail:" + response.data);
+        } else {
+          this.setState({
+            error: "Please enter correct credentials",
+            authFlag: false,
+            //owsGetDetail: [],
+          });
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          error: "Please enter correct credentials" + e,
+          //owsGetDetail: [],
+        });
+      });
+  }
 
   render() {
     let showTransaction = null;
