@@ -123,14 +123,6 @@ app.post("/upload", (req, res, next) => {
   });
 });
 
-// console.log("Req Body : ", req.body);
-// res.writeHead(200, {
-//   "Content-Type": "application/json",
-// });
-// //res.end(Date.now() + req.file.originalname);
-// res.end(Date.now() + req.file.originalname);
-//});
-
 app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   console.log("Divya 11111:" + req.body.name);
@@ -180,7 +172,7 @@ app.get("/getUserInfo", function (req, res) {
 });
 
 app.get("/getTransactionInfo", function (req, res) {
-  console.log("Req Body : ", req.query.groupName);
+  console.log("Req Body getTransactionInfo: ", req.query.groupName);
   var userDetail = new group.group();
   userDetail.gettransactionDetail(con, req.query.groupName, res);
 });
@@ -203,9 +195,9 @@ app.get("/getAllUser", function (req, res) {
 });
 
 app.get("/getOwsDetail", function (req, res) {
-  console.log("Req Body : ", req.query.groupName);
+  console.log("Req Body getOwsDetail: ", req.query.groupName);
   var tdetail = new transaction.transactionDetail();
-  tdetail.getOwsGetsDetail(con, req.query.groupName, res);
+  //tdetail.getOwsGetsDetail(con, req.query.groupName, res);
 });
 
 app.get("/getUserSpecificGetOwsInfo", function (req, res) {
@@ -215,7 +207,7 @@ app.get("/getUserSpecificGetOwsInfo", function (req, res) {
 });
 
 app.get("/getGroupSummary", function (req, res) {
-  console.log("Req Body : ", req.query.email);
+  console.log("Req Body getGroupSummary: ", req.query.groupName);
   var tdetail = new transaction.transactionDetail();
   tdetail.getGroupSummary(con, req.query.groupName, res);
 });

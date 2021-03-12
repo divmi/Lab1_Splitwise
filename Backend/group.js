@@ -10,7 +10,7 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + JSON.stringify(result));
+      console.log("getUserDetail" + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -28,7 +28,7 @@ var group = class group {
     console.log("Connected!");
     con.query("Select * from UserRegistration ", function (err, result) {
       if (err) throw err;
-      console.log("the record is " + result);
+      console.log("getAllUser " + result);
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -45,8 +45,6 @@ var group = class group {
 
   UserLogin(con, body, res) {
     console.log("Connected!");
-    var email = body.email;
-    var password = body.password;
     var sql =
       "Select * from UserRegistration where Email='" +
       body.email +
@@ -56,7 +54,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + result);
       if (result[0].Password === body.password) {
         res.cookie("cookie", result[0].Email);
         console.log(res.cookie("cookie", result[0].Email));
@@ -84,7 +81,7 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + JSON.stringify(result));
+      console.log("getGroupDetail " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -108,7 +105,7 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + JSON.stringify(result));
+      console.log("getGroupNotification" + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -133,7 +130,7 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + JSON.stringify(result));
+      console.log("gettransactionDetail " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -159,7 +156,7 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + JSON.stringify(result));
+      console.log("getTransactionFromUser " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",

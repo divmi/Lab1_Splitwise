@@ -1,6 +1,7 @@
 import { Button } from "react-bootstrap";
 import React, { Component } from "react";
 import axios from "axios";
+import cookie from "react-cookies";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class Dashboard extends Component {
             MemberGets: value.MemberOws,
             MemberOws: value.MemberGets,
             Amount: -value.Amount,
+            GroupName: value.GroupName,
           });
         } else {
           this.state.show.push(value);
@@ -50,7 +52,7 @@ class Dashboard extends Component {
     axios
       .get("http://localhost:8000/getUserSpecificGetOwsInfo", {
         params: {
-          email: this.props.email,
+          email: cookie.load("cookie").Email,
         },
       })
       .then((response) => {
@@ -84,7 +86,6 @@ class Dashboard extends Component {
 
   render() {
     let component = null;
-    //let component1 = null;
     component = this.state.show.map((detail, idx) => {
       if (detail.Amount < 0) {
         return (
@@ -92,7 +93,7 @@ class Dashboard extends Component {
             <td style={{ color: "#f07343" }}>
               <label>
                 you ows <strong>{-detail.Amount.toFixed(2)}</strong> to{" "}
-                {detail.MemberOws}{" "}
+                {detail.MemberOws} in {detail.GroupName}
               </label>
             </td>
           </tr>
@@ -103,7 +104,7 @@ class Dashboard extends Component {
             <td style={{ color: "#5bc5a7" }}>
               <label>
                 you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
-                {detail.MemberOws}
+                {detail.MemberOws} from {detail.GroupName}
               </label>
             </td>
           </tr>

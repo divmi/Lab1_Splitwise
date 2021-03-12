@@ -112,8 +112,8 @@ class GroupInfo extends Component {
             error: "",
             authFlag: true,
           });
+          // this.insertMemberSpecificTransaction();
           this.getTransactionDetail();
-          this.insertMemberSpecificTransaction();
           this.OpenOwsGetsAmount();
         } else {
           this.setState({
@@ -130,29 +130,29 @@ class GroupInfo extends Component {
     this.closeModal();
   };
 
-  insertMemberSpecificTransaction() {
-    axios
-      .get("http://localhost:8000/getOwsDetail", {
-        params: {
-          groupName: this.props.name,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("Ows get detail:" + response.data);
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  }
+  // insertMemberSpecificTransaction() {
+  //   axios
+  //     .get("http://localhost:8000/getOwsDetail", {
+  //       params: {
+  //         groupName: this.props.name,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         console.log("Ows get detail:" + response.data);
+  //       } else {
+  //         this.setState({
+  //           error: "Please enter correct credentials",
+  //           authFlag: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Please enter correct credentials" + e,
+  //       });
+  //     });
+  // }
 
   render() {
     let showTransaction = null;
