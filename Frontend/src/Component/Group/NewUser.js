@@ -11,6 +11,8 @@ class NewUser extends Component {
     };
   }
 
+  componentDidMount() {}
+
   onNameChange = (e) => {
     var value = this.props.tableData[0].find(
       (x) => x.Name == e.target.innerText
@@ -67,7 +69,6 @@ class NewUser extends Component {
             options={this.props.tableData[0]}
             getOptionLabel={(option) => option.Email}
             onChange={(e) => this.onEmailChange(e)}
-            inputValue={this.state.email}
             style={{ width: 200 }}
             renderInput={(params) => (
               <TextField
@@ -80,14 +81,12 @@ class NewUser extends Component {
           />
         </td>
         <td>
-          {
-            <button
-              className="btn"
-              onClick={() => this.props.delete(this.props.val.index)}
-            >
-              <i className="fa fa-remove" aria-hidden="true"></i>
-            </button>
-          }
+          <button
+            className="btn"
+            onClick={() => this.props.delete(this.props.val.index)}
+          >
+            <i className="fa fa-remove" aria-hidden="true"></i>
+          </button>
         </td>
       </tr>
     );

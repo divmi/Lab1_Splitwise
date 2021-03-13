@@ -4,9 +4,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
-//import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-//import TimezonePicker from "react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -25,21 +23,15 @@ class UpdateProfile extends Component {
       auth: false,
       dropdownOpen: true,
     };
-    // this.handletimeZoneChange = this.handletimeZoneChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
-
-  // handletimeZoneChange(newValue) {
-  //   this.setState({ timeZone: newValue });
-  // }
 
   handleToggle() {
     this.setState({ absolute: !this.state.absolute });
   }
 
   handleChange = (e) => {
-    console.log("handleChange :" + e.target.name);
     this.setState({
       userinfo: {
         ...this.state.userinfo,
@@ -68,7 +60,6 @@ class UpdateProfile extends Component {
         });
       }
     }
-    console.log(this.state.UserProfilePic);
   }
 
   SetLocalStorage(data) {
@@ -95,7 +86,6 @@ class UpdateProfile extends Component {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
             this.setState({
-              loginError: "",
               authFlag: true,
             });
             this.SetLocalStorage(JSON.stringify(data));
@@ -147,8 +137,9 @@ class UpdateProfile extends Component {
   render() {
     let redirectVar = null;
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
-    else if (this.state.authFlag) redirectVar = <Redirect to="/home" />;
-    else redirectVar = <Redirect to="/updateProfile" />;
+    else if (this.state.authFlag) {
+      redirectVar = <Redirect to="/home" />;
+    } else redirectVar = <Redirect to="/updateProfile" />;
     const options = map(timezones, (val, key) => (
       <option key={val} value={val}>
         {key}

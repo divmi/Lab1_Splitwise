@@ -6,6 +6,7 @@ class TransactionDetail extends Component {
     super(props);
     this.state = {
       transactionDetail: [],
+      Currency: "",
     };
   }
 
@@ -38,6 +39,14 @@ class TransactionDetail extends Component {
   }
 
   componentDidMount() {
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Currency: localStorageData.Currency,
+        });
+      }
+    }
     this.setState({
       transactionDetail: this.getTransactionDetail(),
     });
@@ -55,13 +64,17 @@ class TransactionDetail extends Component {
         return (
           <tr key={idx} style={{ verticalAlign: "center" }}>
             <td>
-              <strong>{name.Name}</strong> added
+              <i
+                style={{ color: "green" }}
+                className="fas fa-receipt fa-2x"
+              ></i>
+              <strong> {name.Name}</strong> added
               <strong> {name.TransactionDetail} </strong>
               in <strong>{name.GroupName}</strong>
             </td>
             <td>
-              {name.Currency}
-              {name.Amount}
+              <label>{this.state.Currency} </label>
+              <label> {name.Amount}</label>
             </td>
           </tr>
         );
@@ -69,18 +82,25 @@ class TransactionDetail extends Component {
     } else {
       showTransaction = (
         <tr>
-          <img src="./assets/shopping.jpg" height={300} width={300}></img>
-          <h3>
-            You have not added any expenses yet <i className="fas fa-frown"></i>
-          </h3>
+          <td>
+            <img src="./assets/shopping.jpg" height={300} width={300}></img>
+            <h3>
+              You have not added any expenses yet{" "}
+              <i className="fas fa-frown"></i>
+            </h3>
 
-          <h5>Click on Add Expense button to start</h5>
+            <h5>Click on Add Expense button to start</h5>
+          </td>
         </tr>
       );
     }
     return (
       <div className="container-fluid">
-        <div className="row"></div>
+        <div className="row rounded">
+          <label style={{ fontWeight: "bold", fontSize: "25px" }}>
+            Recent activity
+          </label>
+        </div>
         <div className="row shadow p-3 mb-5 bg-light rounded">
           <table className="table">
             <tbody>{showTransaction}</tbody>

@@ -173,7 +173,7 @@ class GroupInfo extends Component {
             </td>
             <td style={{ width: "90%" }}>
               <i
-                className="fa fa-shopping-cart fa-lg"
+                className="fa fa-shopping-cart fa-2x"
                 style={{ color: "green", marginRight: 3 }}
               ></i>
               {name.TransactionDetail}
@@ -234,6 +234,12 @@ class GroupInfo extends Component {
           <hr></hr>
           <div className="col col-sm-3"></div>
           <div className="col col-sm-6" style={{ alignContent: "center" }}>
+            <Button
+              className="btn btn-secondary"
+              style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+            >
+              <i className="fas fa-cog"></i>
+            </Button>
             <Button
               variant="primary"
               className="btn btn-Normal"

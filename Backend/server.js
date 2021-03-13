@@ -20,8 +20,6 @@ app.use(
     secret: "SplitwiseSecretString",
     resave: false,
     saveUninitialized: true,
-    duration: 60 * 60 * 1000, // Overall duration of Session : 30 minutes : 1800 seconds
-    activeDuration: 5 * 60 * 1000,
   })
 );
 
@@ -66,6 +64,10 @@ const con = mysql.createConnection({
   user: "admin",
   password: "splitwise",
   database: "SplitwiseDB",
+  pool: {
+    min: 0,
+    max: 2,
+  },
 });
 
 //use cors to allow cross origin resource sharing
@@ -157,6 +159,12 @@ app.post("/joinedGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   var trans = new transaction.transactionDetail();
   trans.groupJoinRequest(con, req.body, res);
+});
+
+app.post("/settleUp", function (req, res) {
+  console.log("Req Body : ", req.body);
+  var insertSettleUp = new insert.insert();
+  insertSettleUp.settleUp(con, req.body, res);
 });
 
 app.post("/insertGroupTransaction", function (req, res) {

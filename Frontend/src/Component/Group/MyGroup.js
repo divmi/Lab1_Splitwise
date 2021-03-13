@@ -57,6 +57,11 @@ class MyGroup extends Component {
 
   componentDidMount() {
     this.getUserDetails();
+    if (this.state.component == null) {
+      this.setState({
+        component: <GroupNotification click={this.GroupAccepted.bind(this)} />,
+      });
+    }
   }
 
   OpenGroupInfo(param) {

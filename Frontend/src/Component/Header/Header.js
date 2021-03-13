@@ -55,7 +55,10 @@ class Header extends Component {
     var registerOrLogin = null;
     let picture = "";
     if (cookie.load("cookie")) {
-      picture = this.setHeaderProfilePic();
+      var value = JSON.parse(localStorage.getItem("userData"));
+      if (value != null && value.UserProfilePic != null)
+        picture = value.UserProfilePic;
+      else picture = "./assets/userIcon.jpg";
       console.log(picture);
       registerOrLogin = (
         <div className="col col-sm-3">

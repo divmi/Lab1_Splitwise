@@ -147,6 +147,10 @@ class CreateGroup extends Component {
   }
 
   clickOnDelete(index) {
+    let foundUser = this.state.userData.filter((r) => index !== r.index);
+    if (foundUser.length > 0) {
+      console.log(foundUser);
+    }
     this.setState({
       userData: this.state.userData.filter((r) => index !== r.index),
     });

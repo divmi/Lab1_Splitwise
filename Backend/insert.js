@@ -273,6 +273,41 @@ class insert {
       }
     });
   }
+
+  settleUp(con, body, res) {
+    console.log("Connected!");
+    var settleUpUser =
+      "Delete from OwsGetsDetail where MemberGets='" +
+      body.MemberName +
+      "' && MemberOws='" +
+      body.settleUpWith +
+      "' or MemberOws='" +
+      body.MemberName +
+      "' && MemberGets='" +
+      body.settleUpWith +
+      "'";
+    con.query(settleUpUser, function (err, result) {
+      if (err) throw err;
+      var updateSettleUpTransaction =
+        "Update UserTransactionBasedOnGroup Set Amount=0 where MemberPaid='" +
+        body.MemberName +
+        "' && MemberOws='" +
+        body.settleUpWith +
+        "' or MemberOws='" +
+        body.MemberName +
+        "' && MemberPaid='" +
+        body.settleUpWith +
+        "'";
+      con.query(updateSettleUpTransaction, function (err, result) {
+        if (err) throw err;
+        console.log("record Updated Successfully");
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      });
+    });
+  }
 }
 
 module.exports = {
