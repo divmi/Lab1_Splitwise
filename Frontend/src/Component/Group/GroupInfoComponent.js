@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import cookie from "react-cookies";
 import OwsGetAmount from "./OwsGetsInfo";
+import CreateGroupComponent from "../Group/CreateGroupComponent";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -130,29 +131,11 @@ class GroupInfo extends Component {
     this.closeModal();
   };
 
-  // insertMemberSpecificTransaction() {
-  //   axios
-  //     .get("http://localhost:8000/getOwsDetail", {
-  //       params: {
-  //         groupName: this.props.name,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         console.log("Ows get detail:" + response.data);
-  //       } else {
-  //         this.setState({
-  //           error: "Please enter correct credentials",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //       });
-  //     });
-  // }
+  openCreateGroup = () => {
+    this.setState({
+      component: <CreateGroupComponent></CreateGroupComponent>,
+    });
+  };
 
   render() {
     let showTransaction = null;
@@ -235,12 +218,6 @@ class GroupInfo extends Component {
           <div className="col col-sm-3"></div>
           <div className="col col-sm-6" style={{ alignContent: "center" }}>
             <Button
-              className="btn btn-secondary"
-              style={{ borderRadius: "50%", width: "50px", height: "50px" }}
-            >
-              <i className="fas fa-cog"></i>
-            </Button>
-            <Button
               variant="primary"
               className="btn btn-Normal"
               style={{
@@ -317,6 +294,7 @@ class GroupInfo extends Component {
                 <Button variant="secondary" onClick={this.closeModal}>
                   Close
                 </Button>
+
                 <Button
                   variant="btn btn-green"
                   type="submit"
@@ -326,6 +304,13 @@ class GroupInfo extends Component {
                 </Button>
               </Modal.Footer>
             </Modal>
+            <Button
+              className="btn btn-secondary"
+              style={{ borderRadius: "30%" }}
+              onClick={this.openCreateGroup}
+            >
+              <i className="fas fa-cog "></i>
+            </Button>
           </div>
         </div>
         <hr></hr>

@@ -7,6 +7,9 @@ class TransactionDetail extends Component {
     this.state = {
       transactionDetail: [],
       Currency: "",
+      sortbyGroup: "",
+      showTransactionBasedOnFilter: [],
+      groupName: [],
     };
   }
 
@@ -23,6 +26,14 @@ class TransactionDetail extends Component {
           this.setState(() => ({
             transactionDetail: [response.data],
           }));
+          this.setState({
+            showTransactionBasedOnFilter: this.state.transactionDetail[0],
+          });
+          this.setState({
+            groupName: this.state.transactionDetail[0].map(
+              (groupName) => groupName.GroupName
+            ),
+          });
           console.log("Group info" + this.state.transactionDetail.length);
         } else {
           this.setState({
@@ -52,44 +63,103 @@ class TransactionDetail extends Component {
     });
   }
 
-  render() {
-    let showTransaction = null;
+  OnSortByAscOrDesc = (e) => {
+    console.log(e.target.value);
+    if (e.target.value == "Ascending") {
+      this.setState({
+        showTransactionBasedOnFilter: this.state.showTransactionBasedOnFilter.sort(
+          function (a, b) {
+            return new Date(a.Time) - new Date(b.Time);
+          }
+        ),
+      });
+    } else if (e.target.value == "Decending") {
+      this.setState({
+        showTransactionBasedOnFilter: this.state.showTransactionBasedOnFilter.sort(
+          function (a, b) {
+            return new Date(b.Time) - new Date(a.Time);
+          }
+        ),
+      });
+    }
+  };
+
+  OnGroupSelect = (e) => {
     if (
       this.state.transactionDetail != null &&
       this.state.transactionDetail.length > 0 &&
       this.state.transactionDetail[0].length > 0
     ) {
-      console.log("Came inside");
-      showTransaction = this.state.transactionDetail[0].map((name, idx) => {
-        return (
-          <tr key={idx} style={{ verticalAlign: "center" }}>
-            <td>
-              <i
-                style={{ color: "green" }}
-                className="fas fa-receipt fa-2x"
-              ></i>
-              <strong> {name.Name}</strong> added
-              <strong> {name.TransactionDetail} </strong>
-              in <strong>{name.GroupName}</strong>
-            </td>
-            <td>
-              <label>{this.state.Currency} </label>
-              <label> {name.Amount}</label>
-            </td>
-          </tr>
+      if (e.target.value != "") {
+        const filterTransOnGroup = this.state.transactionDetail[0].filter(
+          (x) => x.GroupName == e.target.value
         );
+        this.setState({
+          showTransactionBasedOnFilter: filterTransOnGroup,
+        });
+      } else {
+        this.setState({
+          showTransactionBasedOnFilter: this.state.transactionDetail[0],
+        });
+      }
+    } else {
+      this.setState({
+        showTransactionBasedOnFilter: this.state.transactionDetail[0],
       });
+    }
+    console.log(e.target.value);
+  };
+
+  render() {
+    let showTransaction = null;
+    //let groupName = [];
+    let showGroupName = null;
+    if (
+      this.state.showTransactionBasedOnFilter != null &&
+      this.state.showTransactionBasedOnFilter.length > 0
+    ) {
+      showTransaction = this.state.showTransactionBasedOnFilter.map(
+        (name, idx) => {
+          return (
+            <tr key={idx} style={{ verticalAlign: "center" }}>
+              <td style={{ color: "GrayText" }}>
+                {new Date(name.Time).toLocaleString("en-us", {
+                  weekday: "long",
+                })}
+              </td>
+              <td>
+                <i className="greenCode fas fa-receipt fa-2x"></i>
+                <strong> {name.Name}</strong> added
+                <strong> {name.TransactionDetail} </strong>
+                in <strong>{name.GroupName}</strong>
+              </td>
+              <td>
+                <label>{this.state.Currency} </label>
+                <label> {name.Amount}</label>
+              </td>
+            </tr>
+          );
+        }
+      );
+      if (this.state.groupName != null && this.state.groupName.length > 0) {
+        const groups = [...new Set(this.state.groupName)];
+        showGroupName = groups.map((name, idx) => {
+          return (
+            <option key={idx} value={name}>
+              {name}
+            </option>
+          );
+        });
+      }
     } else {
       showTransaction = (
         <tr>
           <td>
             <img src="./assets/shopping.jpg" height={300} width={300}></img>
             <h3>
-              You have not added any expenses yet{" "}
+              You have not added any expenses yet
               <i className="fas fa-frown"></i>
             </h3>
-
-            <h5>Click on Add Expense button to start</h5>
           </td>
         </tr>
       );
@@ -97,9 +167,24 @@ class TransactionDetail extends Component {
     return (
       <div className="container-fluid">
         <div className="row rounded">
-          <label style={{ fontWeight: "bold", fontSize: "25px" }}>
-            Recent activity
-          </label>
+          <div className="col-col-3">
+            <label style={{ fontWeight: "bold", fontSize: "25px" }}>
+              Recent activity
+            </label>
+          </div>
+          <div className="col-col-6 offset-5">
+            <select className="form-control" onChange={this.OnGroupSelect}>
+              <option value="">Sort by Group</option>
+              {showGroupName}
+            </select>
+          </div>
+          <div className="col-col-3" style={{ marginLeft: "4px" }}>
+            <select className="form-control" onChange={this.OnSortByAscOrDesc}>
+              <option value="">Sort by Time</option>
+              <option value="Ascending">Ascending</option>
+              <option value="Decending">Decending</option>
+            </select>
+          </div>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded">
           <table className="table">

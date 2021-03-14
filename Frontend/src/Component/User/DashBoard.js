@@ -164,7 +164,7 @@ class Dashboard extends Component {
       } else if (detail.Amount > 0) {
         return (
           <tr key={idx}>
-            <td style={{ color: "#5bc5a7" }}>
+            <td className="greenCode">
               <label>
                 you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
                 {detail.MemberOws} from {detail.GroupName}
@@ -317,9 +317,7 @@ class Dashboard extends Component {
             </div>
             <div className="col col-sm-4 border-right">
               <label>you are owed</label>
-              <label style={{ color: "#5bc5a7" }}>
-                {this.state.gets.toFixed(2)}
-              </label>
+              <label className="greenCode">{this.state.gets.toFixed(2)}</label>
             </div>
           </div>
         </div>

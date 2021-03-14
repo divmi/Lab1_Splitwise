@@ -175,9 +175,6 @@ class UpdateProfile extends Component {
                   name="image"
                   onChange={this.handleFileUpload}
                 />
-                <div>
-                  Current Value: <b>{this.state.timeZone}</b>
-                </div>
               </div>
               <div className="col col-sm-8">
                 <Form>

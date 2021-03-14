@@ -61,13 +61,12 @@ class Header extends Component {
       else picture = "./assets/userIcon.jpg";
       console.log(picture);
       registerOrLogin = (
-        <div className="col col-sm-3">
+        <div className="col col-sm-2">
           <Link
             to="/home"
             style={{ textDecoration: "none", color: "white", marginRight: 50 }}
           >
-            {" "}
-            Home{" "}
+            Home
           </Link>
           <img
             src={picture}
@@ -142,23 +141,20 @@ class Header extends Component {
       <div className="container-fluid custom-header">
         {redirectVar}
         <div className="row">
-          <div className="col col-sm-1"></div>
+          <div className="col col-sm-2"></div>
           <div className="col col-sm-5" style={{ textAlign: "center" }}>
-            <div
-              className="row "
-              style={{ flexWrap: "nowrap", marginTop: 10, marginLeft: 60 }}
-            >
+            <div className="row " style={{ flexWrap: "nowrap" }}>
               <img
                 src={"./assets/Logo.png"}
-                className="rounded float-center image-div"
+                className="rounded float-center customMargin"
                 width={30}
                 height={30}
                 alt="Splitwise"
               ></img>
-              <h3 className="label-custom">Splitwise</h3>
+              <h3 className="label-custom customMargin">Splitwise</h3>
             </div>
           </div>
-          <div className="col col-sm-3"></div>
+          <div className="col col-sm-2"></div>
           {registerOrLogin}
         </div>
       </div>

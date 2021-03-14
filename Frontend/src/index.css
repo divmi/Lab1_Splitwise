@@ -48,11 +48,10 @@
   margin: 4px 2px;
   cursor: pointer;
 }
-/* .image-div {
-  margin-right: 150px;
+.customMargin {
   margin-top: 10px;
-  text-align: center;
-} */
+  margin-left: 10px;
+}
 
 .flex-container {
   display: flex;
@@ -101,4 +100,12 @@
 #footer {
   margin-top: 3em;
   padding-bottom: 3em;
+}
+
+.setHeight {
+  height: 100vh;
+}
+
+.greenCode {
+  color: #5bc5a7;
 }
