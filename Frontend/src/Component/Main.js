@@ -10,6 +10,7 @@ import GroupInfo from "./Group/GroupInfoComponent";
 import MyGroup from "./Group/MyGroup";
 import UpdateProfile from "./User/UpdateProfile";
 import LandingComponent from "./LandingPage/LandingComponent";
+import EditGroup from "./Group/EditGroupComponent";
 
 //Create a Main Component
 class Main extends Component {
@@ -24,6 +25,7 @@ class Main extends Component {
         <Route path="/login" component={Login} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/createGroup" component={CreateGroup} />
+        <Route path="/editGroup/:value" component={EditGroup} />
         <Route path="/updateProfile" component={UpdateProfile} />
         <Route path="/myGroup" component={MyGroup} />
         <Route path="/landing" component={LandingComponent} />

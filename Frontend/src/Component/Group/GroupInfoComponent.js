@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import cookie from "react-cookies";
 import OwsGetAmount from "./OwsGetsInfo";
-import CreateGroupComponent from "../Group/CreateGroupComponent";
+import { Link } from "react-router-dom";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -129,12 +129,6 @@ class GroupInfo extends Component {
         });
       });
     this.closeModal();
-  };
-
-  openCreateGroup = () => {
-    this.setState({
-      component: <CreateGroupComponent></CreateGroupComponent>,
-    });
   };
 
   render() {
@@ -304,13 +298,14 @@ class GroupInfo extends Component {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <Button
-              className="btn btn-secondary"
-              style={{ borderRadius: "30%" }}
-              onClick={this.openCreateGroup}
-            >
-              <i className="fas fa-cog "></i>
-            </Button>
+            <Link to={`/editGroup/${this.props.name}`}>
+              <Button
+                className="btn btn-secondary"
+                style={{ borderRadius: "30%" }}
+              >
+                <i className="fas fa-cog "></i>
+              </Button>
+            </Link>
           </div>
         </div>
         <hr></hr>

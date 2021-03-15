@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
-import NewUser from "./NewUser";
+// import TextField from "@material-ui/core/TextField";
+// import Autocomplete from "@material-ui/lab/Autocomplete";
 import axios from "axios";
-class CreateGroup extends Component {
+
+class EditGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
       groupName: "",
+      newGroupName: "",
       error: "",
       groupPhoto: "",
       auth: false,
@@ -20,17 +23,18 @@ class CreateGroup extends Component {
 
   handleNameChange = (e) => {
     //if (["userName"].includes(e.target.id)) {
-    if (e.target.innerText != "") {
+    if (typeof e.target != "undefined" && e.target.innerText != "") {
       let userData = [...this.state.userData];
       //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
-      let found = this.state.allUser[0].find(
+      let found = this.state.allUser.find(
         (element) => element.Name == e.target.innerText
       );
       if (found) {
         let item = {
           ...userData[userData.length - 1],
-          userName: found.Name,
-          email: found.Email,
+          Name: found.Name,
+          Email: found.Email,
+          GroupProfilePicture: found.GroupProfilePicture,
         };
         userData[userData.length - 1] = item;
         this.setState({
@@ -39,23 +43,21 @@ class CreateGroup extends Component {
         console.log(JSON.stringify(this.state.userData));
       }
     }
-    //}
-    else {
-      this.setState({ ["userName"]: e.target.value });
-    }
   };
 
   handleEmailChange = (e) => {
-    if (e.target.innerText != "") {
+    if (typeof e.target != "undefined" && e.target.innerText != "") {
       let userData = [...this.state.userData];
-      let found = this.state.allUser[0].find(
+      let found = this.state.allUser.find(
         (element) => element.Name == e.target.innerText
       );
       if (found) {
+        console.log("EXCEPTION 11111");
         let item = {
           ...userData[userData.length - 1],
-          userName: found.Name,
-          email: found.Email,
+          Name: found.Name,
+          Email: found.Email,
+          GroupProfilePicture: found.GroupProfilePicture,
         };
         userData[userData.length - 1] = item;
         this.setState({
@@ -63,31 +65,33 @@ class CreateGroup extends Component {
         });
       }
     }
-    //}
-    else {
-      this.setState({ ["email"]: e.target.value });
-    }
   };
 
-  addNewRow = () => {
-    this.setState((prevState) => ({
-      i: prevState.i + 1,
-      userData: [
-        ...prevState.userData,
-        { index: Math.random(), userName: "", email: "" },
-      ],
-    }));
-  };
+  // addNewRow = () => {
+  //   this.setState((prevState) => ({
+  //     i: prevState.i + 1,
+  //     userData: [
+  //       ...prevState.userData,
+  //       { Name: "", Email: "", GroupProfilePicture: "" },
+  //     ],
+  //   }));
+  // };
 
+  ///LoginUser'
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
     let error = this.validateForm();
+    const data = {
+      prevGroupName: this.props.match.params.value,
+      newGroupName: this.state.groupName,
+      groupPhoto: this.state.groupPhoto,
+    };
     //set the with credentials to true
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:8000/createGroup", this.state)
+        .post("http://localhost:8000/updateGroup", data)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -122,14 +126,18 @@ class CreateGroup extends Component {
     });
   };
 
-  async getAllUser() {
-    await axios
-      .get("http://localhost:8000/getAllUser")
+  getMemberInfo() {
+    axios
+      .get("http://localhost:8000/getGroupMemberName", {
+        params: {
+          groupName: this.props.match.params.value,
+        },
+      })
       .then((response) => {
         if (response.status === 200) {
           console.log("All user:" + response.data);
           this.setState(() => ({
-            allUser: [response.data],
+            userData: response.data,
           }));
         } else {
           this.setState({
@@ -145,35 +153,57 @@ class CreateGroup extends Component {
       });
   }
 
-  clickOnDelete(index) {
-    let foundUser = this.state.userData.filter((r) => index !== r.index);
-    if (foundUser.length > 0) {
-      console.log(foundUser);
-    }
+  // async getAllUser() {
+  //   await axios
+  //     .get("http://localhost:8000/getAllUser")
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         this.setState(() => ({
+  //           allUser: response.data,
+  //         }));
+  //         console.log("All user:" + JSON.stringify(this.state.allUser));
+  //       } else {
+  //         this.setState({
+  //           error: "Please enter correct credentials",
+  //           authFlag: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Please enter correct credentials" + e,
+  //       });
+  //     });
+  // }
+
+  handleItemDeleted(e, i) {
+    e.preventDefault();
+    console.log("value of i is :" + i);
+    var items = this.state.userData;
+    console.log("value of stringy is :" + JSON.stringify(items));
+    items.splice(i, 1);
     this.setState({
-      userData: this.state.userData.filter((r) => index !== r.index),
+      userData: items,
     });
   }
 
   componentDidMount() {
-    this.setState({ allUser: this.getAllUser() });
-    this.setState({ name: cookie.load("cookie").Name });
-    this.setState({ email: cookie.load("cookie").Email });
     console.log(this.props.match.params.value);
     if (
       this.props.match.params.value != null &&
       this.props.match.params.value != ""
     ) {
       this.setState({
-        startEditGroupName: "Edit Your Group",
+        groupName: this.props.match.params.value,
       });
-    } else {
-      this.setState({
-        startEditGroupName: "Start a Group Name",
-      });
+      this.setState({ userData: this.getMemberInfo() });
+      console.log(this.state.userData.length);
     }
   }
 
+  handleInputChange = (e) => {
+    console.log(e);
+  };
   validateForm = () => {
     let error = "";
     if (this.state.groupName === "") error = "Group Name should not be blank";
@@ -192,6 +222,7 @@ class CreateGroup extends Component {
         this.setState({
           groupPhoto: "http://localhost:8000/" + response.data,
         });
+        console.log(this.state.groupPhoto);
       })
       .catch((error) => console.log("error " + error));
   };
@@ -199,28 +230,101 @@ class CreateGroup extends Component {
   render() {
     let redirectVar = null;
     let message = null;
-    let picture = null;
-    if (this.state.groupPhoto == "") {
-      picture = "./assets/userIcon.jpg";
-    } else {
-      picture = this.state.groupPhoto;
-    }
+    let picture = "";
+    let groupMemberName = [];
     if (this.state.authFlag) {
       message = <Redirect to="/home" />;
     }
-    let x = this.state.userData.map((val, idx) => {
-      return (
-        <NewUser
-          key={idx}
-          val={val}
-          delete={this.clickOnDelete.bind(this)}
-          userData={this.state.userData}
-          tableData={this.state.allUser}
-          change={this.handleNameChange.bind(this)}
-          emailChange={this.handleEmailChange.bind(this)}
-        />
-      );
-    });
+    if (this.state.userData != null && this.state.userData.length > 0) {
+      if (this.state.userData[0].GroupProfilePicture == "") {
+        console.log("came here");
+        picture = "../assets/userIcon.jpg";
+      } else if (this.state.groupPhoto != "") {
+        picture = this.state.groupPhoto;
+      } else {
+        console.log(
+          "came here 111111" + this.state.userData[0].GroupProfilePicture
+        );
+        picture = this.state.userData[0].GroupProfilePicture;
+      }
+
+      groupMemberName = this.state.userData.map((val, idx) => {
+        console.log(val);
+        return (
+          <tr key={idx}>
+            <td>
+              <input
+                type="text"
+                name="userName"
+                value={val.Name}
+                data-id="0"
+                id="userName"
+                className="form-control "
+                readOnly
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="email"
+                id="email"
+                data-id="0"
+                value={val.Email}
+                className="form-control "
+                readOnly
+              />
+            </td>
+          </tr>
+          // <tr key={idx}>
+          //   <td>
+          //     <Autocomplete
+          //       className="pding"
+          //       options={this.state.allUser}
+          //       onChange={this.handleNameChange}
+          //       getOptionLabel={(option) => option.Name}
+          //       inputValue={val.Name}
+          //       style={{ width: 200 }}
+          //       renderInput={(params) => (
+          //         <TextField
+          //           {...params}
+          //           name="Name"
+          //           variant="outlined"
+          //           size="small"
+          //           onChange={({ target }) =>
+          //             this.handleNameChange(target.value)
+          //           }
+          //         />
+          //       )}
+          //     />
+          //   </td>
+          //   <td>
+          //     <Autocomplete
+          //       className="pding"
+          //       freeSolo
+          //       options={this.state.allUser}
+          //       getOptionLabel={(option) => option.Email}
+          //       inputValue={val.Email}
+          //       onChange={this.handleEmailChange}
+          //       style={{ width: 200 }}
+          //       renderInput={(params) => (
+          //         <TextField
+          //           {...params}
+          //           name="Email"
+          //           variant="outlined"
+          //           size="small"
+          //           onChange={({ target }) =>
+          //             this.handleEmailChange(target.value)
+          //           }
+          //         />
+          //       )}
+          //     />
+          //   </td>
+          // </tr>
+        );
+      });
+    } else {
+      picture = "../assets/userIcon.jpg";
+    }
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     return (
       <div className="container-fluid">
@@ -252,7 +356,7 @@ class CreateGroup extends Component {
             <div className="content" style={{ width: "90%" }}>
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
                 <h3 style={{ textAlign: "left", marginLeft: "70px" }}>
-                  Start a Group Name
+                  Edit Your Group
                 </h3>
                 <div className="row">
                   <div className="col-sm-1"></div>
@@ -270,44 +374,19 @@ class CreateGroup extends Component {
                                 id="groupName"
                                 className="form-control"
                                 onChange={this.groupNameEventHandler}
+                                value={this.state.groupName}
                               ></textarea>
                             </div>
                           </div>
                         </div>
                         <div className="card-header text-center">
-                          Add Your Group Member
+                          Your Group Member
                         </div>
                         <table className="table">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="userName"
-                                  data-id="0"
-                                  id="userName"
-                                  value={this.state.name}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="email"
-                                  id="email"
-                                  data-id="0"
-                                  value={this.state.email}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                            </tr>
-                            {x}
-                          </tbody>
+                          <tbody>{groupMemberName}</tbody>
                           <tfoot>
                             <tr>
-                              <td>
+                              {/* <td>
                                 <button
                                   onClick={this.addNewRow}
                                   type="button"
@@ -319,7 +398,7 @@ class CreateGroup extends Component {
                                   ></i>
                                   Add a person
                                 </button>
-                              </td>
+                              </td> */}
                             </tr>
                           </tfoot>
                         </table>
@@ -330,7 +409,7 @@ class CreateGroup extends Component {
                           className="btn btn-Normal text-center"
                           onClick={this.handleSubmit}
                         >
-                          Submit
+                          Save Changes
                         </button>
                       </div>
                     </div>
@@ -346,4 +425,4 @@ class CreateGroup extends Component {
   }
 }
 
-export default CreateGroup;
+export default EditGroup;

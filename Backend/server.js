@@ -155,6 +155,12 @@ app.post("/updateProfile", function (req, res) {
   update.updateUserProfile(con, req.body, res);
 });
 
+app.post("/updateGroup", function (req, res) {
+  console.log("Req Body : ", req.body);
+  var update = new Update.update();
+  update.updateGroup(con, req.body, res);
+});
+
 app.post("/joinedGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   var trans = new transaction.transactionDetail();
@@ -218,4 +224,10 @@ app.get("/getGroupSummary", function (req, res) {
   console.log("Req Body getGroupSummary: ", req.query.groupName);
   var tdetail = new transaction.transactionDetail();
   tdetail.getGroupSummary(con, req.query.groupName, res);
+});
+
+app.get("/getGroupMemberName", function (req, res) {
+  console.log("Req Body getGroupSummary: ", req.query.groupName);
+  var getGDetail = new insert.insert();
+  getGDetail.getGroupMemberList(con, req.query.groupName, res);
 });

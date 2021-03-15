@@ -35,6 +35,30 @@ var update = class update {
       res.end(JSON.stringify(result));
     });
   }
+
+  updateGroup(con, req, res) {
+    var sql =
+      `UPDATE 
+      GroupInfo
+      SET 
+      DisplayGroupName = '` +
+      req.newGroupName +
+      `',
+      GroupProfilePicture = '` +
+      req.groupPhoto +
+      "'Where GroupName ='" +
+      req.prevGroupName +
+      "'";
+    console.log(sql);
+    con.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+      });
+      console.log(JSON.stringify(result));
+      res.end(JSON.stringify(result));
+    });
+  }
 };
 
 module.exports = {

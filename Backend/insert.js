@@ -55,8 +55,15 @@ class insert {
         if (err) throw err;
         if (result.length == 0) {
           var sql =
-            "INSERT INTO GroupInfo (GroupName, GroupProfilePicture) VALUES (";
-          var sql1 = "'" + body.groupName + "','" + body.groupPhoto + "')";
+            "INSERT INTO GroupInfo (GroupName, GroupProfilePicture, DisplayGroupName) VALUES (";
+          var sql1 =
+            "'" +
+            body.groupName +
+            "','" +
+            body.groupPhoto +
+            "','" +
+            body.groupName +
+            "')";
           console.log(sql + sql1);
           con.query(sql + sql1, function (err, result) {
             if (err) throw err;
@@ -100,17 +107,39 @@ class insert {
     const result = this.insert_Promise(con, body, res);
     console.log("member inserted");
     try {
-      await this.FindGroupMemberList(con, body, res);
+      await this.FindGroupMemberList(con, body.groupname, res);
       console.log("member inserted successfully");
     } catch (e) {
       console.log("Error:" + e);
     }
   }
-  FindGroupMemberList(con, body, res) {
+
+  async getGroupMemberList(con, groupName, res) {
+    con.query(
+      "Select u.Name, u.Email, g.GroupProfilePicture from UserRegistration as u Inner Join GroupMemberInfo as gMember on (u.Email=gMember.MemberID) Inner Join GroupInfo as g on (gMember.GroupName=g.GroupName) where g.GroupName ='" +
+        groupName +
+        "'",
+      function (err, memberInfo) {
+        if (memberInfo) {
+          res.writeHead(200, {
+            "Content-Type": "text/plain",
+          });
+          res.end(JSON.stringify(memberInfo));
+        } else {
+          res.writeHead(401, {
+            "Content-Type": "text/plain",
+          });
+          res.end(err);
+        }
+      }
+    );
+  }
+
+  FindGroupMemberList(con, groupName, res) {
     return new Promise((resolve, reject) => {
       con.query(
         "Select MemberID from GroupMemberInfo where GroupName ='" +
-          body.groupname +
+          groupName +
           "' and Accepted=true",
         (err, memberInfo) => {
           if (err) reject(err);
