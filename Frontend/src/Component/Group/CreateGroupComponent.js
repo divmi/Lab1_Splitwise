@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
-import NewUser from "./NewUser";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+//import NewUser from "./NewUser";
 import axios from "axios";
 class CreateGroup extends Component {
   constructor(props) {
@@ -18,35 +20,31 @@ class CreateGroup extends Component {
     };
   }
 
-  handleNameChange = (e) => {
+  OnNameChange = (e) => {
     //if (["userName"].includes(e.target.id)) {
-    if (e.target.innerText != "") {
-      let userData = [...this.state.userData];
+    if (typeof e.target != "undefined" && e.target.innerText != "") {
+      let userDataBackup = [...this.state.userData];
       //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
       let found = this.state.allUser[0].find(
         (element) => element.Name == e.target.innerText
       );
       if (found) {
         let item = {
-          ...userData[userData.length - 1],
-          userName: found.Name,
-          email: found.Email,
+          ...userDataBackup[userDataBackup.length - 1],
+          Name: found.Name,
+          Email: found.Email,
         };
-        userData[userData.length - 1] = item;
+        userDataBackup[userDataBackup.length - 1] = item;
         this.setState({
-          userData,
+          userData: userDataBackup,
         });
         console.log(JSON.stringify(this.state.userData));
       }
     }
-    //}
-    else {
-      this.setState({ ["userName"]: e.target.value });
-    }
   };
 
-  handleEmailChange = (e) => {
-    if (e.target.innerText != "") {
+  onEmailChange = (e) => {
+    if (typeof e.target != "undefined" && e.target.innerText != "") {
       let userData = [...this.state.userData];
       let found = this.state.allUser[0].find(
         (element) => element.Name == e.target.innerText
@@ -54,28 +52,22 @@ class CreateGroup extends Component {
       if (found) {
         let item = {
           ...userData[userData.length - 1],
-          userName: found.Name,
-          email: found.Email,
+          Name: found.Name,
+          Email: found.Email,
         };
         userData[userData.length - 1] = item;
         this.setState({
           userData,
         });
       }
-    }
-    //}
-    else {
-      this.setState({ ["email"]: e.target.value });
+      console.log(JSON.stringify(this.state.userData));
     }
   };
 
   addNewRow = () => {
     this.setState((prevState) => ({
       i: prevState.i + 1,
-      userData: [
-        ...prevState.userData,
-        { index: Math.random(), userName: "", email: "" },
-      ],
+      userData: [...prevState.userData, { Name: "", Email: "" }],
     }));
   };
 
@@ -145,32 +137,22 @@ class CreateGroup extends Component {
       });
   }
 
-  clickOnDelete(index) {
-    let foundUser = this.state.userData.filter((r) => index !== r.index);
-    if (foundUser.length > 0) {
-      console.log(foundUser);
-    }
+  handleItemDeleted(e, i) {
+    e.preventDefault();
+    console.log("value of i is :" + JSON.stringify(i));
+    var items = this.state.userData;
+    console.log("value of stringy is :" + JSON.stringify(items));
+    items.splice(i, 1);
     this.setState({
-      userData: this.state.userData.filter((r) => index !== r.index),
+      userData: items,
     });
   }
 
   componentDidMount() {
     this.setState({ allUser: this.getAllUser() });
-    this.setState({ name: cookie.load("cookie").Name });
-    this.setState({ email: cookie.load("cookie").Email });
-    console.log(this.props.match.params.value);
-    if (
-      this.props.match.params.value != null &&
-      this.props.match.params.value != ""
-    ) {
-      this.setState({
-        startEditGroupName: "Edit Your Group",
-      });
-    } else {
-      this.setState({
-        startEditGroupName: "Start a Group Name",
-      });
+    if (cookie.load("cookie")) {
+      this.setState({ name: cookie.load("cookie").Name });
+      this.setState({ email: cookie.load("cookie").Email });
     }
   }
 
@@ -210,15 +192,56 @@ class CreateGroup extends Component {
     }
     let x = this.state.userData.map((val, idx) => {
       return (
-        <NewUser
-          key={idx}
-          val={val}
-          delete={this.clickOnDelete.bind(this)}
-          userData={this.state.userData}
-          tableData={this.state.allUser}
-          change={this.handleNameChange.bind(this)}
-          emailChange={this.handleEmailChange.bind(this)}
-        />
+        <tr key={idx}>
+          <td>
+            <Autocomplete
+              className="pding"
+              id="Name"
+              name="Name"
+              options={this.state.allUser[0]}
+              onChange={this.OnNameChange}
+              getOptionLabel={(option) => option.Name}
+              style={{ width: 200 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name="Name"
+                  variant="outlined"
+                  size="small"
+                  onChange={({ target }) => this.OnNameChange(target.value)}
+                />
+              )}
+            />
+          </td>
+          <td>
+            <Autocomplete
+              className="pding"
+              id="Email"
+              name="Email"
+              options={this.state.allUser[0]}
+              getOptionLabel={(option) => option.Email}
+              onChange={this.onEmailChange}
+              style={{ width: 200 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name="Email"
+                  variant="outlined"
+                  size="small"
+                  onChange={({ target }) => this.onEmailChange(target.value)}
+                />
+              )}
+            />
+          </td>
+          <td>
+            <button
+              className="btn"
+              onClick={(e) => this.handleItemDeleted(e, val)}
+            >
+              <i className="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
       );
     });
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
@@ -283,9 +306,9 @@ class CreateGroup extends Component {
                               <td>
                                 <input
                                   type="text"
-                                  name="userName"
+                                  name="Name"
                                   data-id="0"
-                                  id="userName"
+                                  id="Name"
                                   value={this.state.name}
                                   className="form-control "
                                   readOnly
@@ -294,8 +317,8 @@ class CreateGroup extends Component {
                               <td>
                                 <input
                                   type="text"
-                                  name="email"
-                                  id="email"
+                                  name="Email"
+                                  id="Email"
                                   data-id="0"
                                   value={this.state.email}
                                   className="form-control "

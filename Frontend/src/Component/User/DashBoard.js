@@ -25,6 +25,10 @@ class Dashboard extends Component {
       Name: "",
       Amount: 0,
       anchorEl: null,
+      userSpecificInfo: [],
+      memberWithAmountList: [],
+      Currency: "",
+      Email: "",
     };
   }
 
@@ -39,7 +43,7 @@ class Dashboard extends Component {
 
   alertClicked = (detail) => {
     this.setState({
-      Name: detail.MemberOws,
+      Name: detail.MemberName,
       Amount: detail.Amount,
     });
   };
@@ -60,7 +64,7 @@ class Dashboard extends Component {
           this.state.show.push(value);
         }
       });
-      console.log(JSON.stringify(this.state.show));
+      this.calculateMemberSpecificTable();
       this.state.show.map((detail) => {
         if (detail.Amount > 0) {
           sumGets += detail.Amount;
@@ -73,6 +77,34 @@ class Dashboard extends Component {
           total: sumGets + sumOws,
         });
       });
+    }
+  }
+
+  calculateMemberSpecificTable() {
+    this.setState({
+      userSpecificInfo: this.state.show.map(
+        (memberName) => memberName.MemberOws
+      ),
+    });
+    const memberInfo = [...new Set(this.state.userSpecificInfo)];
+    if (memberInfo.length > 0) {
+      memberInfo.map((memberName) => {
+        let finalMoney = 0;
+        const allTransaction = this.state.show.filter(
+          (x) => x.MemberOws == memberName
+        );
+        allTransaction.map((x) => {
+          finalMoney += x.Amount;
+        });
+        this.state.memberWithAmountList.push({
+          MemberName: memberName,
+          Amount: finalMoney,
+          Transaction: {
+            transaction: allTransaction,
+          },
+        });
+      });
+      console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
   handleSettleUp = (e) => {
@@ -143,37 +175,79 @@ class Dashboard extends Component {
   componentDidMount() {
     console.log("Control received in component did mount");
     this.getUserSpecificTransactionDetail();
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Currency: localStorageData.Currency,
+          Email: localStorageData.Email,
+        });
+      }
+    }
   }
 
   render() {
     let component = null;
     let memberOwList = [];
-    component = this.state.show.map((detail, idx) => {
+    component = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
-          <tr key={idx}>
-            <td style={{ color: "#f07343" }}>
-              <label>
-                you ows <strong>{-detail.Amount.toFixed(2)}</strong> to{" "}
-                {detail.MemberOws} in {detail.GroupName}
-              </label>
-            </td>
-          </tr>
+          <div key={idx} className="col-col-sm3" style={{ color: "#f07343" }}>
+            <div>{detail.MemberName}</div>
+            <div>{detail.Amount}</div>
+            <div>
+              {detail.Transaction.transaction.map((value) => {
+                <label key={idx}>
+                  you ows <strong>{-value.Amount.toFixed(2)}</strong> to{" "}
+                  {value.MemberName} in {value.GroupName}
+                </label>;
+              })}
+            </div>
+          </div>
         );
       } else if (detail.Amount > 0) {
         return (
-          <tr key={idx}>
-            <td className="greenCode">
-              <label>
-                you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
-                {detail.MemberOws} from {detail.GroupName}
-              </label>
-            </td>
-          </tr>
+          <div key={idx} className="col-col-sm3 greenCode">
+            <div>
+              <label>{detail.MemberName}</label>
+            </div>
+            <div>ows you {detail.Amount}</div>
+          </div>
         );
       }
     });
+    // component = this.state.show.map((detail, idx) => {
+    //   if (detail.Amount < 0) {
+    //     memberOwList.push(detail);
+    //     return (
+    //       <div key={idx} className="col-col-sm3">
+    //         <label style={{ color: "#f07343" }}>
+    //           you ows <strong>{-detail.Amount.toFixed(2)}</strong> to{" "}
+    //           {detail.MemberOws} in {detail.GroupName}
+    //         </label>
+    //       </div>
+    //     );
+    //   } else if (detail.Amount > 0) {
+    //     return (
+    //       <div key={idx} className="col-col-sm3 greenCode">
+    //         <label>
+    //           you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
+    //           {detail.MemberOws} from {detail.GroupName}
+    //         </label>
+    //       </div>
+    //       // <tr key={idx}>
+    //       //   <td className="greenCode">
+    //       //     <label>
+    //       //       you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
+    //       //       {detail.MemberOws} from {detail.GroupName}
+    //       //     </label>
+    //       //   </td>
+    //       // </tr>
+    //     );
+    //   }
+    // });
+    console.log("Divya : " + JSON.stringify(memberOwList));
     const popover = memberOwList.map((detail, idx) => {
       return (
         <Dropdown.Item
@@ -181,7 +255,7 @@ class Dashboard extends Component {
           action
           onClick={() => this.alertClicked(detail)}
         >
-          {detail.MemberOws}
+          {detail.MemberName}
         </Dropdown.Item>
       );
     });
@@ -225,7 +299,7 @@ class Dashboard extends Component {
                     </label>
                     <Dropdown>
                       <Dropdown.Toggle
-                        variant="secondary"
+                        variant="light"
                         width={40}
                         height={30}
                         id="dropdown-basic"
@@ -252,7 +326,6 @@ class Dashboard extends Component {
                           style={{
                             borderStyle: "dotted",
                             borderRadius: 1,
-                            textDecoration: "none",
                           }}
                           type="text"
                           value={this.state.Name}
@@ -266,14 +339,13 @@ class Dashboard extends Component {
                           style={{
                             borderStyle: "dotted",
                             borderRadius: 1,
-                            textDecoration: "none",
                           }}
                           type="number"
                           step="0.1"
                           min="0"
                           value={-this.state.Amount}
                           readOnly
-                          placeholder="0.00"
+                          placeholder={this.state.Currency + " 0.00"}
                           required
                         />
                       </Form.Group>
@@ -323,7 +395,10 @@ class Dashboard extends Component {
         </div>
 
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
-          <table>
+          <div className="col col-sm-2">Detail:</div>
+          <div className="col col-sm-5"> {component}</div>
+
+          {/* <table>
             <thead>
               <tr>
                 <td>
@@ -332,7 +407,7 @@ class Dashboard extends Component {
               </tr>
             </thead>
             <tbody>{component}</tbody>
-          </table>
+          </table> */}
         </div>
       </div>
     );

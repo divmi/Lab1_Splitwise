@@ -23,6 +23,7 @@ class GroupInfo extends Component {
       amount: 0,
       error: "",
       component: null,
+      Currency: "",
     };
   }
 
@@ -41,6 +42,14 @@ class GroupInfo extends Component {
   };
 
   componentDidMount() {
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Currency: localStorageData.Currency,
+        });
+      }
+    }
     this.setState({ transactionDetail: this.getTransactionDetail() });
     this.OpenOwsGetsAmount();
     console.log(JSON.stringify(this.state.transactionDetail));
@@ -57,7 +66,7 @@ class GroupInfo extends Component {
         if (response.status === 200) {
           console.log("All user:" + response.data);
           this.setState(() => ({
-            transactionDetail: [response.data],
+            transactionDetail: response.data,
           }));
           console.log("Group info" + this.state.transactionDetail.length);
         } else {
@@ -113,7 +122,6 @@ class GroupInfo extends Component {
             error: "",
             authFlag: true,
           });
-          // this.insertMemberSpecificTransaction();
           this.getTransactionDetail();
           this.OpenOwsGetsAmount();
         } else {
@@ -133,13 +141,16 @@ class GroupInfo extends Component {
 
   render() {
     let showTransaction = null;
+    let picture = "../assets/userIcon.jpg";
     if (
       this.state.transactionDetail != null &&
-      this.state.transactionDetail.length > 0 &&
-      this.state.transactionDetail[0].length > 0
+      this.state.transactionDetail.length > 0
     ) {
       console.log("Came inside");
-      showTransaction = this.state.transactionDetail[0].map((name, idx) => {
+      if (this.state.transactionDetail[0].GroupProfilePicture != "") {
+        picture = this.state.transactionDetail[0].GroupProfilePicture;
+      }
+      showTransaction = this.state.transactionDetail.map((name, idx) => {
         return (
           <tr key={idx} style={{ verticalAlign: "center" }}>
             <td style={{ width: "8.33%" }}>
@@ -168,7 +179,7 @@ class GroupInfo extends Component {
                   {name.Name} <label>paid</label>
                 </div>
                 <div className="col" style={{ textAlign: "right" }}>
-                  {name.Currency}
+                  {this.state.Currency}
                   {name.Amount}
                 </div>
               </div>
@@ -200,7 +211,7 @@ class GroupInfo extends Component {
               style={{ alignItems: "center", marginTop: 15 }}
             >
               <img
-                src="./assets/Logo.png"
+                src={picture}
                 width={30}
                 height={30}
                 className="rounded-circle"
@@ -270,7 +281,7 @@ class GroupInfo extends Component {
                           step="0.1"
                           min="0"
                           onChange={this.handleAmountChange}
-                          placeholder="0.00"
+                          placeholder={this.state.Currency + " 0.00"}
                           required
                         />
                       </Form.Group>
@@ -299,10 +310,7 @@ class GroupInfo extends Component {
               </Modal.Footer>
             </Modal>
             <Link to={`/editGroup/${this.props.name}`}>
-              <Button
-                className="btn btn-secondary"
-                style={{ borderRadius: "30%" }}
-              >
+              <Button className="btn btn-light">
                 <i className="fas fa-cog "></i>
               </Button>
             </Link>

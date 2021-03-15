@@ -7,6 +7,7 @@ class OwsGetDetail extends Component {
     this.state = {
       owsGetDetail: [],
       componentMounted: false,
+      memberWithAmountList: [],
     };
   }
 
@@ -30,10 +31,11 @@ class OwsGetDetail extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log("Ows get detail:" + response.data);
+          console.log("Ows get detail:" + JSON.stringify(response.data));
           this.setState({
             owsGetDetail: response.data,
           });
+          this.calculateMemberSpecificTable();
           console.log(
             "got data for transaction" + JSON.stringify(this.state.owsGetDetail)
           );
@@ -53,12 +55,48 @@ class OwsGetDetail extends Component {
       });
   }
 
+  calculateMemberSpecificTable() {
+    this.setState({
+      userSpecificInfo: this.state.owsGetDetail.map(
+        (memberName) => memberName.MemberOws
+      ),
+    });
+    const memberInfo = [...new Set(this.state.userSpecificInfo)];
+    if (memberInfo.length > 0) {
+      memberInfo.map((memberName) => {
+        let finalMoney = 0;
+        const allTransaction = this.state.show.filter(
+          (x) => x.MemberOws == memberName
+        );
+        allTransaction.map((x) => {
+          finalMoney += x.Amount;
+        });
+        this.state.memberWithAmountList.push({
+          MemberName: memberName,
+          Amount: finalMoney,
+          Transaction: {
+            transaction: allTransaction,
+          },
+        });
+      });
+      console.log(JSON.stringify(this.state.memberWithAmountList));
+    }
+  }
+
   render() {
+    let component = null;
+    component = this.state.memberWithAmountList.map((name, idx) => {
+      return (
+        <tr key={idx}>
+          <td>{name.MemberName}</td>
+        </tr>
+      );
+    });
     return (
       <div className="container">
         <div>
           <table>
-            <tbody>{/* {component} {component1} */}</tbody>
+            <tbody>{component}</tbody>
           </table>
         </div>
       </div>

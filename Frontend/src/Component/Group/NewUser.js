@@ -6,8 +6,8 @@ class NewUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
-      email: "",
+      Name: "",
+      Email: "",
     };
   }
 
@@ -19,8 +19,8 @@ class NewUser extends Component {
     );
     if (value) {
       this.setState({
-        email: value.Email,
-        name: e.target.innerText,
+        Email: value.Email,
+        Name: e.target.innerText,
       });
       this.props.change(e);
     }
@@ -32,8 +32,8 @@ class NewUser extends Component {
     );
     if (value) {
       this.setState({
-        name: value.Name,
-        email: e.target.innerText,
+        Name: value.Name,
+        Email: e.target.innerText,
       });
       this.props.change(e);
     }
@@ -46,6 +46,7 @@ class NewUser extends Component {
           <Autocomplete
             className="pding"
             id="free-solo-Name"
+            name="Name"
             freeSolo
             options={this.props.tableData[0]}
             onChange={(e) => this.onNameChange(e)}
@@ -54,9 +55,10 @@ class NewUser extends Component {
             renderInput={(params) => (
               <TextField
                 {...params}
-                name="username"
+                name="Name"
                 variant="outlined"
                 size="small"
+                onChange={(e) => this.onNameChange(e)}
               />
             )}
           />
@@ -65,17 +67,20 @@ class NewUser extends Component {
           <Autocomplete
             className="pding"
             id="free-solo-Email"
+            name="Email"
             freeSolo
             options={this.props.tableData[0]}
+            inputValue={this.props.val.Email}
             getOptionLabel={(option) => option.Email}
             onChange={(e) => this.onEmailChange(e)}
             style={{ width: 200 }}
             renderInput={(params) => (
               <TextField
                 {...params}
-                name="email"
+                name="Email"
                 variant="outlined"
                 size="small"
+                onChange={(e) => this.onEmailChange(e)}
               />
             )}
           />
@@ -83,7 +88,7 @@ class NewUser extends Component {
         <td>
           <button
             className="btn"
-            onClick={() => this.props.delete(this.props.val.index)}
+            onClick={(e) => this.props.delete(e, this.props.val)}
           >
             <i className="fa fa-remove" aria-hidden="true"></i>
           </button>

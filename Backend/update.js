@@ -1,3 +1,4 @@
+const bodyParser = require("body-parser");
 var mysql = require("mysql");
 var update = class update {
   updateUserProfile(con, req, res) {
@@ -52,6 +53,17 @@ var update = class update {
     console.log(sql);
     con.query(sql, function (err, result, fields) {
       if (err) throw err;
+      if (Object.keys(req.itemDeleted).length !== 0) {
+        var deleteMember =
+          "Delete from GroupMemberInfo where Memberid='" +
+          req.itemDeleted.Email +
+          "' and GroupName='" +
+          req.prevGroupName +
+          "'";
+        con.query(deleteMember, function (err, result, fields) {
+          if (err) throw err;
+        });
+      }
       res.writeHead(200, {
         "Content-Type": "application/json",
       });

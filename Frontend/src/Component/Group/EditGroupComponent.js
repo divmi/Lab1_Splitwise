@@ -16,8 +16,7 @@ class EditGroup extends Component {
       auth: false,
       userData: [],
       allUser: [],
-      name: "",
-      email: "",
+      itemDeleted: {},
     };
   }
 
@@ -67,16 +66,6 @@ class EditGroup extends Component {
     }
   };
 
-  // addNewRow = () => {
-  //   this.setState((prevState) => ({
-  //     i: prevState.i + 1,
-  //     userData: [
-  //       ...prevState.userData,
-  //       { Name: "", Email: "", GroupProfilePicture: "" },
-  //     ],
-  //   }));
-  // };
-
   ///LoginUser'
   handleSubmit = (e) => {
     //prevent page from refresh
@@ -86,8 +75,8 @@ class EditGroup extends Component {
       prevGroupName: this.props.match.params.value,
       newGroupName: this.state.groupName,
       groupPhoto: this.state.groupPhoto,
+      itemDeleted: this.state.itemDeleted,
     };
-    //set the with credentials to true
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
       axios
@@ -153,38 +142,36 @@ class EditGroup extends Component {
       });
   }
 
-  // async getAllUser() {
-  //   await axios
-  //     .get("http://localhost:8000/getAllUser")
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         this.setState(() => ({
-  //           allUser: response.data,
-  //         }));
-  //         console.log("All user:" + JSON.stringify(this.state.allUser));
-  //       } else {
-  //         this.setState({
-  //           error: "Please enter correct credentials",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //       });
-  //     });
-  // }
-
   handleItemDeleted(e, i) {
     e.preventDefault();
-    console.log("value of i is :" + i);
     var items = this.state.userData;
-    console.log("value of stringy is :" + JSON.stringify(items));
-    items.splice(i, 1);
-    this.setState({
-      userData: items,
-    });
+    axios
+      .get("http://localhost:8000/getUserSpecificGetOwsInfo", {
+        params: {
+          email: i.Email,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("All user:" + response.data);
+          if (response.data.length > 0) {
+            alert("Please settle up the amount before leaving group");
+          } else {
+            items.splice(items.indexOf(i), 1);
+            this.setState({
+              userData: items,
+            });
+            this.setState({
+              itemDeleted: i,
+            });
+          }
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          error: "Network error" + e,
+        });
+      });
   }
 
   componentDidMount() {
@@ -273,6 +260,14 @@ class EditGroup extends Component {
                 className="form-control "
                 readOnly
               />
+            </td>
+            <td>
+              <button
+                className="btn"
+                onClick={(e) => this.handleItemDeleted(e, val)}
+              >
+                <i className="fa fa-remove" aria-hidden="true"></i>
+              </button>
             </td>
           </tr>
           // <tr key={idx}>
@@ -384,23 +379,6 @@ class EditGroup extends Component {
                         </div>
                         <table className="table">
                           <tbody>{groupMemberName}</tbody>
-                          <tfoot>
-                            <tr>
-                              {/* <td>
-                                <button
-                                  onClick={this.addNewRow}
-                                  type="button"
-                                  className="btn text-center"
-                                >
-                                  <i
-                                    className="fa fa-plus-circle"
-                                    aria-hidden="true"
-                                  ></i>
-                                  Add a person
-                                </button>
-                              </td> */}
-                            </tr>
-                          </tfoot>
                         </table>
                       </div>
                       <div className="card-footer text-center">

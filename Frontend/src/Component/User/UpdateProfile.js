@@ -50,7 +50,7 @@ class UpdateProfile extends Component {
           JSON.parse(localStorage.getItem("userData"))
         ),
       });
-      if (this.state.userinfo.UserProfilePic == null) {
+      if (this.state.userinfo.UserProfilePic == "") {
         this.setState({
           UserProfilePic: `./assets/userIcon.jpg`,
         });
@@ -202,9 +202,8 @@ class UpdateProfile extends Component {
                           id="Email"
                           name="Email"
                           placeholder="Email"
-                          value={cookie.load("cookie").Email}
+                          value={this.state.userinfo.Email}
                           onChange={this.handleChange}
-                          //invalid={this.state.error.email ? true : false}
                           readOnly
                         ></Input>
                       </FormGroup>

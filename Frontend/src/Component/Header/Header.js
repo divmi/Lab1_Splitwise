@@ -40,31 +40,23 @@ class Header extends Component {
     }
   }
 
-  setHeaderProfilePic() {
-    if (typeof Storage !== "undefined") {
-      if (localStorage.key("userData")) {
-        var value = JSON.parse(localStorage.getItem("userData"));
-        if (value != null && value.UserProfilePic != null)
-          return value.UserProfilePic;
-        else return "./assets/userIcon.jpg";
-      }
-    }
-  }
-
   render() {
     var registerOrLogin = null;
-    let picture = "";
+    let picture = "../assets/userIcon.jpg";
+    let memberName = "";
     if (cookie.load("cookie")) {
+      memberName = cookie.load("cookie").Name;
       var value = JSON.parse(localStorage.getItem("userData"));
-      if (value != null && value.UserProfilePic != null)
-        picture = value.UserProfilePic;
-      else picture = "./assets/userIcon.jpg";
+      if (value != null) {
+        if (value.UserProfilePic != null) picture = value.UserProfilePic;
+        memberName = value.Name;
+      }
       console.log(picture);
       registerOrLogin = (
         <div className="col col-sm-2">
           <Link
             to="/home"
-            style={{ textDecoration: "none", color: "white", marginRight: 50 }}
+            style={{ textDecoration: "none", color: "white", marginRight: 40 }}
           >
             Home
           </Link>
@@ -81,8 +73,7 @@ class Header extends Component {
             aria-haspopup="true"
             onClick={this.handleClick}
           >
-            {/* {this.state.Name} */}
-            {cookie.load("cookie").Name}
+            {memberName}
           </Button>
           <Menu
             id="simple-menu"

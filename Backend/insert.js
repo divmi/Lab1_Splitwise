@@ -107,7 +107,7 @@ class insert {
     const result = this.insert_Promise(con, body, res);
     console.log("member inserted");
     try {
-      await this.FindGroupMemberList(con, body.groupname, res);
+      await this.FindGroupMemberList(con, body, res);
       console.log("member inserted successfully");
     } catch (e) {
       console.log("Error:" + e);
@@ -135,11 +135,11 @@ class insert {
     );
   }
 
-  FindGroupMemberList(con, groupName, res) {
+  FindGroupMemberList(con, body, res) {
     return new Promise((resolve, reject) => {
       con.query(
         "Select MemberID from GroupMemberInfo where GroupName ='" +
-          groupName +
+          body.groupname +
           "' and Accepted=true",
         (err, memberInfo) => {
           if (err) reject(err);

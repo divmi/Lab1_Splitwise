@@ -30,17 +30,8 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
   },
-  // destination: "./uploads/",
-  // filename: function (req, file, cb) {
-  //   console.log(file);
-  //   console.log("Divya :" + Date.now() + file.originalname);
-  //   //cb(null, `${Date.now() + file.originalname}`); //`${new Date()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
-  //   console.log(
-  //     `${Date.now()}-${file.fieldname}.${file.mimetype.split("/")[1]}`
-  //   );
-  //   cb(null, `${Date.now()}-${file.fieldname}.${file.mimetype.split("/")[1]}`);
-  // },
 });
+
 const fileFilter = (req, file, cb) => {
   if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
     cb(null, true);
