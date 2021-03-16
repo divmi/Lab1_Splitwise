@@ -8,6 +8,7 @@ class OwsGetDetail extends Component {
       owsGetDetail: [],
       componentMounted: false,
       memberWithAmountList: [],
+      groupMemberName: [],
     };
   }
 
@@ -22,6 +23,35 @@ class OwsGetDetail extends Component {
       this.getGroupSummary();
     }
   }
+
+  GroupMemberName() {
+    console.log("Group Name :" + this.props.name);
+    axios
+      .get("http://localhost:8000/getGroupMemberName", {
+        params: {
+          groupName: this.props.name,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("All user:" + response.data);
+          this.setState({
+            groupMemberName: response.data,
+          });
+          this.calculateMemberSpecificTable();
+        } else {
+          this.setState({
+            error: "Please enter correct credentials",
+            authFlag: false,
+          });
+        }
+      })
+      .catch((e) => {
+        this.setState({
+          error: "Please enter correct credentials" + e,
+        });
+      });
+  }
   getGroupSummary() {
     axios
       .get("http://localhost:8000/getGroupSummary", {
@@ -35,7 +65,7 @@ class OwsGetDetail extends Component {
           this.setState({
             owsGetDetail: response.data,
           });
-          this.calculateMemberSpecificTable();
+          this.GroupMemberName();
           console.log(
             "got data for transaction" + JSON.stringify(this.state.owsGetDetail)
           );
@@ -56,41 +86,77 @@ class OwsGetDetail extends Component {
   }
 
   calculateMemberSpecificTable() {
-    this.setState({
-      userSpecificInfo: this.state.owsGetDetail.map(
-        (memberName) => memberName.MemberOws
-      ),
-    });
-    const memberInfo = [...new Set(this.state.userSpecificInfo)];
-    if (memberInfo.length > 0) {
-      memberInfo.map((memberName) => {
-        let finalMoney = 0;
-        const allTransaction = this.state.show.filter(
-          (x) => x.MemberOws == memberName
+    if (this.state.groupMemberName.length > 0) {
+      console.log(JSON.stringify(this.state.groupMemberName));
+      let memberWithAmountListBackup = [...this.state.memberWithAmountList];
+      this.state.groupMemberName.map((memberName) => {
+        let sum = 0;
+        let memberDetail = this.state.owsGetDetail.filter(
+          (x) =>
+            x.MemberOws == memberName.Email || x.MemberGets == memberName.Email
         );
-        allTransaction.map((x) => {
-          finalMoney += x.Amount;
-        });
-        this.state.memberWithAmountList.push({
-          MemberName: memberName,
-          Amount: finalMoney,
-          Transaction: {
-            transaction: allTransaction,
-          },
-        });
+        if (memberDetail.length > 0) {
+          memberDetail.map((member) => {
+            sum = sum + member.Amount;
+          });
+          let item = {
+            ...memberWithAmountListBackup[
+              memberWithAmountListBackup.length - 1
+            ],
+            MemberName: memberName.Name,
+            Amount: sum,
+          };
+          memberWithAmountListBackup[
+            memberWithAmountListBackup.length - 1
+          ] = item;
+          this.setState({
+            memberWithAmountList: memberWithAmountListBackup,
+          });
+          // this.setState(...prevState.memberWithAmountList, {
+          //   MemberName: memberName.Name,
+          //   Amount: sum,
+          // });
+        }
       });
-      console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
 
   render() {
     let component = null;
-    component = this.state.memberWithAmountList.map((name, idx) => {
-      return (
-        <tr key={idx}>
-          <td>{name.MemberName}</td>
-        </tr>
-      );
+    component = this.state.memberWithAmountList.map((detail, idx) => {
+      if (detail.Amount < 0) {
+        return (
+          <div key={idx} className="container orangeCode">
+            <img
+              src={detail.UserProfilePic}
+              width={30}
+              height={30}
+              className="rounded-circle"
+            ></img>
+            <p style={{ fontSize: "14px" }}>
+              {detail.Name} <br />
+              ows {this.state.Currency}
+              {detail.Amount} <br />
+            </p>
+          </div>
+        );
+      } else {
+        return (
+          <div key={idx} className="container greenCode">
+            <img
+              src={detail.UserProfilePic}
+              width={30}
+              height={30}
+              className="rounded-circle"
+            ></img>
+            <p style={{ fontSize: "14px" }}>
+              {detail.Name} <br />
+              gets {this.state.Currency}
+              {detail.Amount} <br />
+            </p>
+          </div>
+        );
+      }
     });
     return (
       <div className="container">

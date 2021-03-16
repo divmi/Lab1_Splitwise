@@ -12,16 +12,27 @@ var login = class login {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("the record is " + result);
-      if (
-        result.length > 0 &&
-        bcrypt.compare(body.password, result[0].Password)
-      ) {
-        res.cookie("cookie", JSON.stringify(result[0]));
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
+      if (result.length > 0) {
+        console.log(result[0].Password);
+        bcrypt.compare(
+          body.password,
+          result[0].Password,
+          function (err, matchPassword) {
+            if (err) return error;
+            res.cookie("cookie", JSON.stringify(result[0]));
+            if (matchPassword) {
+              res.cookie("cookie", JSON.stringify(result[0]));
+              res.writeHead(200, {
+                "Content-Type": "text/plain",
+              });
+              res.end(JSON.stringify(result));
+            } else {
+              res.writeHead(401, {
+                "Content-Type": "text/plain",
+              });
+            }
+          }
+        );
       } else {
         res.writeHead(401, {
           "Content-Type": "text/plain",

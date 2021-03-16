@@ -114,9 +114,9 @@ class insert {
     }
   }
 
-  async getGroupMemberList(con, groupName, res) {
+  getGroupMemberList(con, groupName, res) {
     con.query(
-      "Select u.Name, u.Email, g.GroupProfilePicture from UserRegistration as u Inner Join GroupMemberInfo as gMember on (u.Email=gMember.MemberID) Inner Join GroupInfo as g on (gMember.GroupName=g.GroupName) where g.GroupName ='" +
+      "Select u.Name, u.Email, u.UserProfilePic, g.GroupProfilePicture from UserRegistration as u Inner Join GroupMemberInfo as gMember on (u.Email=gMember.MemberID) Inner Join GroupInfo as g on (gMember.GroupName=g.GroupName) where g.GroupName ='" +
         groupName +
         "'",
       function (err, memberInfo) {

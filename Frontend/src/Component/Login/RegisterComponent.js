@@ -70,7 +70,7 @@ class Register extends Component {
               authFlag: true,
             });
             this.props.RegisterUser({ data });
-            alert("Successfully Created! Please Conitnue to Login");
+            alert("Successfully Created! Please Continue to Login");
           } else {
             this.setState({
               loginError:

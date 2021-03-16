@@ -204,7 +204,7 @@ class Dashboard extends Component {
         memberOwList.push(detail);
         return (
           <div key={idx} className="container orangeCode">
-            <p style={{ fontSize: "12px" }}>
+            <p style={{ fontSize: "14px" }}>
               {detail.MemberName} <br />
               you ows {this.state.Currency}
               {detail.Amount} <br />
@@ -241,21 +241,9 @@ class Dashboard extends Component {
     });
     componentGets = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount > 0) {
-        // const x = detail.Transaction.map((value, idy) => {
-        //   return (
-        //     <label key={idy} className="dashBoardLabel">
-        //       o: ows you{" "}
-        //       <strong className="greenCode">
-        //         {this.state.Currency}
-        //         {value.Amount.toFixed(2)}
-        //       </strong>{" "}
-        //       to {value.MemberName} in {value.GroupName}
-        //     </label>
-        //   );
-        // });
         return (
           <div key={idx} className="container greenCode">
-            <p style={{ fontSize: "12px" }}>
+            <p style={{ fontSize: "14px" }}>
               {detail.MemberName}
               <br /> owes you {this.state.Currency}
               {detail.Amount} <br />
