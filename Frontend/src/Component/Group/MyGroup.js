@@ -52,10 +52,14 @@ class MyGroup extends Component {
   };
 
   getUserDetails = () => {
+    let memberID = "";
+    if (cookie.load("cookie")) {
+      memberID = cookie.load("cookie").Email;
+    }
     axios
       .get("http://localhost:8000/getCurrentUserGroup", {
         params: {
-          email: cookie.load("cookie").Email,
+          email: memberID,
         },
       })
       .then((response) => {
@@ -96,7 +100,6 @@ class MyGroup extends Component {
   render() {
     let redirectVar = null;
     let groupName = null;
-    console.log(cookie.load("cookie"));
     if (cookie.load("cookie")) redirectVar = <Redirect to="/myGroup" />;
     else redirectVar = <Redirect to="/login" />;
     if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {

@@ -19,10 +19,14 @@ class Home extends Component {
   }
 
   getUserDetails = () => {
+    let MemberID = "";
+    if (cookie.load("cookie")) {
+      MemberID = cookie.load("cookie").Email;
+    }
     axios
       .get("http://localhost:8000/getCurrentUserGroup", {
         params: {
-          email: this.state.Email,
+          email: MemberID,
         },
       })
       .then((response) => {
@@ -47,8 +51,6 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    this.setState({ groupInfo: this.getUserDetails() });
-    console.log(JSON.stringify(this.state.groupInfo));
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
@@ -57,6 +59,8 @@ class Home extends Component {
         });
       }
     }
+    this.setState({ groupInfo: this.getUserDetails() });
+    console.log(JSON.stringify(this.state.groupInfo));
     if (this.state.component == null) {
       this.setState({
         component: <Dashboard email={this.state.Email} />,

@@ -142,7 +142,7 @@ class CreateGroup extends Component {
     console.log("value of i is :" + JSON.stringify(i));
     var items = this.state.userData;
     console.log("value of stringy is :" + JSON.stringify(items));
-    items.splice(i, 1);
+    items.splice(items.indexOf(i), 1);
     this.setState({
       userData: items,
     });

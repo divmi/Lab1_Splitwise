@@ -99,9 +99,7 @@ class Dashboard extends Component {
         this.state.memberWithAmountList.push({
           MemberName: memberName,
           Amount: finalMoney,
-          Transaction: {
-            transaction: allTransaction,
-          },
+          Transaction: allTransaction,
         });
       });
       console.log(JSON.stringify(this.state.memberWithAmountList));
@@ -193,26 +191,36 @@ class Dashboard extends Component {
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
-          <div key={idx} className="col-col-sm3" style={{ color: "#f07343" }}>
-            <div>{detail.MemberName}</div>
-            <div>{detail.Amount}</div>
-            <div>
-              {detail.Transaction.transaction.map((value) => {
-                <label key={idx}>
+          <div key={idx} className="container" style={{ color: "#f07343" }}>
+            <p>
+              {detail.MemberName}
+              {detail.Amount}
+              {detail.Transaction.transaction.map((value, idy) => {
+                <label key={idy}>
                   you ows <strong>{-value.Amount.toFixed(2)}</strong> to{" "}
                   {value.MemberName} in {value.GroupName}
                 </label>;
               })}
-            </div>
+            </p>
           </div>
         );
       } else if (detail.Amount > 0) {
+        const x = detail.Transaction.map((value, idy) => {
+          console.log(value);
+          return (
+            <label key={idy}>
+              you ows <strong>{-value.Amount.toFixed(2)}</strong> to{" "}
+              {value.MemberName} in {value.GroupName}
+            </label>
+          );
+        });
         return (
-          <div key={idx} className="col-col-sm3 greenCode">
-            <div>
-              <label>{detail.MemberName}</label>
-            </div>
-            <div>ows you {detail.Amount}</div>
+          <div key={idx} className="container greenCode">
+            <p>
+              {detail.MemberName}
+              <br /> owes you {detail.Amount}
+              {x}
+            </p>
           </div>
         );
       }
@@ -262,22 +270,21 @@ class Dashboard extends Component {
     return (
       <div className="container">
         <div
-          className="row shadow p-5 mb-6 bg-white rounded"
+          className="row shadow mb-6 bg-white rounded"
           style={{ padding: 0 }}
         >
-          <div className="col col-sm-8 border-bottom">
-            <label>
+          <div className="col col-sm-8 border-bottom p-3">
+            <label className="md-1">
               <h3>
                 <strong>DashBoard</strong>
               </h3>
             </label>
           </div>
-          <div className="col col-sm-4 border-bottom">
+          <div className="col col-sm-4 border-bottom p-3">
             <Button
               className="btn btn-Normal"
               style={{
                 alignSelf: "center",
-                height: 45,
                 alignContent: "center",
               }}
               type="button"
@@ -285,119 +292,38 @@ class Dashboard extends Component {
             >
               Settle Up
             </Button>
-            <Modal show={this.state.isOpen} onHide={this.closeModal}>
-              <Modal.Header className="custom-header" closeButton>
-                <Modal.Title style={{ marginLeft: "10px" }}>
-                  Settle Up
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Container>
-                  <Row>
-                    <label style={{ alignSelf: "center", marginRight: 20 }}>
-                      With you and{" "}
-                    </label>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="light"
-                        width={40}
-                        height={30}
-                        id="dropdown-basic"
-                      >
-                        Settle Up With
-                      </Dropdown.Toggle>
-
-                      <Dropdown.Menu>{popover}</Dropdown.Menu>
-                    </Dropdown>
-                  </Row>
-                  <hr></hr>
-                  <Row>
-                    <Col xs={6} md={4}>
-                      <Image
-                        width={150}
-                        height={100}
-                        src="./assets/Bill.png"
-                        rounded
-                      />
-                    </Col>
-                    <Col xs={6} md={6}>
-                      <Form.Group>
-                        <Form.Control
-                          style={{
-                            borderStyle: "dotted",
-                            borderRadius: 1,
-                          }}
-                          type="text"
-                          value={this.state.Name}
-                          readOnly
-                          placeholder="Person to settle up with"
-                          required
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Control
-                          style={{
-                            borderStyle: "dotted",
-                            borderRadius: 1,
-                          }}
-                          type="number"
-                          step="0.1"
-                          min="0"
-                          value={-this.state.Amount}
-                          readOnly
-                          placeholder={this.state.Currency + " 0.00"}
-                          required
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Container>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={this.closeModal}>
-                  Close
-                </Button>
-                <Button
-                  variant="btn btn-green"
-                  style={{ background: "#f07343" }}
-                  type="submit"
-                  onClick={this.handleSettleUp}
-                >
-                  Settle Up
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </div>
-          <div className="row border-bottom" style={{ padding: 0 }}>
-            <div className="col col-sm-4 border-right">
-              <label>total balance</label>
-              <label
-                style={
-                  this.state.total < 0
-                    ? { color: "orange" }
-                    : { color: "#5bc5a7" }
-                }
-              >
-                {this.state.total.toFixed(2)}
-              </label>
-            </div>
-            <div className="col col-sm-3 border-right">
-              <label>you owe</label>
-              <label style={{ color: "orange" }}>
-                {this.state.ows.toFixed(2)}
-              </label>
-            </div>
-            <div className="col col-sm-4 border-right">
-              <label>you are owed</label>
-              <label className="greenCode">{this.state.gets.toFixed(2)}</label>
-            </div>
           </div>
         </div>
-
+        <div
+          className="row border-bottom shadow bg-white"
+          style={{ padding: 0 }}
+        >
+          <div className="col col-sm-4 border-right">
+            <label>total balance</label>
+            <label
+              style={
+                this.state.total < 0
+                  ? { color: "orange" }
+                  : { color: "#5bc5a7" }
+              }
+            >
+              {this.state.total.toFixed(2)}
+            </label>
+          </div>
+          <div className="col col-sm-4 border-right">
+            <label>you owe</label>
+            <label style={{ color: "orange" }}>
+              {this.state.ows.toFixed(2)}
+            </label>
+          </div>
+          <div className="col col-sm-4">
+            <label>you are owed</label>
+            <label className="greenCode">{this.state.gets.toFixed(2)}</label>
+          </div>
+        </div>
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
-          <div className="col col-sm-2">Detail:</div>
-          <div className="col col-sm-5"> {component}</div>
-
+          <div className="col col-sm-6"> {component}</div>
+          <div className="col col-sm-6"> {component}</div>
           {/* <table>
             <thead>
               <tr>
@@ -409,6 +335,86 @@ class Dashboard extends Component {
             <tbody>{component}</tbody>
           </table> */}
         </div>
+        <Modal show={this.state.isOpen} onHide={this.closeModal}>
+          <Modal.Header className="custom-header" closeButton>
+            <Modal.Title style={{ marginLeft: "10px" }}>Settle Up</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Container>
+              <Row>
+                <label style={{ alignSelf: "center", marginRight: 20 }}>
+                  With you and{" "}
+                </label>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    variant="light"
+                    width={40}
+                    height={30}
+                    id="dropdown-basic"
+                  >
+                    Settle Up With
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>{popover}</Dropdown.Menu>
+                </Dropdown>
+              </Row>
+              <hr></hr>
+              <Row>
+                <Col xs={6} md={4}>
+                  <Image
+                    width={150}
+                    height={100}
+                    src="./assets/Bill.png"
+                    rounded
+                  />
+                </Col>
+                <Col xs={6} md={6}>
+                  <Form.Group>
+                    <Form.Control
+                      style={{
+                        borderStyle: "dotted",
+                        borderRadius: 1,
+                      }}
+                      type="text"
+                      value={this.state.Name}
+                      readOnly
+                      placeholder="Person to settle up with"
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Control
+                      style={{
+                        borderStyle: "dotted",
+                        borderRadius: 1,
+                      }}
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={-this.state.Amount}
+                      readOnly
+                      placeholder={this.state.Currency + " 0.00"}
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Container>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.closeModal}>
+              Close
+            </Button>
+            <Button
+              variant="btn btn-green"
+              style={{ background: "#f07343" }}
+              type="submit"
+              onClick={this.handleSettleUp}
+            >
+              Settle Up
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
