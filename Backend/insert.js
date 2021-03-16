@@ -317,8 +317,8 @@ class insert {
       "'";
     con.query(settleUpUser, function (err, result) {
       if (err) throw err;
-      var updateSettleUpTransaction =
-        "Update UserTransactionBasedOnGroup Set Amount=0 where MemberPaid='" +
+      var deleteSettleUpTransaction =
+        "Delete from UserTransactionBasedOnGroup where MemberPaid='" +
         body.MemberName +
         "' && MemberOws='" +
         body.settleUpWith +
@@ -327,7 +327,7 @@ class insert {
         "' && MemberPaid='" +
         body.settleUpWith +
         "'";
-      con.query(updateSettleUpTransaction, function (err, result) {
+      con.query(deleteSettleUpTransaction, function (err, result) {
         if (err) throw err;
         console.log("record Updated Successfully");
         res.writeHead(200, {

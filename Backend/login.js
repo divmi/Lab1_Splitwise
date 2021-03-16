@@ -19,7 +19,6 @@ var login = class login {
           result[0].Password,
           function (err, matchPassword) {
             if (err) return error;
-            res.cookie("cookie", JSON.stringify(result[0]));
             if (matchPassword) {
               res.cookie("cookie", JSON.stringify(result[0]));
               res.writeHead(200, {
@@ -30,6 +29,7 @@ var login = class login {
               res.writeHead(401, {
                 "Content-Type": "text/plain",
               });
+              res.end("UnSuccessful Login");
             }
           }
         );

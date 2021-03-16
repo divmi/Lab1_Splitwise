@@ -47,7 +47,9 @@ class Dashboard extends Component {
   calculateOwsGetsBasedOnDataReceived() {
     let sumOws = 0;
     let sumGets = 0;
-    console.log(this.props.email);
+    this.setState({
+      show: [],
+    });
     if (this.state.owsgetsDetail.length > 0) {
       this.state.owsgetsDetail[0].map((value) => {
         if (value.MemberOws == this.props.email) {
@@ -86,6 +88,9 @@ class Dashboard extends Component {
         (memberName) => memberName.MemberOws
       ),
     });
+    this.setState({
+      memberWithAmountList: [],
+    });
     const memberInfo = [...new Set(this.state.userSpecificInfo)];
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
@@ -96,11 +101,21 @@ class Dashboard extends Component {
         allTransaction.map((x) => {
           finalMoney += x.Amount;
         });
-        this.state.memberWithAmountList.push({
-          MemberName: memberName,
-          Amount: finalMoney,
-          Transaction: allTransaction,
+        this.setState({
+          memberWithAmountList: [
+            ...this.state.memberWithAmountList,
+            {
+              MemberName: memberName,
+              Amount: finalMoney,
+              Transaction: allTransaction,
+            },
+          ],
         });
+        // this.state.memberWithAmountList.push({
+        //   MemberName: memberName,
+        //   Amount: finalMoney,
+        //   Transaction: allTransaction,
+        // });
       });
       console.log(JSON.stringify(this.state.memberWithAmountList));
     }
@@ -220,7 +235,7 @@ class Dashboard extends Component {
                       for {value.GroupName}
                     </label>
                   );
-                } else {
+                } else if (value.Amount > 0) {
                   return (
                     <label key={idy} className="dashBoardLabel">
                       o: owes you{" "}
@@ -259,7 +274,7 @@ class Dashboard extends Component {
                       for {value.GroupName}
                     </label>
                   );
-                } else {
+                } else if (value.Amount > 0) {
                   return (
                     <label key={idy} className="dashBoardLabel">
                       o: owes you{" "}
@@ -352,18 +367,20 @@ class Dashboard extends Component {
           </div>
         </div>
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
-          <div className="col col-sm-6"> {componentOws}</div>
-          <div className="col col-sm-6"> {componentGets}</div>
-          {/* <table>
-            <thead>
-              <tr>
-                <td>
-                  <label>Details:</label>
-                </td>
-              </tr>
-            </thead>
-            <tbody>{component}</tbody>
-          </table> */}
+          <div className="col col-sm-6 border-right">
+            {" "}
+            <label style={{ color: "GrayText", marginLeft: "10px" }}>
+              <strong>You owes</strong>
+            </label>
+            {componentOws}
+          </div>
+          <div className="col col-sm-6">
+            {" "}
+            <label style={{ color: "GrayText", marginLeft: "10px" }}>
+              <strong>You are owed</strong>
+            </label>
+            {componentGets}
+          </div>
         </div>
         <Modal show={this.state.isOpen} onHide={this.closeModal}>
           <Modal.Header className="custom-header" closeButton>

@@ -9,11 +9,20 @@ class OwsGetDetail extends Component {
       componentMounted: false,
       memberWithAmountList: [],
       groupMemberName: [],
+      Currency: "",
     };
   }
 
   componentDidMount() {
     console.log("compoment mounted");
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Currency: localStorageData.Currency,
+        });
+      }
+    }
     this.getGroupSummary();
     console.log(JSON.stringify(this.state.owsGetDetail));
   }
@@ -88,7 +97,9 @@ class OwsGetDetail extends Component {
   calculateMemberSpecificTable() {
     if (this.state.groupMemberName.length > 0) {
       console.log(JSON.stringify(this.state.groupMemberName));
-      let memberWithAmountListBackup = [...this.state.memberWithAmountList];
+      this.setState({
+        memberWithAmountList: [],
+      });
       this.state.groupMemberName.map((memberName) => {
         let sum = 0;
         let memberDetail = this.state.owsGetDetail.filter(
@@ -99,23 +110,19 @@ class OwsGetDetail extends Component {
           memberDetail.map((member) => {
             sum = sum + member.Amount;
           });
-          let item = {
-            ...memberWithAmountListBackup[
-              memberWithAmountListBackup.length - 1
-            ],
-            MemberName: memberName.Name,
-            Amount: sum,
-          };
-          memberWithAmountListBackup[
-            memberWithAmountListBackup.length - 1
-          ] = item;
+          if (memberName.UserProfilePic == "") {
+            memberName.UserProfilePic = "../assets/userIcon.png";
+          }
           this.setState({
-            memberWithAmountList: memberWithAmountListBackup,
+            memberWithAmountList: [
+              ...this.state.memberWithAmountList,
+              {
+                Name: memberName.Name,
+                Amount: sum,
+                UserProfilePic: memberName.UserProfilePic,
+              },
+            ],
           });
-          // this.setState(...prevState.memberWithAmountList, {
-          //   MemberName: memberName.Name,
-          //   Amount: sum,
-          // });
         }
       });
     }
@@ -126,47 +133,45 @@ class OwsGetDetail extends Component {
     component = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount < 0) {
         return (
-          <div key={idx} className="container orangeCode">
+          <div key={idx} className="row p-1 greenCode">
             <img
               src={detail.UserProfilePic}
               width={30}
               height={30}
               className="rounded-circle"
             ></img>
-            <p style={{ fontSize: "14px" }}>
+            <p style={{ fontSize: "14px", marginLeft: "5px" }}>
               {detail.Name} <br />
-              ows {this.state.Currency}
-              {detail.Amount} <br />
+              gets {this.state.Currency}
+              {-detail.Amount} <br />
             </p>
           </div>
         );
       } else {
+        let display = "";
+        if (detail.Amount == 0) {
+          display = "settledUp";
+        } else {
+          display = "Ows " + this.state.Currency + detail.Amount;
+        }
         return (
-          <div key={idx} className="container greenCode">
+          <div key={idx} className="row p-1 orangeCode">
             <img
               src={detail.UserProfilePic}
               width={30}
               height={30}
               className="rounded-circle"
             ></img>
-            <p style={{ fontSize: "14px" }}>
+
+            <p style={{ fontSize: "14px", marginLeft: "5px" }}>
               {detail.Name} <br />
-              gets {this.state.Currency}
-              {detail.Amount} <br />
+              {display}
             </p>
           </div>
         );
       }
     });
-    return (
-      <div className="container">
-        <div>
-          <table>
-            <tbody>{component}</tbody>
-          </table>
-        </div>
-      </div>
-    );
+    return <div className="container">{component}</div>;
   }
 }
 

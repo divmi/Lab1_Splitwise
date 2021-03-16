@@ -62,9 +62,11 @@ class Home extends Component {
     this.setState({ groupInfo: this.getUserDetails() });
     console.log(JSON.stringify(this.state.groupInfo));
     if (this.state.component == null) {
-      this.setState({
-        component: <Dashboard email={this.state.Email} />,
-      });
+      if (cookie.load("cookie")) {
+        this.setState({
+          component: <Dashboard email={cookie.load("cookie").Email} />,
+        });
+      }
     }
   }
 
