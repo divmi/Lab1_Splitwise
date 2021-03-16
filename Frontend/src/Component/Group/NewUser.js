@@ -14,9 +14,7 @@ class NewUser extends Component {
   componentDidMount() {}
 
   onNameChange = (e) => {
-    var value = this.props.tableData[0].find(
-      (x) => x.Name == e.target.innerText
-    );
+    var value = this.props.tableData.find((x) => x.Name == e.target.innerText);
     if (value) {
       this.setState({
         Email: value.Email,
@@ -27,9 +25,7 @@ class NewUser extends Component {
   };
 
   onEmailChange = (e) => {
-    var value = this.props.tableData[0].find(
-      (x) => x.Email == e.target.innerText
-    );
+    var value = this.props.tableData.find((x) => x.Email == e.target.innerText);
     if (value) {
       this.setState({
         Name: value.Name,
@@ -47,8 +43,7 @@ class NewUser extends Component {
             className="pding"
             id="free-solo-Name"
             name="Name"
-            freeSolo
-            options={this.props.tableData[0]}
+            options={this.props.tableData}
             onChange={(e) => this.onNameChange(e)}
             getOptionLabel={(option) => option.Name}
             style={{ width: 200 }}
@@ -68,9 +63,7 @@ class NewUser extends Component {
             className="pding"
             id="free-solo-Email"
             name="Email"
-            freeSolo
-            options={this.props.tableData[0]}
-            inputValue={this.props.val.Email}
+            options={this.props.tableData}
             getOptionLabel={(option) => option.Email}
             onChange={(e) => this.onEmailChange(e)}
             style={{ width: 200 }}

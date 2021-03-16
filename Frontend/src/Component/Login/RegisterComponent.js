@@ -71,10 +71,14 @@ class Register extends Component {
             });
             this.props.RegisterUser({ data });
             alert("Successfully Created! Please Continue to Login");
+            this.setState({
+              name: "",
+              email: "",
+              password: "",
+            });
           } else {
             this.setState({
-              loginError:
-                "<p style={{color: red}}>User is already registered</p>",
+              loginError: "User is already registered",
               authFlag: false,
             });
           }

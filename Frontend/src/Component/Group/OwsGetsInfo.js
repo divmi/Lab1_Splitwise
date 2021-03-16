@@ -102,36 +102,48 @@ class OwsGetDetail extends Component {
       });
       this.state.groupMemberName.map((memberName) => {
         let sum = 0;
+        let sumOws = 0;
         let memberDetail = this.state.owsGetDetail.filter(
-          (x) =>
-            x.MemberOws == memberName.Email || x.MemberGets == memberName.Email
+          (x) => x.MemberGets == memberName.Email
         );
         if (memberDetail.length > 0) {
           memberDetail.map((member) => {
             sum = sum + member.Amount;
           });
-          if (memberName.UserProfilePic == "") {
-            memberName.UserProfilePic = "../assets/userIcon.png";
-          }
-          this.setState({
-            memberWithAmountList: [
-              ...this.state.memberWithAmountList,
-              {
-                Name: memberName.Name,
-                Amount: sum,
-                UserProfilePic: memberName.UserProfilePic,
-              },
-            ],
+        }
+        let memberOws = this.state.owsGetDetail.filter(
+          (x) => x.MemberOws == memberName.Email
+        );
+        if (memberOws.length > 0) {
+          memberOws.map((member) => {
+            sumOws = sumOws + -member.Amount;
           });
         }
+        if (
+          memberName.UserProfilePic == "" ||
+          memberName.UserProfilePic == null
+        ) {
+          memberName.UserProfilePic = "./assets/userIcon.jpg";
+        }
+        this.setState({
+          memberWithAmountList: [
+            ...this.state.memberWithAmountList,
+            {
+              Name: memberName.Name,
+              Amount: sum + sumOws,
+              UserProfilePic: memberName.UserProfilePic,
+            },
+          ],
+        });
       });
+      console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
 
   render() {
     let component = null;
     component = this.state.memberWithAmountList.map((detail, idx) => {
-      if (detail.Amount < 0) {
+      if (detail.Amount > 0) {
         return (
           <div key={idx} className="row p-1 greenCode">
             <img
@@ -143,7 +155,7 @@ class OwsGetDetail extends Component {
             <p style={{ fontSize: "14px", marginLeft: "5px" }}>
               {detail.Name} <br />
               gets {this.state.Currency}
-              {-detail.Amount} <br />
+              {detail.Amount} <br />
             </p>
           </div>
         );

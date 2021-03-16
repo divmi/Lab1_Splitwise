@@ -53,10 +53,10 @@ class Header extends Component {
       }
       console.log(picture);
       registerOrLogin = (
-        <div className="col col-sm-2">
+        <div className="col col-sm-4" style={{ textAlign: "right" }}>
           <Link
             to="/home"
-            style={{ textDecoration: "none", color: "white", marginRight: 40 }}
+            style={{ textDecoration: "none", color: "white", marginRight: 30 }}
           >
             Home
           </Link>
@@ -75,40 +75,6 @@ class Header extends Component {
           >
             {memberName}
           </Button>
-          <Menu
-            id="simple-menu"
-            anchorEl={this.state.anchorEl}
-            keepMounted
-            open={Boolean(this.state.anchorEl)}
-            onClose={this.handleClose}
-          >
-            <Link
-              to="/updateProfile"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <MenuItem onClick={this.handleClose}> My account</MenuItem>
-            </Link>
-            <Link
-              to="/createGroup"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <MenuItem onClick={this.handleClose}>Create Group</MenuItem>
-            </Link>
-            <Link
-              to="/myGroup"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <MenuItem onClick={this.handleClose}>My Group</MenuItem>
-            </Link>
-            <Link
-              to="/login"
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <MenuItem id="logout" onClick={this.handleClose}>
-                Logout
-              </MenuItem>
-            </Link>
-          </Menu>
         </div>
       );
     } else {
@@ -129,11 +95,11 @@ class Header extends Component {
     } else redirectVar = <Redirect to="/landing" />;
 
     return (
-      <div className="container-fluid custom-header">
+      <div className="container-flex custom-header">
         {redirectVar}
         <div className="row">
           <div className="col col-sm-2"></div>
-          <div className="col col-sm-5" style={{ textAlign: "center" }}>
+          <div className="col col-sm-3" style={{ textAlign: "center" }}>
             <div className="row " style={{ flexWrap: "nowrap" }}>
               <img
                 src={"./assets/Logo.png"}
@@ -145,9 +111,40 @@ class Header extends Component {
               <h3 className="label-custom customMargin">Splitwise</h3>
             </div>
           </div>
-          <div className="col col-sm-2"></div>
+          <div className="col col-sm-3"></div>
           {registerOrLogin}
         </div>
+        <Menu
+          id="simple-menu"
+          anchorEl={this.state.anchorEl}
+          keepMounted
+          open={Boolean(this.state.anchorEl)}
+          onClose={this.handleClose}
+        >
+          <Link
+            to="/updateProfile"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <MenuItem onClick={this.handleClose}> My account</MenuItem>
+          </Link>
+          <Link
+            to="/createGroup"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <MenuItem onClick={this.handleClose}>Create Group</MenuItem>
+          </Link>
+          <Link
+            to="/myGroup"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <MenuItem onClick={this.handleClose}>My Group</MenuItem>
+          </Link>
+          <Link to="/login" style={{ textDecoration: "none", color: "black" }}>
+            <MenuItem id="logout" onClick={this.handleClose}>
+              Logout
+            </MenuItem>
+          </Link>
+        </Menu>
       </div>
     );
   }

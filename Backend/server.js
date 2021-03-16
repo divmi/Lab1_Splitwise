@@ -119,7 +119,6 @@ app.post("/upload", (req, res, next) => {
 
 app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);
-  console.log("Divya 11111:" + req.body.name);
   var insgrp = new insert.insert();
   insgrp.insert_Group(con, req.body, res);
 });

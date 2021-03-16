@@ -73,7 +73,7 @@ class insert {
             var insGroupLink =
               "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
             var insGroupLink1 =
-              "'" + body.groupName + "','" + value.email + "','" + false + "')";
+              "'" + body.groupName + "','" + value.Email + "','" + false + "')";
             con.query(insGroupLink + insGroupLink1, function (err, result) {
               if (err) throw err;
               console.log("1 record inserted" + result);
@@ -83,7 +83,7 @@ class insert {
           var insGroupLink =
             "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
           var insGroupLink1 =
-            "'" + body.groupName + "','" + body.email + "','" + false + "')";
+            "'" + body.groupName + "','" + body.Email + "','" + false + "')";
           con.query(insGroupLink + insGroupLink1, function (err, result) {
             if (err) throw err;
             console.log("1 record inserted" + result);
