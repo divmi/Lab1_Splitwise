@@ -136,14 +136,14 @@ class MyGroup extends Component {
                 <i className="fa fa-envelope" aria-hidden="true"></i> My Group
                 Requests
               </button>
-              <hr />
+              {/* <hr />
               <button
                 className="btn btn-link"
                 onClick={this.OnLeaveGroup}
                 style={{ textDecoration: "none", color: "black", fontSize: 13 }}
               >
                 <i className="fas fa-edit" aria-hidden="true"></i> Leave Group
-              </button>
+              </button> */}
               <hr />
               <div className="input-group">
                 <div className="form-outline" style={{ width: "140px" }}>

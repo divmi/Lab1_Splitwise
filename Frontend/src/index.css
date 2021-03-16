@@ -109,3 +109,17 @@
 .greenCode {
   color: #5bc5a7;
 }
+
+.orangeCode {
+  color: #f07343;
+}
+
+.dashBoardLabel {
+  color: grey;
+  font-size: 12px;
+}
+
+.alignLabel {
+  text-align: center;
+  margin-top: 10px;
+}

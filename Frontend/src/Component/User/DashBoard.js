@@ -18,9 +18,6 @@ class Dashboard extends Component {
     this.state = {
       owsgetsDetail: [],
       isOpen: false,
-      ows: 0,
-      gets: 0,
-      total: 0,
       show: [],
       Name: "",
       Amount: 0,
@@ -66,9 +63,12 @@ class Dashboard extends Component {
       });
       this.calculateMemberSpecificTable();
       this.state.show.map((detail) => {
+        console.log(detail.Amount);
         if (detail.Amount > 0) {
+          console.log(sumGets);
           sumGets += detail.Amount;
         } else {
+          console.log(sumOws);
           sumOws += detail.Amount;
         }
         this.setState({
@@ -185,76 +185,111 @@ class Dashboard extends Component {
   }
 
   render() {
-    let component = null;
+    let componentOws = null;
+    let componentGets = null;
     let memberOwList = [];
-    component = this.state.memberWithAmountList.map((detail, idx) => {
+    let sumOws = 0,
+      sumGets = 0,
+      total = 0;
+    this.state.memberWithAmountList.map((detail) => {
+      if (detail.Amount < 0) {
+        sumOws += detail.Amount;
+      } else {
+        sumGets += detail.Amount;
+      }
+    });
+    total = sumGets + sumOws;
+    componentOws = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
-          <div key={idx} className="container" style={{ color: "#f07343" }}>
-            <p>
-              {detail.MemberName}
-              {detail.Amount}
-              {detail.Transaction.transaction.map((value, idy) => {
-                <label key={idy}>
-                  you ows <strong>{-value.Amount.toFixed(2)}</strong> to{" "}
-                  {value.MemberName} in {value.GroupName}
-                </label>;
+          <div key={idx} className="container orangeCode">
+            <p style={{ fontSize: "12px" }}>
+              {detail.MemberName} <br />
+              you ows {this.state.Currency}
+              {detail.Amount} <br />
+              {detail.Transaction.map((value, idy) => {
+                if (value.Amount < 0) {
+                  return (
+                    <label className="dashBoardLabel" key={idy}>
+                      o: you owe{" "}
+                      <strong className="orangeCode">
+                        {this.state.Currency}
+                        {-value.Amount.toFixed(2)}
+                      </strong>{" "}
+                      for {value.GroupName}
+                    </label>
+                  );
+                } else {
+                  return (
+                    <label key={idy} className="dashBoardLabel">
+                      o: owes you{" "}
+                      <strong className="greenCode">
+                        {" "}
+                        {this.state.Currency}
+                        {value.Amount.toFixed(2)}
+                      </strong>{" "}
+                      for {value.GroupName}
+                    </label>
+                  );
+                }
               })}
-            </p>
-          </div>
-        );
-      } else if (detail.Amount > 0) {
-        const x = detail.Transaction.map((value, idy) => {
-          console.log(value);
-          return (
-            <label key={idy}>
-              you ows <strong>{-value.Amount.toFixed(2)}</strong> to{" "}
-              {value.MemberName} in {value.GroupName}
-            </label>
-          );
-        });
-        return (
-          <div key={idx} className="container greenCode">
-            <p>
-              {detail.MemberName}
-              <br /> owes you {detail.Amount}
-              {x}
             </p>
           </div>
         );
       }
     });
-    // component = this.state.show.map((detail, idx) => {
-    //   if (detail.Amount < 0) {
-    //     memberOwList.push(detail);
-    //     return (
-    //       <div key={idx} className="col-col-sm3">
-    //         <label style={{ color: "#f07343" }}>
-    //           you ows <strong>{-detail.Amount.toFixed(2)}</strong> to{" "}
-    //           {detail.MemberOws} in {detail.GroupName}
-    //         </label>
-    //       </div>
-    //     );
-    //   } else if (detail.Amount > 0) {
-    //     return (
-    //       <div key={idx} className="col-col-sm3 greenCode">
-    //         <label>
-    //           you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
-    //           {detail.MemberOws} from {detail.GroupName}
-    //         </label>
-    //       </div>
-    //       // <tr key={idx}>
-    //       //   <td className="greenCode">
-    //       //     <label>
-    //       //       you gets <strong>{detail.Amount.toFixed(2)}</strong> from{" "}
-    //       //       {detail.MemberOws} from {detail.GroupName}
-    //       //     </label>
-    //       //   </td>
-    //       // </tr>
-    //     );
-    //   }
-    // });
+    componentGets = this.state.memberWithAmountList.map((detail, idx) => {
+      if (detail.Amount > 0) {
+        // const x = detail.Transaction.map((value, idy) => {
+        //   return (
+        //     <label key={idy} className="dashBoardLabel">
+        //       o: ows you{" "}
+        //       <strong className="greenCode">
+        //         {this.state.Currency}
+        //         {value.Amount.toFixed(2)}
+        //       </strong>{" "}
+        //       to {value.MemberName} in {value.GroupName}
+        //     </label>
+        //   );
+        // });
+        return (
+          <div key={idx} className="container greenCode">
+            <p style={{ fontSize: "12px" }}>
+              {detail.MemberName}
+              <br /> owes you {this.state.Currency}
+              {detail.Amount} <br />
+              {detail.Transaction.map((value, idy) => {
+                if (value.Amount < 0) {
+                  return (
+                    <label className="dashBoardLabel" key={idy}>
+                      o: you owe{" "}
+                      <strong className="orangeCode">
+                        {this.state.Currency}
+                        {-value.Amount.toFixed(2)}
+                      </strong>{" "}
+                      for {value.GroupName}
+                    </label>
+                  );
+                } else {
+                  return (
+                    <label key={idy} className="dashBoardLabel">
+                      o: owes you{" "}
+                      <strong className="greenCode">
+                        {" "}
+                        {this.state.Currency}
+                        {value.Amount.toFixed(2)}
+                      </strong>{" "}
+                      for {value.GroupName}
+                    </label>
+                  );
+                }
+              })}
+            </p>
+          </div>
+        );
+      }
+    });
     console.log("Divya : " + JSON.stringify(memberOwList));
     const popover = memberOwList.map((detail, idx) => {
       return (
@@ -269,13 +304,10 @@ class Dashboard extends Component {
     });
     return (
       <div className="container">
-        <div
-          className="row shadow mb-6 bg-white rounded"
-          style={{ padding: 0 }}
-        >
+        <div className="row shadow mb-6 bg-grey rounded" style={{ padding: 0 }}>
           <div className="col col-sm-8 border-bottom p-3">
             <label className="md-1">
-              <h3>
+              <h3 style={{ marginTop: "10px", marginLeft: "20px" }}>
                 <strong>DashBoard</strong>
               </h3>
             </label>
@@ -298,32 +330,42 @@ class Dashboard extends Component {
           className="row border-bottom shadow bg-white"
           style={{ padding: 0 }}
         >
-          <div className="col col-sm-4 border-right">
-            <label>total balance</label>
+          <div
+            className="col col-sm-4 p-2 border-right"
+            style={{ textAlign: "center" }}
+          >
+            <label style={{ marginRight: "3px" }}>total balance: </label>
             <label
-              style={
-                this.state.total < 0
-                  ? { color: "orange" }
-                  : { color: "#5bc5a7" }
-              }
+              style={total < 0 ? { color: "orange" } : { color: "#5bc5a7" }}
             >
-              {this.state.total.toFixed(2)}
+              {this.state.Currency}
+              {total.toFixed(2)}
             </label>
           </div>
-          <div className="col col-sm-4 border-right">
-            <label>you owe</label>
-            <label style={{ color: "orange" }}>
-              {this.state.ows.toFixed(2)}
+          <div
+            className="col col-sm-4 border-right"
+            style={{ textAlign: "center", marginTop: "10px" }}
+          >
+            <label>you owe: </label>
+            <label className="orangeCode" style={{ marginLeft: "3px" }}>
+              {this.state.Currency}
+              {sumOws.toFixed(2)}
             </label>
           </div>
-          <div className="col col-sm-4">
-            <label>you are owed</label>
-            <label className="greenCode">{this.state.gets.toFixed(2)}</label>
+          <div
+            className="col col-sm-4"
+            style={{ textAlign: "center", marginTop: "10px" }}
+          >
+            <label>you are owed: </label>
+            <label className="greenCode" style={{ marginLeft: "3px" }}>
+              {this.state.Currency}
+              {sumGets.toFixed(2)}
+            </label>
           </div>
         </div>
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
-          <div className="col col-sm-6"> {component}</div>
-          <div className="col col-sm-6"> {component}</div>
+          <div className="col col-sm-6"> {componentOws}</div>
+          <div className="col col-sm-6"> {componentGets}</div>
           {/* <table>
             <thead>
               <tr>
