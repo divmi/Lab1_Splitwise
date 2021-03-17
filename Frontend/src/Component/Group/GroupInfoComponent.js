@@ -24,6 +24,7 @@ class GroupInfo extends Component {
       error: "",
       component: null,
       Currency: "",
+      axiosCallInProgress: false,
     };
   }
 
@@ -56,6 +57,9 @@ class GroupInfo extends Component {
   }
 
   getTransactionDetail() {
+    this.setState({
+      axiosCallInProgress: true,
+    });
     axios
       .get("http://localhost:8000/getTransactionInfo", {
         params: {
@@ -67,6 +71,7 @@ class GroupInfo extends Component {
           console.log("All user:" + response.data);
           this.setState(() => ({
             transactionDetail: response.data,
+            axiosCallInProgress: false,
           }));
           console.log("Group info" + this.state.transactionDetail.length);
         } else {
@@ -182,22 +187,25 @@ class GroupInfo extends Component {
         );
       });
     } else {
-      showTransaction = (
-        <tr>
-          <td>
-            <img
-              src="./assets/NoTransactions.png"
-              height={350}
-              width={300}
-            ></img>
-            <h3>
-              You have not added any expenses yet{" "}
-              <i className="fas fa-frown"></i>
-            </h3>
-            <h5>Click on Add Expense button to start</h5>
-          </td>
-        </tr>
-      );
+      if (this.state.axiosCallInProgress) {
+        showTransaction = <div className="spinner-border text-success"></div>;
+      } else
+        showTransaction = (
+          <tr>
+            <td>
+              <img
+                src="./assets/NoTransactions.png"
+                height={350}
+                width={300}
+              ></img>
+              <h3>
+                You have not added any expenses yet{" "}
+                <i className="fas fa-frown"></i>
+              </h3>
+              <h5>Click on Add Expense button to start</h5>
+            </td>
+          </tr>
+        );
     }
 
     return (

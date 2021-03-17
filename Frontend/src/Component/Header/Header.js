@@ -28,7 +28,7 @@ class Header extends Component {
     if (e.target.id == "logout") {
       cookie.remove("cookie", { path: "/" });
       this.RemoveDataFromLocalStorage();
-      this.props.LogoutUser();
+      //this.props.LogoutUser();
     }
   };
 
