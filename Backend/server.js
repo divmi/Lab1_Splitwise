@@ -211,6 +211,12 @@ app.get("/getUserSpecificGetOwsInfo", function (req, res) {
   tdetail.getUserSpecificGetOwsInfo(con, req.query.email, res);
 });
 
+app.get("/getUserCanBeDeleted", function (req, res) {
+  console.log("Req Body : ", req.query);
+  var tdetail = new transaction.transactionDetail();
+  tdetail.getWhetherUserCanbeDeleted(con, req.query, res);
+});
+
 app.get("/getGroupSummary", function (req, res) {
   console.log("Req Body getGroupSummary: ", req.query.groupName);
   var tdetail = new transaction.transactionDetail();

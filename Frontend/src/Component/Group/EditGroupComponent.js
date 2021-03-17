@@ -146,9 +146,10 @@ class EditGroup extends Component {
     e.preventDefault();
     var items = this.state.userData;
     axios
-      .get("http://localhost:8000/getUserSpecificGetOwsInfo", {
+      .get("http://localhost:8000/getUserCanBeDeleted", {
         params: {
           email: i.Email,
+          groupName: this.props.match.params.value,
         },
       })
       .then((response) => {
@@ -229,9 +230,6 @@ class EditGroup extends Component {
       } else if (this.state.groupPhoto != "") {
         picture = this.state.groupPhoto;
       } else {
-        console.log(
-          "came here 111111" + this.state.userData[0].GroupProfilePicture
-        );
         picture = this.state.userData[0].GroupProfilePicture;
       }
 

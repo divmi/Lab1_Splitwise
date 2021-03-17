@@ -4,47 +4,51 @@ const bcrypt = require("bcrypt");
 
 class insert {
   async insert_user(con, body, res) {
-    const salt = await bcrypt.genSalt(10);
-    // now we set user password to hashed password
-    body.password = await bcrypt.hash(body.password, salt);
-    var checkUser =
-      "Select * from UserRegistration where Email='" + body.email + "'";
-    con.query(checkUser, function (err, result) {
-      if (err) throw err;
-      if (result.length == 0) {
-        console.log("Connected!");
-        var sql =
-          "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language) VALUES (";
-        var sql1 =
-          "'" +
-          body.name +
-          "','" +
-          body.password +
-          "','" +
-          body.email +
-          "','" +
-          "USD" +
-          "','" +
-          "(GMT-08:00) Pacific Time" +
-          "','" +
-          "English" +
-          "')";
-        console.log(sql + sql1);
-        con.query(sql + sql1, function (err, result) {
-          if (err) throw err;
-          console.log("1 record inserted" + result);
-          res.writeHead(200, {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      // now we set user password to hashed password
+      body.password = await bcrypt.hash(body.password, salt);
+      var checkUser =
+        "Select * from UserRegistration where Email='" + body.email + "'";
+      con.query(checkUser, function (err, result) {
+        if (err) throw err;
+        if (result.length == 0) {
+          console.log("Connected!");
+          var sql =
+            "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language) VALUES (";
+          var sql1 =
+            "'" +
+            body.name +
+            "','" +
+            body.password +
+            "','" +
+            body.email +
+            "','" +
+            "USD" +
+            "','" +
+            "(GMT-08:00) Pacific Time" +
+            "','" +
+            "English" +
+            "')";
+          console.log(sql + sql1);
+          con.query(sql + sql1, function (err, result) {
+            if (err) throw err;
+            console.log("1 record inserted" + result);
+            res.writeHead(200, {
+              "Content-Type": "text/plain",
+            });
+            res.end(JSON.stringify(result));
+          });
+        } else {
+          res.writeHead(401, {
             "Content-Type": "text/plain",
           });
-          res.end(JSON.stringify(result));
-        });
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("User is already registered");
-      }
-    });
+          res.end("User is already registered");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   insert_Group(con, body, res) {
