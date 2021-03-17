@@ -270,51 +270,6 @@ class EditGroup extends Component {
               </button>
             </td>
           </tr>
-          // <tr key={idx}>
-          //   <td>
-          //     <Autocomplete
-          //       className="pding"
-          //       options={this.state.allUser}
-          //       onChange={this.handleNameChange}
-          //       getOptionLabel={(option) => option.Name}
-          //       inputValue={val.Name}
-          //       style={{ width: 200 }}
-          //       renderInput={(params) => (
-          //         <TextField
-          //           {...params}
-          //           name="Name"
-          //           variant="outlined"
-          //           size="small"
-          //           onChange={({ target }) =>
-          //             this.handleNameChange(target.value)
-          //           }
-          //         />
-          //       )}
-          //     />
-          //   </td>
-          //   <td>
-          //     <Autocomplete
-          //       className="pding"
-          //       freeSolo
-          //       options={this.state.allUser}
-          //       getOptionLabel={(option) => option.Email}
-          //       inputValue={val.Email}
-          //       onChange={this.handleEmailChange}
-          //       style={{ width: 200 }}
-          //       renderInput={(params) => (
-          //         <TextField
-          //           {...params}
-          //           name="Email"
-          //           variant="outlined"
-          //           size="small"
-          //           onChange={({ target }) =>
-          //             this.handleEmailChange(target.value)
-          //           }
-          //         />
-          //       )}
-          //     />
-          //   </td>
-          // </tr>
         );
       });
     } else {

@@ -158,30 +158,25 @@ class GroupInfo extends Component {
                 day: "numeric",
               })}
             </td>
-            <td style={{ width: "90%" }}>
+            <td style={{ width: "60%" }}>
               <i
                 className="fa fa-shopping-cart fa-2x"
                 style={{ color: "green", marginRight: 3 }}
               ></i>
               {name.TransactionDetail}
             </td>
-            <td style={{ width: "15%" }}>
-              <div className="row">
-                <div
-                  className="col"
-                  style={{
-                    textAlign: "right",
-                    fontSize: 12,
-                    color: "GrayText",
-                  }}
-                >
-                  {name.Name} <label>paid</label>
-                </div>
-                <div className="col" style={{ textAlign: "right" }}>
-                  {this.state.Currency}
-                  {name.Amount}
-                </div>
-              </div>
+            <td
+              style={{
+                width: "30%",
+                textAlign: "right",
+                fontSize: 12,
+                color: "GrayText",
+              }}
+            >
+              <p>
+                {name.Name} <br /> paid <br /> {this.state.Currency}
+                {name.Amount}
+              </p>
             </td>
           </tr>
         );

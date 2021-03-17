@@ -53,10 +53,14 @@ class Header extends Component {
       }
       console.log(picture);
       registerOrLogin = (
-        <div className="col col-sm-4" style={{ textAlign: "right" }}>
+        <div className="col col-sm-4 p-1" style={{ textAlign: "center" }}>
           <Link
             to="/home"
-            style={{ textDecoration: "none", color: "white", marginRight: 30 }}
+            style={{
+              textDecoration: "none",
+              color: "white",
+              marginRight: 20,
+            }}
           >
             Home
           </Link>
@@ -68,7 +72,7 @@ class Header extends Component {
           ></img>
 
           <Button
-            className="btn btn-profile"
+            className="btn btn-profile shadow-none"
             aria-controls="simple-menu"
             aria-haspopup="true"
             onClick={this.handleClick}

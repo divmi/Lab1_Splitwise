@@ -116,29 +116,29 @@ class Home extends Component {
         {redirectVar}
         <div className="row row-flex">
           <div className="setHeight col col-sm-2"></div>
-          <div className="setHeight col-md-2point5 shadow-sm bg-light rounded no-float">
+          <div className="setHeight col-md-2point5 p-2 shadow-sm bg-light rounded no-float">
             <div
               id="dashboard-div no-float"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
             >
               <button
-                className="btn btn-link"
+                className="btn shadow-none"
                 onClick={this.OpenDashBoard}
-                style={{ textDecoration: "none", color: "black", fontSize: 13 }}
+                style={{ textDecoration: "none", fontSize: 13 }}
               >
                 <i className="fas fa-bars"></i> DashBoard
               </button>
               <hr />
               <button
-                className="btn btn-link"
+                className="btn shadow-none"
                 onClick={this.OpenRecentActivity}
-                style={{ textDecoration: "none", color: "black", fontSize: 13 }}
+                style={{ textDecoration: "none", fontSize: 13 }}
               >
                 <i className="fas fa-flag"></i> Recent activity
               </button>
               <hr />
               <Label>All Groups</Label>
-              <table className="table table-hover">
+              <table id="groupTable" className="table table-hover">
                 <tbody>{groupName}</tbody>
               </table>
             </div>

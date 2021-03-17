@@ -128,3 +128,6 @@
 .col-md-2point5 {
   width: 12%;
 }
+#groupTable tbody tr.selected {
+  color: wheat !important;
+}

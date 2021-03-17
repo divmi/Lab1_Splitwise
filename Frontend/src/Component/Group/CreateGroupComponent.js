@@ -17,13 +17,12 @@ class CreateGroup extends Component {
       Email: "",
     };
   }
-
   OnNameChange = (e) => {
     //if (["userName"].includes(e.target.id)) {
-    if (e.target.innerText != "") {
+    if (e.target.textContent != "") {
       let userDataBackup = [...this.state.userData];
       let found = this.state.allUser[0].find(
-        (element) => element.Name == e.target.innerText
+        (element) => element.Name == e.target.textContent
       );
       if (found) {
         let item = {
@@ -41,10 +40,10 @@ class CreateGroup extends Component {
   };
 
   onEmailChange = (e) => {
-    if (e.target.innerText != "") {
+    if (e.target.textContent != "") {
       let userData = [...this.state.userData];
       let found = this.state.allUser[0].find(
-        (element) => element.Name == e.target.innerText
+        (element) => element.Name == e.target.textContent
       );
       if (found) {
         let item = {
@@ -136,13 +135,12 @@ class CreateGroup extends Component {
 
   handleItemDeleted(e, i) {
     e.preventDefault();
-    console.log("value of i is :" + JSON.stringify(i));
     var items = this.state.userData;
-    console.log("value of stringy is :" + JSON.stringify(items));
     items.splice(items.indexOf(i), 1);
     this.setState({
       userData: items,
     });
+    console.log("value of stringy is :" + JSON.stringify(this.state.userData));
   }
 
   componentDidMount() {
@@ -198,54 +196,6 @@ class CreateGroup extends Component {
           change={this.OnNameChange.bind(this)}
           emailChange={this.onEmailChange.bind(this)}
         />
-        /* <td>
-            <Autocomplete
-              className="pding"
-              id="Name"
-              name="Name"
-              options={this.state.allUser[0]}
-              onChange={this.OnNameChange}
-              getOptionLabel={(option) => option.Name}
-              style={{ width: 200 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="Name"
-                  variant="outlined"
-                  size="small"
-                  onChange={({ target }) => this.OnNameChange(target.value)}
-                />
-              )}
-            />
-          </td>
-          <td>
-            <Autocomplete
-              className="pding"
-              id="Email"
-              name="Email"
-              options={this.state.allUser[0]}
-              getOptionLabel={(option) => option.Email}
-              onChange={this.onEmailChange}
-              style={{ width: 200 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name="Email"
-                  variant="outlined"
-                  size="small"
-                  onChange={({ target }) => this.onEmailChange(target.value)}
-                />
-              )}
-            />
-          </td>
-          <td> */
-        /* <button
-              className="btn"
-              onClick={(e) => this.handleItemDeleted(e, val)}
-            >
-              <i className="fa fa-remove" aria-hidden="true"></i>
-            </button>
-          </td> */
       );
     });
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
