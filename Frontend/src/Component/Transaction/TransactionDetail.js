@@ -176,7 +176,7 @@ class TransactionDetail extends Component {
               Recent activity
             </label>
           </div>
-          <div className="col-col-6 offset-5">
+          <div className="col-col-6 offset-4">
             <select className="form-control" onChange={this.OnGroupSelect}>
               <option value="">Sort by Group</option>
               {showGroupName}

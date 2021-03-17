@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import cookie from "react-cookies";
+import { Redirect } from "react-router-dom";
 import {
   Button,
   Form,
@@ -69,13 +71,9 @@ class Register extends Component {
               loginError: "",
               authFlag: true,
             });
-            this.props.RegisterUser({ data });
+            //this.props.RegisterUser({ data }); //reducer call
+            this.SetLocalStorage(data);
             alert("Successfully Created! Please Continue to Login");
-            this.setState({
-              name: "",
-              email: "",
-              password: "",
-            });
           } else {
             this.setState({
               loginError: "User is already registered",
@@ -93,6 +91,27 @@ class Register extends Component {
     }
   };
 
+  SetLocalStorage(userInfo) {
+    if (typeof Storage !== "undefined") {
+      localStorage.clear();
+      try {
+        let data = {
+          Name: userInfo.name,
+          Email: userInfo.email,
+          Currency: "USD",
+          Timezone: "America/Los_Angeles",
+          Language: "English",
+          ContactNo: "80XXXXXXXXX",
+          UserProfilePic: "./assets/userIcon.jpg",
+        };
+        console.log(data);
+        localStorage.setItem("userData", JSON.stringify(data));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   validateForm = () => {
     const { userInfo } = this.state;
     let error = {};
@@ -105,9 +124,13 @@ class Register extends Component {
   };
 
   render() {
+    let redirectVar = null;
+    if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
+    else redirectVar = <Redirect to="/register" />;
     return (
       <>
         <div className="container-fluid form-cont">
+          {redirectVar}
           <div className="flex-container">
             <div className="row">
               <div className="col col-sm-6">

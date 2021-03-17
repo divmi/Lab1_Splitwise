@@ -103,7 +103,6 @@ class Login extends Component {
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
-          //this.props.UserState(response.data);
           this.SetLocalStorage(JSON.stringify(response.data[0]));
         }
       })
@@ -144,7 +143,7 @@ class Login extends Component {
                 {this.state.error}
               </div>
               <h3>WELCOME TO SPLITWISE</h3>
-              <Form onSubmit={this.handleSubmit} className="form-stacked">
+              <Form className="form-stacked">
                 <FormGroup>
                   <Label htmlFor="email" className="Lable-align">
                     Email address

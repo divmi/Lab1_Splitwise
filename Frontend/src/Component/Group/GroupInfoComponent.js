@@ -187,7 +187,7 @@ class GroupInfo extends Component {
           <td>
             <img
               src="./assets/NoTransactions.png"
-              height={400}
+              height={350}
               width={300}
             ></img>
             <h3>

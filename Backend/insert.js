@@ -15,7 +15,7 @@ class insert {
         if (result.length == 0) {
           console.log("Connected!");
           var sql =
-            "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language) VALUES (";
+            "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language, ContactNo) VALUES (";
           var sql1 =
             "'" +
             body.name +
@@ -29,11 +29,18 @@ class insert {
             "(GMT-08:00) Pacific Time" +
             "','" +
             "English" +
+            "','" +
+            "80XXXXXXXXX" +
             "')";
           console.log(sql + sql1);
           con.query(sql + sql1, function (err, result) {
             if (err) throw err;
             console.log("1 record inserted" + result);
+            let data = {
+              Name: body.name,
+              Email: body.email,
+            };
+            res.cookie("cookie", JSON.stringify(data));
             res.writeHead(200, {
               "Content-Type": "text/plain",
             });
