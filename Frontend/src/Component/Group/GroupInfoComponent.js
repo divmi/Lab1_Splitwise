@@ -232,7 +232,7 @@ class GroupInfo extends Component {
               Add an Expense
             </Button>
             <Link to={`/editGroup/${this.props.name}`}>
-              <Button className="btn btn-light">
+              <Button className="btn btn-light shadow-none">
                 <i className="fas fa-cog "></i>
               </Button>
             </Link>
@@ -322,7 +322,7 @@ class GroupInfo extends Component {
             </div>
           </div>
           <div className="col col-sm-4">
-            GroupSummary
+            <p style={{ fontWeight: "bold" }}>Group Summary</p>
             {this.state.component}
           </div>
         </div>

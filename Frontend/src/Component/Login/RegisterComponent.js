@@ -12,8 +12,8 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { isEmail } from "validator";
-import { connect } from "react-redux";
-import * as Action from "../../actions/actionCreators";
+// import { connect } from "react-redux";
+// import * as Action from "../../actions/actionCreators";
 
 // const mapStateToProps = (state) => {
 //   return {
@@ -166,6 +166,7 @@ class Register extends Component {
                       Here&apos;s my <strong>email address</strong>
                     </Label>
                     <Input
+                      data-testid="email-input-box"
                       type="email"
                       id="email"
                       name="email"
@@ -210,10 +211,10 @@ class Register extends Component {
     );
   }
 }
-function mapDispatchToProps(dispatch) {
-  return {
-    RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
+//   };
+// }
 
-export default connect(null, mapDispatchToProps)(Register);
+export default Register; //connect(null, mapDispatchToProps)(

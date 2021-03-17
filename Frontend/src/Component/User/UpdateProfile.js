@@ -17,8 +17,8 @@ class UpdateProfile extends Component {
         Name: "",
         Timezone: "",
         Email: "",
+        UserProfilePic: "",
       },
-      UserProfilePic: "",
       error: {},
       loginError: "",
       auth: false,
@@ -44,34 +44,23 @@ class UpdateProfile extends Component {
   componentDidMount() {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        let data = localStorage.getItem("userData");
         this.setState({
           userinfo: Object.assign(
             this.state.userinfo,
             JSON.parse(localStorage.getItem("userData"))
           ),
-          UserProfilePic: data.UserProfilePic,
         });
       }
-      if (
-        this.state.UserProfilePic == "" ||
-        this.state.UserProfilePic == null
-      ) {
-        this.setState({
-          UserProfilePic: `./assets/userIcon.jpg`,
-        });
-      } else {
-        try {
-          const getImage = this.state.UserProfilePic;
-          if (getImage != null)
-            this.setState({
-              UserProfilePic: getImage,
-            });
-        } catch (error) {
+      try {
+        const getImage = this.state.UserProfilePic;
+        if (getImage != null)
           this.setState({
-            UserProfilePic: "./assets/userIcon.jpg",
+            UserProfilePic: getImage,
           });
-        }
+      } catch (error) {
+        this.setState({
+          UserProfilePic: "./assets/userIcon.jpg",
+        });
       }
     }
   }
@@ -87,22 +76,19 @@ class UpdateProfile extends Component {
     //prevent page from refresh
     e.preventDefault();
     const error = this.validateForm();
-    const data = this.state.userinfo;
-    data.UserProfilePic = this.state.UserProfilePic;
     if (Object.keys(error).length == 0) {
       //set the with credentials to true
       axios.defaults.withCredentials = true;
-      console.log(JSON.stringify(this.state.userinfo));
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/updateProfile", data)
+        .post("http://localhost:8000/updateProfile", this.state.userinfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
             this.setState({
               authFlag: true,
             });
-            this.SetLocalStorage(JSON.stringify(data));
+            this.SetLocalStorage(JSON.stringify(this.state.userinfo));
           } else {
             this.setState({
               loginError:
@@ -159,12 +145,18 @@ class UpdateProfile extends Component {
     else if (this.state.authFlag) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/updateProfile" />;
+    let picture = "";
+    if (this.state.userinfo.UserProfilePic != "") {
+      picture = this.state.userinfo.UserProfilePic;
+    } else {
+      picture = "./assets/userIcon.jpg";
+    }
     const options = map(timezones, (val, key) => (
       <option key={val} value={val}>
         {key}
       </option>
     ));
-    console.log(this.state.UserProfilePic);
+    console.log(this.state.userinfo.UserProfilePic);
     return (
       <div>
         {redirectVar}
@@ -176,12 +168,7 @@ class UpdateProfile extends Component {
             <h2 style={{ textAlign: "left" }}>Your Account</h2>
             <div className="row">
               <div className="col col-sm-2">
-                <img
-                  src={this.state.UserProfilePic}
-                  alt="..."
-                  width={200}
-                  height={200}
-                ></img>
+                <img src={picture} alt="..." width={200} height={200}></img>
                 <label>Change your avatar</label>
                 <input
                   className="btn"

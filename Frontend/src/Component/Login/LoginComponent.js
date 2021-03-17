@@ -13,8 +13,8 @@ import {
 } from "reactstrap";
 import axios from "axios";
 //import Home from "../Header/HomeComponent";
-import { connect } from "react-redux";
-import * as Action from "../../actions/index";
+//import { connect } from "react-redux";
+//import * as Action from "../../actions/index";
 
 class Login extends Component {
   constructor(props) {
@@ -122,7 +122,6 @@ class Login extends Component {
 
   render() {
     let redirectVar = null;
-    console.log(cookie.load("cookie"));
     if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
     return (
@@ -149,6 +148,7 @@ class Login extends Component {
                     Email address
                   </Label>
                   <Input
+                    data-testid="email-input-box"
                     type="email"
                     id="email"
                     name="email"
@@ -174,6 +174,7 @@ class Login extends Component {
                 <FormGroup row>
                   <Col>
                     <Button
+                      data-testid="btn-submit"
                       type="submit"
                       className="btn btn-Normal"
                       onClick={this.submitForm}
@@ -192,10 +193,10 @@ class Login extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    UserState: (data) => dispatch(Action.UserState(data)),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     UserState: (data) => dispatch(Action.UserState(data)),
+//   };
+// }
 
-export default connect(null, mapDispatchToProps)(Login);
+export default Login; //connect(null, mapDispatchToProps)(

@@ -111,11 +111,6 @@ class Dashboard extends Component {
             },
           ],
         });
-        // this.state.memberWithAmountList.push({
-        //   MemberName: memberName,
-        //   Amount: finalMoney,
-        //   Transaction: allTransaction,
-        // });
       });
       console.log(JSON.stringify(this.state.memberWithAmountList));
     }

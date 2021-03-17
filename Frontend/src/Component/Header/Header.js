@@ -4,8 +4,8 @@ import { Redirect, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { connect } from "react-redux";
-import * as Action from "../../actions/actionCreators";
+// import { connect } from "react-redux";
+// import * as Action from "../../actions/actionCreators";
 
 class Header extends Component {
   constructor(props) {
@@ -42,15 +42,15 @@ class Header extends Component {
 
   render() {
     var registerOrLogin = null;
-    let picture = "../assets/userIcon.jpg";
     let memberName = "";
     if (cookie.load("cookie")) {
+      let picture = "";
       memberName = cookie.load("cookie").Name;
       var value = JSON.parse(localStorage.getItem("userData"));
       if (value != null) {
         if (value.UserProfilePic != null) picture = value.UserProfilePic;
         memberName = value.Name;
-      }
+      } else picture = "../assets/userIcon.jpg";
       console.log(picture);
       registerOrLogin = (
         <div className="col col-sm-4 p-1" style={{ textAlign: "center" }}>
@@ -151,10 +151,10 @@ class Header extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    LogoutUser: () => dispatch(Action.LogoutUser()),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     LogoutUser: () => dispatch(Action.LogoutUser()),
+//   };
+// }
 
-export default connect(null, mapDispatchToProps)(Header);
+export default Header; //connect(null, mapDispatchToProps)(

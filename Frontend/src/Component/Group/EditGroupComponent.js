@@ -185,7 +185,7 @@ class EditGroup extends Component {
         groupName: this.props.match.params.value,
       });
       this.setState({ userData: this.getMemberInfo() });
-      console.log(this.state.userData.length);
+      console.log(JSON.stringify(this.state.userData));
     }
   }
 
@@ -224,14 +224,10 @@ class EditGroup extends Component {
       message = <Redirect to="/home" />;
     }
     if (this.state.userData != null && this.state.userData.length > 0) {
-      if (this.state.userData[0].GroupProfilePicture == "") {
-        console.log("came here");
+      if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
+      else if (this.state.userData[0].GroupProfilePicture == "")
         picture = "../assets/userIcon.jpg";
-      } else if (this.state.groupPhoto != "") {
-        picture = this.state.groupPhoto;
-      } else {
-        picture = this.state.userData[0].GroupProfilePicture;
-      }
+      else picture = this.state.userData[0].GroupProfilePicture;
 
       groupMemberName = this.state.userData.map((val, idx) => {
         console.log(val);
