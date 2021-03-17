@@ -141,12 +141,11 @@ class GroupInfo extends Component {
 
   render() {
     let showTransaction = null;
-    let picture = "../assets/userIcon.jpg";
+    let picture = "../assets/userIcon.png";
     if (
       this.state.transactionDetail != null &&
       this.state.transactionDetail.length > 0
     ) {
-      console.log("Came inside");
       if (this.state.transactionDetail[0].GroupProfilePicture != "") {
         picture = this.state.transactionDetail[0].GroupProfilePicture;
       }
@@ -191,7 +190,11 @@ class GroupInfo extends Component {
       showTransaction = (
         <tr>
           <td>
-            <img src="./assets/shopping.jpg" height={300} width={300}></img>
+            <img
+              src="./assets/NoTransactions.png"
+              height={400}
+              width={300}
+            ></img>
             <h3>
               You have not added any expenses yet{" "}
               <i className="fas fa-frown"></i>
@@ -203,25 +206,23 @@ class GroupInfo extends Component {
     }
 
     return (
-      <div className="container-fluid">
+      <div className="container-flex">
         <div className="row">
           <div className="col col-sm-3">
             <div
               className="row"
-              style={{ alignItems: "center", marginTop: 15 }}
+              style={{ alignItems: "center", marginTop: 15, marginLeft: 10 }}
             >
-              <img
-                src={picture}
-                width={30}
-                height={30}
-                className="rounded-circle"
-              ></img>
+              <img src={picture} className="rounded-circle profileImage"></img>
               <h4>{this.props.name}</h4>
             </div>
           </div>
           <hr></hr>
-          <div className="col col-sm-3"></div>
-          <div className="col col-sm-6" style={{ alignContent: "center" }}>
+          <div className="col col-sm-2"></div>
+          <div
+            className="col col-sm-5"
+            style={{ textAlign: "center", marginRight: "100px" }}
+          >
             <Button
               variant="primary"
               className="btn btn-Normal"
@@ -235,91 +236,91 @@ class GroupInfo extends Component {
             >
               Add an Expense
             </Button>
-            <Modal show={this.state.isOpen} onHide={this.closeModal}>
-              <Modal.Header className="custom-header" closeButton>
-                <Modal.Title style={{ marginLeft: "10px" }}>
-                  Add an Expense
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Container>
-                  <Row>
-                    <label>With you and : {this.props.name}</label>
-                  </Row>
-                  <hr></hr>
-                  <Row>
-                    <Col xs={6} md={4}>
-                      <Image
-                        width={150}
-                        height={100}
-                        src="./assets/Bill.png"
-                        rounded
-                      />
-                    </Col>
-                    <Col xs={6} md={6}>
-                      <Form.Group>
-                        <Form.Control
-                          style={{
-                            borderStyle: "dotted",
-                            borderRadius: 1,
-                            textDecoration: "none",
-                          }}
-                          type="text"
-                          onChange={this.handleTransactionChange}
-                          placeholder="Enter a description"
-                          required
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Control
-                          style={{
-                            borderStyle: "dotted",
-                            borderRadius: 1,
-                            textDecoration: "none",
-                          }}
-                          type="number"
-                          step="0.1"
-                          min="0"
-                          onChange={this.handleAmountChange}
-                          placeholder={this.state.Currency + " 0.00"}
-                          required
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Label>
-                          Paid by <strong>you</strong> and split{" "}
-                          <strong>equally</strong>
-                        </Form.Label>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Container>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={this.closeModal}>
-                  Close
-                </Button>
-
-                <Button
-                  variant="btn btn-green"
-                  type="submit"
-                  onClick={this.handleSubmit}
-                >
-                  Submit
-                </Button>
-              </Modal.Footer>
-            </Modal>
             <Link to={`/editGroup/${this.props.name}`}>
               <Button className="btn btn-light">
                 <i className="fas fa-cog "></i>
               </Button>
             </Link>
           </div>
+          <Modal show={this.state.isOpen} onHide={this.closeModal}>
+            <Modal.Header className="custom-header" closeButton>
+              <Modal.Title style={{ marginLeft: "10px" }}>
+                Add an Expense
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Container>
+                <Row>
+                  <label>With you and : {this.props.name}</label>
+                </Row>
+                <hr></hr>
+                <Row>
+                  <Col xs={6} md={4}>
+                    <Image
+                      width={150}
+                      height={100}
+                      src="./assets/Bill.png"
+                      rounded
+                    />
+                  </Col>
+                  <Col xs={6} md={6}>
+                    <Form.Group>
+                      <Form.Control
+                        style={{
+                          borderStyle: "dotted",
+                          borderRadius: 1,
+                          textDecoration: "none",
+                        }}
+                        type="text"
+                        onChange={this.handleTransactionChange}
+                        placeholder="Enter a description"
+                        required
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Control
+                        style={{
+                          borderStyle: "dotted",
+                          borderRadius: 1,
+                          textDecoration: "none",
+                        }}
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        onChange={this.handleAmountChange}
+                        placeholder={this.state.Currency + " 0.00"}
+                        required
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>
+                        Paid by <strong>you</strong> and split{" "}
+                        <strong>equally</strong>
+                      </Form.Label>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </Container>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.closeModal}>
+                Close
+              </Button>
+
+              <Button
+                variant="btn btn-green"
+                type="submit"
+                onClick={this.handleSubmit}
+              >
+                Submit
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
         <hr></hr>
         <div className="row">
           <div className="col col-sm-8">
-            <div className="row shadow p-3 mb-5 bg-light rounded">
+            <div className="row shadow p-3 mb-5 bg-white rounded">
               <table className="table">
                 <tbody>{showTransaction}</tbody>
               </table>

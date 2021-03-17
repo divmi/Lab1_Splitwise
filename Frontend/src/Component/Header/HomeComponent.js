@@ -112,11 +112,11 @@ class Home extends Component {
       });
     }
     return (
-      <div className="container">
+      <div className="container-flex">
         {redirectVar}
         <div className="row row-flex">
-          <div className="setHeight col col-sm-1"></div>
-          <div className="setHeight col col-sm-2 shadow-sm p-3 mb-3 bg-light rounded no-float">
+          <div className="setHeight col col-sm-2"></div>
+          <div className="setHeight col-md-2point5 shadow-sm bg-light rounded no-float">
             <div
               id="dashboard-div no-float"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
@@ -143,9 +143,10 @@ class Home extends Component {
               </table>
             </div>
           </div>
-          <div className="setHeight col col-sm-9 shadow-sm p-3 mb-5 bg-light rounded no-float">
+          <div className="setHeight col col-sm-6 shadow-sm p-3 mb-5 bg-light rounded no-float">
             {this.state.component}
           </div>
+          <div className="setHeight col col-sm-2 rounded no-float"></div>
         </div>
       </div>
     );

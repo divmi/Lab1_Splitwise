@@ -155,7 +155,11 @@ class TransactionDetail extends Component {
       showTransaction = (
         <tr>
           <td>
-            <img src="./assets/shopping.jpg" height={300} width={300}></img>
+            <img
+              src="./assets/NoTransactions.png"
+              height={300}
+              width={300}
+            ></img>
             <h3>
               You have not added any expenses yet
               <i className="fas fa-frown"></i>

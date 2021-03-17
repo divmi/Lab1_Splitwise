@@ -103,10 +103,7 @@ class Header extends Component {
             <div className="row " style={{ flexWrap: "nowrap" }}>
               <img
                 src={"./assets/Logo.png"}
-                className="rounded float-center customMargin"
-                width={30}
-                height={30}
-                alt="Splitwise"
+                className="rounded float-center customMargin profileImage"
               ></img>
               <h3 className="label-custom customMargin">Splitwise</h3>
             </div>

@@ -16,8 +16,9 @@ class UpdateProfile extends Component {
         Language: "",
         Name: "",
         Timezone: "",
-        UserProfilePic: "",
+        Email: "",
       },
+      UserProfilePic: "",
       error: {},
       loginError: "",
       auth: false,
@@ -42,22 +43,35 @@ class UpdateProfile extends Component {
 
   componentDidMount() {
     if (typeof Storage !== "undefined") {
-      if (localStorage.key("userData"))
-        console.log(JSON.parse(localStorage.getItem("userData")));
-      this.setState({
-        userinfo: Object.assign(
-          this.state.userinfo,
-          JSON.parse(localStorage.getItem("userData"))
-        ),
-      });
-      if (this.state.userinfo.UserProfilePic == "") {
+      if (localStorage.key("userData")) {
+        let data = localStorage.getItem("userData");
+        this.setState({
+          userinfo: Object.assign(
+            this.state.userinfo,
+            JSON.parse(localStorage.getItem("userData"))
+          ),
+          UserProfilePic: data.UserProfilePic,
+        });
+      }
+      if (
+        this.state.UserProfilePic == "" ||
+        this.state.UserProfilePic == null
+      ) {
         this.setState({
           UserProfilePic: `./assets/userIcon.jpg`,
         });
       } else {
-        this.setState({
-          UserProfilePic: this.state.userinfo.UserProfilePic,
-        });
+        try {
+          const getImage = this.state.UserProfilePic;
+          if (getImage != null)
+            this.setState({
+              UserProfilePic: getImage,
+            });
+        } catch (error) {
+          this.setState({
+            UserProfilePic: "./assets/userIcon.jpg",
+          });
+        }
       }
     }
   }
@@ -131,7 +145,12 @@ class UpdateProfile extends Component {
           UserProfilePic: "http://localhost:8000/" + response.data,
         });
       })
-      .catch((error) => console.log("error " + error));
+      .catch((error) => {
+        console.log("error " + error);
+        this.setState({
+          UserProfilePic: "./assets/userIcon.jpg",
+        });
+      });
   };
 
   render() {
@@ -145,7 +164,7 @@ class UpdateProfile extends Component {
         {key}
       </option>
     ));
-
+    console.log(this.state.UserProfilePic);
     return (
       <div>
         {redirectVar}
@@ -189,11 +208,9 @@ class UpdateProfile extends Component {
                           id="Name"
                           name="Name"
                           placeholder="First Name"
-                          // invalid={this.state.error.name ? true : false}
                           value={this.state.userinfo.Name}
                           onChange={this.handleChange}
                         ></Input>
-                        {/* <FormFeedback>{this.state.error.name}</FormFeedback> */}
                       </FormGroup>
                       <FormGroup>
                         <Label htmlFor="email">Email</Label>
@@ -207,7 +224,6 @@ class UpdateProfile extends Component {
                           readOnly
                         ></Input>
                       </FormGroup>
-                      {/* <FormFeedback>{this.state.error.email}</FormFeedback> */}
 
                       <FormGroup>
                         <Label htmlFor="contactNo">Your Phone number</Label>
@@ -225,11 +241,7 @@ class UpdateProfile extends Component {
                               ? ""
                               : this.state.userinfo.ContactNo
                           }
-                          // invalid={this.state.error.contactNo ? true : false}
                         ></Input>
-                        {/* <FormFeedback>
-                          {this.state.error.contactNo}
-                        </FormFeedback> */}
                       </FormGroup>
                     </div>
                     <div

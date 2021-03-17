@@ -307,21 +307,20 @@ class Dashboard extends Component {
     });
     return (
       <div className="container">
-        <div className="row shadow mb-6 bg-grey rounded" style={{ padding: 0 }}>
-          <div className="col col-sm-8 border-bottom p-3">
+        <div className="row shadow bg-light rounded">
+          <div className="col col-sm-8 border-bottom">
             <label className="md-1">
               <h3 style={{ marginTop: "10px", marginLeft: "20px" }}>
                 <strong>DashBoard</strong>
               </h3>
             </label>
           </div>
-          <div className="col col-sm-4 border-bottom p-3">
+          <div
+            className="col col-sm-4 border-bottom"
+            style={{ textAlign: "right" }}
+          >
             <Button
               className="btn btn-Normal"
-              style={{
-                alignSelf: "center",
-                alignContent: "center",
-              }}
               type="button"
               onClick={this.openModal}
             >
@@ -334,48 +333,52 @@ class Dashboard extends Component {
           style={{ padding: 0 }}
         >
           <div
-            className="col col-sm-4 p-2 border-right"
-            style={{ textAlign: "center" }}
+            className="col col-sm-4 border-right"
+            style={{ textAlign: "center", marginTop: "10px" }}
           >
-            <label style={{ marginRight: "3px" }}>total balance: </label>
-            <label
-              style={total < 0 ? { color: "orange" } : { color: "#5bc5a7" }}
-            >
-              {this.state.Currency}
-              {total.toFixed(2)}
-            </label>
+            <p style={{ marginRight: "3px" }}>
+              total balance: <br />
+              <strong
+                style={total < 0 ? { color: "#f07343" } : { color: "#5bc5a7" }}
+              >
+                {this.state.Currency}
+                {total.toFixed(2)}
+              </strong>
+            </p>
           </div>
           <div
             className="col col-sm-4 border-right"
             style={{ textAlign: "center", marginTop: "10px" }}
           >
-            <label>you owe: </label>
-            <label className="orangeCode" style={{ marginLeft: "3px" }}>
-              {this.state.Currency}
-              {sumOws.toFixed(2)}
-            </label>
+            <p>
+              you owe: <br />
+              <strong className="orangeCode" style={{ marginLeft: "3px" }}>
+                {this.state.Currency}
+                {sumOws.toFixed(2)}
+              </strong>
+            </p>
           </div>
           <div
             className="col col-sm-4"
             style={{ textAlign: "center", marginTop: "10px" }}
           >
-            <label>you are owed: </label>
-            <label className="greenCode" style={{ marginLeft: "3px" }}>
-              {this.state.Currency}
-              {sumGets.toFixed(2)}
-            </label>
+            <p>
+              you are owed: <br />
+              <strong className="greenCode" style={{ marginLeft: "3px" }}>
+                {this.state.Currency}
+                {sumGets.toFixed(2)}
+              </strong>
+            </p>
           </div>
         </div>
         <div className="row top-buffer shadow p-5 mb-8 bg-white rounded">
           <div className="col col-sm-6 border-right">
-            {" "}
             <label style={{ color: "GrayText", marginLeft: "10px" }}>
               <strong>You owes</strong>
             </label>
             {componentOws}
           </div>
           <div className="col col-sm-6">
-            {" "}
             <label style={{ color: "GrayText", marginLeft: "10px" }}>
               <strong>You are owed</strong>
             </label>

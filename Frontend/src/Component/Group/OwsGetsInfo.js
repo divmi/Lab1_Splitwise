@@ -123,7 +123,7 @@ class OwsGetDetail extends Component {
           memberName.UserProfilePic == "" ||
           memberName.UserProfilePic == null
         ) {
-          memberName.UserProfilePic = "./assets/userIcon.jpg";
+          memberName.UserProfilePic = "./assets/userIcon.png";
         }
         this.setState({
           memberWithAmountList: [
@@ -145,12 +145,10 @@ class OwsGetDetail extends Component {
     component = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount > 0) {
         return (
-          <div key={idx} className="row p-1 greenCode">
+          <div key={idx} className="row greenCode">
             <img
               src={detail.UserProfilePic}
-              width={30}
-              height={30}
-              className="rounded-circle"
+              className="rounded-circle profileImage"
             ></img>
             <p style={{ fontSize: "14px", marginLeft: "5px" }}>
               {detail.Name} <br />
@@ -162,23 +160,28 @@ class OwsGetDetail extends Component {
       } else {
         let display = "";
         if (detail.Amount == 0) {
-          display = "settledUp";
+          display = (
+            <label style={{ color: "GrayText" }}>
+              {detail.Name} <br />
+              settledUp
+            </label>
+          );
         } else {
-          display = "Ows " + this.state.Currency + detail.Amount;
+          display = (
+            <label>
+              {detail.Name} <br />
+              Ows {this.state.Currency} {detail.Amount}
+            </label>
+          );
         }
         return (
-          <div key={idx} className="row p-1 orangeCode">
+          <div key={idx} className="row orangeCode">
             <img
               src={detail.UserProfilePic}
-              width={30}
-              height={30}
-              className="rounded-circle"
+              className="rounded-circle profileImage"
             ></img>
 
-            <p style={{ fontSize: "14px", marginLeft: "5px" }}>
-              {detail.Name} <br />
-              {display}
-            </p>
+            <p style={{ fontSize: "14px", marginLeft: "5px" }}>{display}</p>
           </div>
         );
       }
