@@ -98,7 +98,7 @@ class Register extends Component {
         let data = {
           Name: userInfo.name,
           Email: userInfo.email,
-          Currency: "USD",
+          Currency: "$",
           Timezone: "America/Los_Angeles",
           Language: "English",
           ContactNo: "80XXXXXXXXX",

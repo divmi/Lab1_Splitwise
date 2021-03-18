@@ -121,14 +121,14 @@ class CreateGroup extends Component {
           }));
         } else {
           this.setState({
-            error: "Please enter correct credentials",
+            error: "User Not Found",
             authFlag: false,
           });
         }
       })
       .catch((e) => {
         this.setState({
-          error: "Please enter correct credentials" + e,
+          error: "User Not Found" + e,
         });
       });
   }
@@ -140,7 +140,6 @@ class CreateGroup extends Component {
     this.setState({
       userData: items,
     });
-    console.log("value of stringy is :" + JSON.stringify(this.state.userData));
   }
 
   componentDidMount() {

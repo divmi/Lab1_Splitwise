@@ -120,25 +120,47 @@ class TransactionDetail extends Component {
     ) {
       showTransaction = this.state.showTransactionBasedOnFilter.map(
         (name, idx) => {
-          return (
-            <tr key={idx} style={{ verticalAlign: "center" }}>
-              <td style={{ color: "GrayText" }}>
-                {new Date(name.Time).toLocaleString("en-us", {
-                  weekday: "long",
-                })}
-              </td>
-              <td>
-                <i className="greenCode fas fa-receipt fa-2x"></i>
-                <strong> {name.Name}</strong> added
-                <strong> {name.TransactionDetail} </strong>
-                in <strong>{name.GroupName}</strong>
-              </td>
-              <td>
-                <label>{this.state.Currency} </label>
-                <label> {name.Amount}</label>
-              </td>
-            </tr>
-          );
+          if (name.TransactionDetail == "SettleUp") {
+            return (
+              <tr key={idx} style={{ verticalAlign: "center" }}>
+                <td style={{ color: "GrayText" }}>
+                  {new Date(name.Time).toLocaleString("en-us", {
+                    weekday: "long",
+                  })}
+                </td>
+                <td>
+                  <i className="greenCode fas fa-receipt fa-2x"></i>
+                  <strong> {name.Name}</strong> is
+                  <strong> settled Up</strong> with
+                  <strong> {name.SettleUpWith}</strong>
+                </td>
+                <td>
+                  <label>{this.state.Currency} </label>
+                  <label> {name.Amount}</label>
+                </td>
+              </tr>
+            );
+          } else {
+            return (
+              <tr key={idx} style={{ verticalAlign: "center" }}>
+                <td style={{ color: "GrayText" }}>
+                  {new Date(name.Time).toLocaleString("en-us", {
+                    weekday: "long",
+                  })}
+                </td>
+                <td>
+                  <i className="greenCode fas fa-receipt fa-2x"></i>
+                  <strong> {name.Name}</strong> added
+                  <strong> {name.TransactionDetail} </strong>
+                  in <strong>{name.GroupName}</strong>
+                </td>
+                <td>
+                  <label>{this.state.Currency} </label>
+                  <label> {name.Amount}</label>
+                </td>
+              </tr>
+            );
+          }
         }
       );
       if (this.state.groupName != null && this.state.groupName.length > 0) {

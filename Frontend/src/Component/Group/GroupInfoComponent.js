@@ -52,7 +52,6 @@ class GroupInfo extends Component {
     }
     this.setState({ transactionDetail: this.getTransactionDetail() });
     this.OpenOwsGetsAmount(false);
-    console.log(JSON.stringify(this.state.transactionDetail));
   }
 
   getTransactionDetail() {
@@ -67,12 +66,10 @@ class GroupInfo extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log("All user:" + response.data);
           this.setState(() => ({
             transactionDetail: response.data,
             axiosCallInProgress: false,
           }));
-          console.log("Divya got response :" + JSON.stringify(response));
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -122,7 +119,6 @@ class GroupInfo extends Component {
     axios
       .post("http://localhost:8000/insertGroupTransaction", data)
       .then((response) => {
-        console.log("Status Code : ", response.status);
         if (response.status === 200) {
           this.setState({
             error: "",
@@ -132,14 +128,14 @@ class GroupInfo extends Component {
           this.OpenOwsGetsAmount(true);
         } else {
           this.setState({
-            error: "Please enter correct credentials",
+            error: "Issue with Network",
             authFlag: false,
           });
         }
       })
       .catch(() => {
         this.setState({
-          error: "Please enter correct credentials",
+          error: "Issue with Network",
         });
       });
     this.closeModal();

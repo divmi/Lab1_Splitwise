@@ -24,7 +24,7 @@ class insert {
             "','" +
             body.email +
             "','" +
-            "USD" +
+            "$" +
             "','" +
             "(GMT-08:00) Pacific Time" +
             "','" +
@@ -344,11 +344,32 @@ class insert {
         "'";
       con.query(deleteSettleUpTransaction, function (err, result) {
         if (err) throw err;
-        console.log("record Updated Successfully");
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
+        var addTransactionInTable =
+          "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount,SettleUpWith) VALUES (";
+        var insTransaction =
+          "'" +
+          "SettleUp" +
+          "','" +
+          `${new Date().toISOString().slice(0, 19).replace("T", " ")}` +
+          "','" +
+          body.MemberName +
+          "','" +
+          body.GroupName +
+          "','" +
+          body.Amount +
+          "','" +
+          body.settleUpWith +
+          "')";
+        con.query(
+          addTransactionInTable + insTransaction,
+          function (err, result) {
+            if (err) throw err;
+            res.writeHead(200, {
+              "Content-Type": "text/plain",
+            });
+            res.end(JSON.stringify(result));
+          }
+        );
       });
     });
   }

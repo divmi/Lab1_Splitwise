@@ -14,7 +14,6 @@ class OwsGetDetail extends Component {
   }
 
   componentDidMount() {
-    console.log("compoment mounted");
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
@@ -24,20 +23,17 @@ class OwsGetDetail extends Component {
       }
     }
     this.getGroupSummary();
-    console.log(JSON.stringify(this.state.owsGetDetail));
   }
 
   componentDidUpdate(prevState) {
     if (prevState.name != this.props.name) {
       this.getGroupSummary();
     } else if (prevState.updated != this.props.updated) {
-      console.log("came here");
       this.getGroupSummary();
     }
   }
 
   GroupMemberName() {
-    console.log("Group Name :" + this.props.name);
     axios
       .get("http://localhost:8000/getGroupMemberName", {
         params: {
@@ -46,21 +42,20 @@ class OwsGetDetail extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log("All user:" + response.data);
           this.setState({
             groupMemberName: response.data,
           });
           this.calculateMemberSpecificTable();
         } else {
           this.setState({
-            error: "Please enter correct credentials",
+            error: "Issue with Network",
             authFlag: false,
           });
         }
       })
       .catch((e) => {
         this.setState({
-          error: "Please enter correct credentials" + e,
+          error: "Issue with Network" + e,
         });
       });
   }
@@ -73,14 +68,10 @@ class OwsGetDetail extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log("Ows get detail:" + JSON.stringify(response.data));
           this.setState({
             owsGetDetail: response.data,
           });
           this.GroupMemberName();
-          console.log(
-            "got data for transaction" + JSON.stringify(this.state.owsGetDetail)
-          );
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -99,7 +90,6 @@ class OwsGetDetail extends Component {
 
   calculateMemberSpecificTable() {
     if (this.state.groupMemberName.length > 0) {
-      console.log(JSON.stringify(this.state.groupMemberName));
       this.setState({
         memberWithAmountList: [],
       });
@@ -139,7 +129,6 @@ class OwsGetDetail extends Component {
           ],
         });
       });
-      console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
 

@@ -20,7 +20,6 @@ class GroupNotification extends Component {
       .post("http://localhost:8000/joinedGroup", name)
       .then((response) => {
         if (response.status === 200) {
-          console.log("User Accepted Group:" + JSON.stringify(response.data));
           this.getGroupNotification();
           this.props.click();
         } else {
@@ -45,24 +44,19 @@ class GroupNotification extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log("Ows get detail:" + response.data);
           this.setState({
             userNotification: response.data,
           });
-          console.log(
-            "got data for transaction" +
-              JSON.stringify(this.state.userNotification)
-          );
         } else {
           this.setState({
-            error: "Please enter correct credentials",
+            error: "group Notification Not Found",
             authFlag: false,
           });
         }
       })
       .catch((e) => {
         this.setState({
-          error: "Please enter correct credentials" + e,
+          error: "group Notification Not Found" + e,
         });
       });
   };

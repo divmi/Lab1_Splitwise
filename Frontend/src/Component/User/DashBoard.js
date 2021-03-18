@@ -26,6 +26,7 @@ class Dashboard extends Component {
       memberWithAmountList: [],
       Currency: "",
       Email: "",
+      GroupName: "",
     };
   }
 
@@ -39,9 +40,11 @@ class Dashboard extends Component {
   };
 
   alertClicked = (detail) => {
+    console.log("GroupName :" + detail.GroupName);
     this.setState({
       Name: detail.MemberName,
       Amount: detail.Amount,
+      GroupName: detail.GroupName,
     });
   };
   calculateOwsGetsBasedOnDataReceived() {
@@ -108,6 +111,7 @@ class Dashboard extends Component {
               MemberName: memberName,
               Amount: finalMoney,
               Transaction: allTransaction,
+              GroupName: allTransaction[0].GroupName,
             },
           ],
         });
@@ -122,6 +126,7 @@ class Dashboard extends Component {
       settleUpWith: this.state.Name,
       Amount: this.state.Amount,
       MemberName: this.props.email,
+      GroupName: this.state.GroupName,
     };
     axios.defaults.withCredentials = true;
     axios
@@ -163,9 +168,6 @@ class Dashboard extends Component {
             owsgetsDetail: [response.data],
           }));
           this.calculateOwsGetsBasedOnDataReceived();
-          console.log(
-            "Divya : Ows Gets Detail" + JSON.stringify(this.state.owsgetsDetail)
-          );
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -288,7 +290,6 @@ class Dashboard extends Component {
         );
       }
     });
-    console.log("Divya : " + JSON.stringify(memberOwList));
     const popover = memberOwList.map((detail, idx) => {
       return (
         <Dropdown.Item

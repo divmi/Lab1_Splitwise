@@ -51,17 +51,6 @@ class UpdateProfile extends Component {
           ),
         });
       }
-      try {
-        const getImage = this.state.UserProfilePic;
-        if (getImage != null)
-          this.setState({
-            UserProfilePic: getImage,
-          });
-      } catch (error) {
-        this.setState({
-          UserProfilePic: "./assets/userIcon.jpg",
-        });
-      }
     }
   }
 
@@ -85,10 +74,10 @@ class UpdateProfile extends Component {
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
+            this.SetLocalStorage(JSON.stringify(this.state.userinfo));
             this.setState({
               authFlag: true,
             });
-            this.SetLocalStorage(JSON.stringify(this.state.userinfo));
           } else {
             this.setState({
               loginError:
@@ -127,14 +116,18 @@ class UpdateProfile extends Component {
       .post("http://localhost:8000/upload", data)
       .then((response) => {
         console.log(response);
+        let userinfo = this.state.userinfo;
+        userinfo.UserProfilePic = "http://localhost:8000/" + response.data;
         this.setState({
-          UserProfilePic: "http://localhost:8000/" + response.data,
+          userinfo,
         });
       })
       .catch((error) => {
         console.log("error " + error);
+        let userinfo = this.state.userinfo;
+        userinfo.UserProfilePic = "./assets/userIcon.jpg";
         this.setState({
-          UserProfilePic: "./assets/userIcon.jpg",
+          userinfo,
         });
       });
   };
@@ -215,7 +208,7 @@ class UpdateProfile extends Component {
                       <FormGroup>
                         <Label htmlFor="contactNo">Your Phone number</Label>
                         <Input
-                          type="number"
+                          type="text"
                           id="ContactNo"
                           name="ContactNo"
                           minLength="10"
@@ -246,22 +239,46 @@ class UpdateProfile extends Component {
                           value={this.state.userinfo.Currency}
                           onChange={this.handleChange}
                         >
-                          <option data-symbol="$" data-placeholder="0.00">
+                          <option
+                            data-symbol="$"
+                            value="$"
+                            data-placeholder="0.00"
+                          >
                             USD
                           </option>
-                          <option data-symbol="€" data-placeholder="0.00">
+                          <option
+                            data-symbol="€"
+                            value="€"
+                            data-placeholder="0.00"
+                          >
                             EUR
                           </option>
-                          <option data-symbol="£" data-placeholder="0.00">
+                          <option
+                            data-symbol="£"
+                            value="£"
+                            data-placeholder="0.00"
+                          >
                             GBP
                           </option>
-                          <option data-symbol="¥" data-placeholder="0">
+                          <option
+                            data-symbol="¥"
+                            value="¥"
+                            data-placeholder="0"
+                          >
                             KWD
                           </option>
-                          <option data-symbol="$" data-placeholder="0.00">
+                          <option
+                            data-symbol="C$"
+                            value="C$"
+                            data-placeholder="0.00"
+                          >
                             CAD
                           </option>
-                          <option data-symbol="$" data-placeholder="0.00">
+                          <option
+                            data-symbol=".د.ب"
+                            value=".د.ب"
+                            data-placeholder="0.00"
+                          >
                             BHD
                           </option>
                         </select>
