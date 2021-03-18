@@ -66,15 +66,8 @@ class insert {
         if (err) throw err;
         if (result.length == 0) {
           var sql =
-            "INSERT INTO GroupInfo (GroupName, GroupProfilePicture, DisplayGroupName) VALUES (";
-          var sql1 =
-            "'" +
-            body.groupName +
-            "','" +
-            body.groupPhoto +
-            "','" +
-            body.groupName +
-            "')";
+            "INSERT INTO GroupInfo (GroupName, GroupProfilePicture) VALUES (";
+          var sql1 = "'" + body.groupName + "','" + body.groupPhoto + "')";
           console.log(sql + sql1);
           con.query(sql + sql1, function (err, result) {
             if (err) throw err;

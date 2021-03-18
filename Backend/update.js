@@ -40,7 +40,7 @@ var update = class update {
       `UPDATE 
       GroupInfo
       SET 
-      DisplayGroupName = '` +
+      GroupName = '` +
       req.newGroupName +
       `',
       GroupProfilePicture = '` +
