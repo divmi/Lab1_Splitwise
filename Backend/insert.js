@@ -225,7 +225,6 @@ class insert {
       "Select * from UserTransactionBasedOnGroup where GroupName='" +
       groupName +
       "'";
-    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw console.log(err);
       if (result.length > 0) {
@@ -267,7 +266,6 @@ class insert {
               });
             }
           }
-          console.log(transactionlist);
         }
 
         if (transactionlist.length > 0) {
@@ -275,7 +273,6 @@ class insert {
             "Delete from  OwsGetsDetail where GroupName ='" + groupName + "'",
             function (err, result) {
               if (err) throw err;
-              console.log("record Deleted" + result);
             }
           );
           let count = 0;

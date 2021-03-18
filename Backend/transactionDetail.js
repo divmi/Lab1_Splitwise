@@ -8,7 +8,7 @@ class transactionDetail {
       "' AND GroupName = '" +
       body.GroupName +
       "'";
-    console.log(sql);
+
     con.query(sql, function (err, result) {
       if (err) throw err;
       res.writeHead(200, {
@@ -25,10 +25,9 @@ class transactionDetail {
       "'OR MemberOws='" +
       email +
       "'";
-    console.log(sql);
+
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("found record" + result);
       res.end(JSON.stringify(result));
     });
   }
@@ -42,10 +41,9 @@ class transactionDetail {
       "'OR MemberOws='" +
       query.email +
       "')";
-    console.log(sql);
+
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("found record" + result);
       res.end(JSON.stringify(result));
     });
   }
@@ -55,7 +53,6 @@ class transactionDetail {
       "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" +
       groupName +
       "'";
-    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
       //console.log("found record" + result);

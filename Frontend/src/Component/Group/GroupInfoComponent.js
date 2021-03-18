@@ -213,25 +213,24 @@ class GroupInfo extends Component {
       <div className="container-flex">
         <div className="row">
           <div className="col col-sm-4">
-            <div
-              className="row"
-              style={{ alignItems: "center", marginTop: 15, marginLeft: 10 }}
-            >
+            <div className="row" style={{ marginLeft: 10 }}>
               <img src={picture} className="rounded-circle profileImage"></img>
               <h4>{this.props.name}</h4>
             </div>
           </div>
           <hr></hr>
           <div className="col col-sm-2"></div>
-          <div className="col col-sm-5" style={{ textAlign: "left" }}>
+          <div
+            className="col col-sm-5"
+            style={{ textAlign: "left", marginLeft: -10, marginTop: -10 }}
+          >
             <Button
               variant="primary"
-              className="btn btn-Normal shadow-none"
+              className="btn btn-signup shadow-none"
               style={{
-                width: 90,
-                height: 50,
                 textAlign: "center",
                 fontSize: 12,
+                width: 108,
               }}
               onClick={this.openModal}
             >
@@ -321,11 +320,10 @@ class GroupInfo extends Component {
             </Modal.Footer>
           </Modal>
         </div>
-        <hr></hr>
         <div className="row">
           <div className="col col-sm-8">
-            <div className="row shadow p-3 mb-5 bg-white rounded">
-              <table className="table">
+            <div className="row shadow bg-light">
+              <table className="table bg-light">
                 <tbody>{showTransaction}</tbody>
               </table>
             </div>

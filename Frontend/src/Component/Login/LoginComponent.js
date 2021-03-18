@@ -126,7 +126,6 @@ class Login extends Component {
     let redirectVar = null;
     //console.log(cookie.load("cookie"));
     if (cookie.load("cookie") && this.state.authFlag) {
-      console.log("redirected from here");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/login" />;
     return (

@@ -7,7 +7,6 @@ var group = class group {
       "Select Name, Email, ContactNo, Currency, Timezone, Language, UserProfilePic from UserRegistration where Email='" +
       email +
       "'";
-    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
       if (result) {

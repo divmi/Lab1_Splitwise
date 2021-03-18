@@ -20,6 +20,8 @@ app.use(
     secret: "SplitwiseSecretString",
     resave: false,
     saveUninitialized: true,
+    duration: 60 * 60 * 1000, // Overall duration of Session : 30 minutes : 1800 seconds
+    activeDuration: 5 * 60 * 1000,
   })
 );
 
@@ -56,10 +58,7 @@ const con = mysql.createConnection({
   user: "admin",
   password: "splitwise",
   database: "SplitwiseDB",
-  pool: {
-    min: 0,
-    max: 2,
-  },
+  //connectionLimit: 500,
 });
 
 //use cors to allow cross origin resource sharing
@@ -125,6 +124,10 @@ app.post("/createGroup", function (req, res) {
 
 app.get("/signupUser", function (req, res) {
   console.log("Req Body : ", req.body);
+});
+//Define request response in root URL (/)
+app.get("/", function (req, res) {
+  res.send("Hello World");
 });
 
 //Route to handle Post Request Call
@@ -228,3 +231,5 @@ app.get("/getGroupMemberName", function (req, res) {
   var getGDetail = new insert.insert();
   getGDetail.getGroupMemberList(con, req.query.groupName, res);
 });
+
+module.exports = app;

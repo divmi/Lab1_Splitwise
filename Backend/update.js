@@ -26,7 +26,6 @@ var update = class update {
       "'Where Email ='" +
       req.Email +
       "'";
-    console.log(sql);
     con.query(sql, function (err, result, fields) {
       if (err) throw err;
       res.writeHead(200, {
@@ -49,7 +48,6 @@ var update = class update {
       "'Where GroupName ='" +
       req.prevGroupName +
       "'";
-    console.log(sql);
     con.query(sql, function (err, result, fields) {
       if (err) throw err;
       if (Object.keys(req.itemDeleted).length !== 0) {
