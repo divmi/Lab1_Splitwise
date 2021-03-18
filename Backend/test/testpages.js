@@ -10,7 +10,7 @@ describe("Splitwise App", function () {
     agent
       .get("/getAllUser")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(20);
+        expect(JSON.parse(res.text).length).to.equal(21);
         done();
       })
       .catch((e) => {
@@ -22,7 +22,7 @@ describe("Splitwise App", function () {
     agent
       .get("/getUserSpecificGetOwsInfo?email=tejas@gmail.com")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(4);
+        expect(JSON.parse(res.text).length).to.equal(5);
         done();
       })
       .catch((e) => {

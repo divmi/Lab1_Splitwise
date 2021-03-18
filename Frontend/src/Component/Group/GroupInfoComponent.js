@@ -320,10 +320,10 @@ class GroupInfo extends Component {
             </Modal.Footer>
           </Modal>
         </div>
-        <div className="row">
+        <div className="setHeight row shadow p-3 mb-5 bg-light rounded border-right">
           <div className="col col-sm-8">
-            <div className="row shadow bg-light">
-              <table className="table bg-light">
+            <div className="row">
+              <table className="table">
                 <tbody>{showTransaction}</tbody>
               </table>
             </div>

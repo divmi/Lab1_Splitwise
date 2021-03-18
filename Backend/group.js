@@ -23,10 +23,8 @@ var group = class group {
     });
   }
   getAllUser(con, body, res) {
-    console.log("Connected!");
     con.query("Select * from UserRegistration ", function (err, result) {
       if (err) throw err;
-      console.log("getAllUser " + result);
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -76,7 +74,6 @@ var group = class group {
       "Select * from GroupMemberInfo where MemberID='" +
       email +
       "' and Accepted=true";
-    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
       if (result) {
@@ -99,7 +96,6 @@ var group = class group {
       "Select * from GroupMemberInfo where MemberID='" +
       email +
       "' and Accepted=false";
-    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
       if (result) {

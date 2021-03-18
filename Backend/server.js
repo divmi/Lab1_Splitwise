@@ -53,14 +53,22 @@ const Update = require("./update");
 const transaction = require("./transactionDetail");
 
 app.set("view engine", "ejs");
-const con = mysql.createConnection({
+// const con = mysql.createConnection({
+//   host: "splitwise.c5rygpr3lt0j.us-west-1.rds.amazonaws.com",
+//   user: "admin",
+//   password: "splitwise",
+//   database: "SplitwiseDB",
+//   //connectionLimit: 500,
+// });
+
+var con = mysql.createPool({
+  connectionLimit: 10, //important
   host: "splitwise.c5rygpr3lt0j.us-west-1.rds.amazonaws.com",
   user: "admin",
   password: "splitwise",
   database: "SplitwiseDB",
-  //connectionLimit: 500,
+  debug: false,
 });
-
 //use cors to allow cross origin resource sharing
 app.use(
   cors({
@@ -101,7 +109,6 @@ app.get("/api/UserRegistration", (req, res) => {
 });
 
 app.post("/signupUser", function (req, res) {
-  console.log("Req Body : ", req.body);
   var ins = new insert.insert();
   console.log("Divya :" + req.body.name);
   ins.insert_user(con, req.body, res);
@@ -125,10 +132,6 @@ app.post("/createGroup", function (req, res) {
 app.get("/signupUser", function (req, res) {
   console.log("Req Body : ", req.body);
 });
-//Define request response in root URL (/)
-app.get("/", function (req, res) {
-  res.send("Hello World");
-});
 
 //Route to handle Post Request Call
 app.post("/loginUser", function (req, res) {
@@ -138,25 +141,21 @@ app.post("/loginUser", function (req, res) {
 });
 
 app.get("/getCurrentUserGroup", function (req, res) {
-  console.log("Req Body : ", req.query.email);
   var userDetail = new group.group();
   userDetail.getGroupDetail(con, req.query.email, res);
 });
 
 app.post("/updateProfile", function (req, res) {
-  console.log("Req Body : ", req.body);
   var update = new Update.update();
   update.updateUserProfile(con, req.body, res);
 });
 
 app.post("/updateGroup", function (req, res) {
-  console.log("Req Body : ", req.body);
   var update = new Update.update();
   update.updateGroup(con, req.body, res);
 });
 
 app.post("/joinedGroup", function (req, res) {
-  console.log("Req Body : ", req.body);
   var trans = new transaction.transactionDetail();
   trans.groupJoinRequest(con, req.body, res);
 });
@@ -174,25 +173,21 @@ app.post("/insertGroupTransaction", function (req, res) {
 });
 
 app.get("/getUserInfo", function (req, res) {
-  console.log("Req Body : ", req.query.userEmail);
   var userDetail = new group.group();
   userDetail.getUserDetail(con, req.query.userEmail, res);
 });
 
 app.get("/getTransactionInfo", function (req, res) {
-  console.log("Req Body getTransactionInfo: ", req.query.groupName);
   var userDetail = new group.group();
   userDetail.gettransactionDetail(con, req.query.groupName, res);
 });
 
 app.get("/getTransactionFromUser", function (req, res) {
-  console.log("Req Body : ", req.query.email);
   var userDetail = new group.group();
   userDetail.getTransactionFromUser(con, req.query.email, res);
 });
 
 app.get("/getGroupNotification", function (req, res) {
-  console.log("Req Body : ", req.query.memberID);
   var userDetail = new group.group();
   userDetail.getGroupNotification(con, req.query.memberID, res);
 });
@@ -221,13 +216,11 @@ app.get("/getUserCanBeDeleted", function (req, res) {
 });
 
 app.get("/getGroupSummary", function (req, res) {
-  console.log("Req Body getGroupSummary: ", req.query.groupName);
   var tdetail = new transaction.transactionDetail();
   tdetail.getGroupSummary(con, req.query.groupName, res);
 });
 
 app.get("/getGroupMemberName", function (req, res) {
-  console.log("Req Body getGroupSummary: ", req.query.groupName);
   var getGDetail = new insert.insert();
   getGDetail.getGroupMemberList(con, req.query.groupName, res);
 });
