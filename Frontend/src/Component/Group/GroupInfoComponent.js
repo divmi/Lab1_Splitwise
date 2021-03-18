@@ -154,7 +154,7 @@ class GroupInfo extends Component {
       showTransaction = this.state.transactionDetail.map((name, idx) => {
         return (
           <tr key={idx} style={{ verticalAlign: "center" }}>
-            <td style={{ width: "8.33%" }}>
+            <td style={{ width: "8.33%", color: "GrayText" }}>
               {new Date(name.Time).toLocaleDateString("default", {
                 month: "short",
                 day: "numeric",
@@ -207,7 +207,7 @@ class GroupInfo extends Component {
     }
 
     return (
-      <div className="container-flex">
+      <div className="container-flex p-3">
         <div className="row">
           <div className="col col-sm-4">
             <div className="row" style={{ marginLeft: 10, marginTop: 5 }}>
@@ -219,7 +219,7 @@ class GroupInfo extends Component {
           <div className="col col-sm-2"></div>
           <div
             className="col col-sm-5"
-            style={{ textAlign: "left", marginLeft: -10 }}
+            style={{ textAlign: "left", marginLeft: -10, marginTop: -5 }}
           >
             <Button
               variant="primary"
@@ -229,6 +229,7 @@ class GroupInfo extends Component {
                 fontSize: 12,
                 alignSelf: "center",
                 width: 110,
+                height: 40,
               }}
               onClick={this.openModal}
             >
@@ -318,7 +319,7 @@ class GroupInfo extends Component {
             </Modal.Footer>
           </Modal>
         </div>
-        <div className="setHeight row shadow p-3 mb-5 bg-light rounded border-right">
+        <div className="row shadow p-3 mb-5 bg-light rounded border-right">
           <div className="col col-sm-8">
             <div className="row">
               <table className="table">

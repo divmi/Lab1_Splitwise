@@ -100,7 +100,10 @@ class Header extends Component {
     } else redirectVar = <Redirect to="/landing" />;
 
     return (
-      <div className="container-flex custom-header">
+      <div
+        className="container-flex custom-header shadow"
+        style={{ marginBottom: 10 }}
+      >
         {redirectVar}
         <div className="row">
           <div className="col col-sm-2"></div>

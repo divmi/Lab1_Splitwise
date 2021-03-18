@@ -84,14 +84,17 @@ class insert {
             });
           });
 
-          var insGroupLink =
+          var insGroupForMainMember =
             "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-          var insGroupLink1 =
-            "'" + body.groupName + "','" + body.Email + "','" + false + "')";
-          con.query(insGroupLink + insGroupLink1, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted" + result);
-          });
+          var insGroupForMainMember1 =
+            "'" + body.groupName + "','" + body.Email + "','" + 1 + "')";
+          con.query(
+            insGroupForMainMember + insGroupForMainMember1,
+            function (err, result) {
+              if (err) throw err;
+              console.log("1 record inserted" + result);
+            }
+          );
 
           res.writeHead(200, {
             "Content-Type": "text/plain",
