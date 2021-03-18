@@ -182,7 +182,6 @@ class Dashboard extends Component {
 
   componentDidMount() {
     console.log("Control received in component did mount");
-    this.getUserSpecificTransactionDetail();
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
@@ -192,6 +191,7 @@ class Dashboard extends Component {
         });
       }
     }
+    this.getUserSpecificTransactionDetail();
   }
 
   render() {

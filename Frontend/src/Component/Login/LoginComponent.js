@@ -12,9 +12,8 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-//import Home from "../Header/HomeComponent";
-//import { connect } from "react-redux";
-//import * as Action from "../../actions/index";
+import { connect } from "react-redux";
+import * as Action from "../../actions/index";
 
 class Login extends Component {
   constructor(props) {
@@ -70,11 +69,10 @@ class Login extends Component {
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
+            this.getCurrentUserInfo();
             this.setState({
               error: "",
-              authFlag: true,
             });
-            this.getCurrentUserInfo();
             //<Home></Home>;
           } else {
             this.setState({
@@ -103,7 +101,11 @@ class Login extends Component {
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
+          console.log(JSON.stringify(response.data[0]));
           this.SetLocalStorage(JSON.stringify(response.data[0]));
+          this.setState({
+            authFlag: "true",
+          });
         }
       })
       .catch(() => {
@@ -122,8 +124,11 @@ class Login extends Component {
 
   render() {
     let redirectVar = null;
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
-    else redirectVar = <Redirect to="/login" />;
+    //console.log(cookie.load("cookie"));
+    if (cookie.load("cookie") && this.state.authFlag) {
+      console.log("redirected from here");
+      redirectVar = <Redirect to="/home" />;
+    } else redirectVar = <Redirect to="/login" />;
     return (
       <div className="container-fluid form-cont">
         {redirectVar}
@@ -193,10 +198,10 @@ class Login extends Component {
   }
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     UserState: (data) => dispatch(Action.UserState(data)),
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    UserState: (data) => dispatch(Action.UserState(data)),
+  };
+}
 
-export default Login; //connect(null, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(Login); //

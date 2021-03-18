@@ -96,6 +96,7 @@ class Header extends Component {
     }
     let redirectVar = null;
     if (cookie.load("cookie")) {
+      console.log("redirected from here");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/landing" />;
 
