@@ -210,7 +210,7 @@ class GroupInfo extends Component {
       <div className="container-flex">
         <div className="row">
           <div className="col col-sm-4">
-            <div className="row" style={{ marginLeft: 10 }}>
+            <div className="row" style={{ marginLeft: 10, marginTop: 5 }}>
               <img src={picture} className="rounded-circle profileImage"></img>
               <h4>{this.props.name}</h4>
             </div>
@@ -219,7 +219,7 @@ class GroupInfo extends Component {
           <div className="col col-sm-2"></div>
           <div
             className="col col-sm-5"
-            style={{ textAlign: "left", marginLeft: -10, marginTop: -10 }}
+            style={{ textAlign: "left", marginLeft: -10 }}
           >
             <Button
               variant="primary"
@@ -227,7 +227,8 @@ class GroupInfo extends Component {
               style={{
                 textAlign: "center",
                 fontSize: 12,
-                width: 108,
+                alignSelf: "center",
+                width: 110,
               }}
               onClick={this.openModal}
             >
