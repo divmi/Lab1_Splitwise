@@ -154,6 +154,10 @@ class CreateGroup extends Component {
   validateForm = () => {
     let error = "";
     if (this.state.groupName === "") error = "Group Name should not be blank";
+    else if (this.state.userData.length == 0)
+      error = "Group length should be greater than one";
+    else if (this.state.userData.length >= 9)
+      error = "Group length should be less than ten";
     return error;
   };
 
@@ -220,13 +224,13 @@ class CreateGroup extends Component {
             />
           </div>
           <div className="col-sm-8">
-            <div
-              className="help-block alert"
-              style={{ color: "red", width: "30%" }}
-            >
-              {this.state.error}
-            </div>
             <div className="content" style={{ width: "90%" }}>
+              <p
+                className="help-block alert"
+                style={{ color: "red", marginLeft: "60px" }}
+              >
+                {this.state.error}
+              </p>
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
                 <h3 style={{ textAlign: "left", marginLeft: "70px" }}>
                   Start a Group Name

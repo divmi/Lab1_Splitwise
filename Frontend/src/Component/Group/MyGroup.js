@@ -171,7 +171,6 @@ class MyGroup extends Component {
               <Label>My Groups</Label>
               <table className="table table-hover">
                 <tbody>{groupName}</tbody>
-                <hr />
               </table>
             </div>
           </div>

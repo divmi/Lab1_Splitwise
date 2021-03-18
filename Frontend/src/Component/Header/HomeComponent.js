@@ -92,7 +92,6 @@ class Home extends Component {
   render() {
     let redirectVar = null;
     let groupName = null;
-    console.log(cookie.load("cookie"));
     if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
     if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {

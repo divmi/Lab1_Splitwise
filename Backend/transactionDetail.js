@@ -14,7 +14,6 @@ class transactionDetail {
       res.writeHead(200, {
         "Content-Type": "application/json",
       });
-      console.log(JSON.stringify(result));
       res.end(JSON.stringify(result));
     });
   }

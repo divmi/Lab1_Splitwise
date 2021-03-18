@@ -129,7 +129,7 @@ class insert {
     con.query(
       "Select u.Name, u.Email, u.UserProfilePic, g.GroupProfilePicture from UserRegistration as u Inner Join GroupMemberInfo as gMember on (u.Email=gMember.MemberID) Inner Join GroupInfo as g on (gMember.GroupName=g.GroupName) where g.GroupName ='" +
         groupName +
-        "'",
+        "' and Accepted=true",
       function (err, memberInfo) {
         if (memberInfo) {
           res.writeHead(200, {
@@ -216,10 +216,6 @@ class insert {
     con.query(insGroupLink + insGroupLink1, function (err, result) {
       if (err) throw err;
       console.log("Response sent to client");
-      res.writeHead(200, {
-        "Content-Type": "text/plain",
-      });
-      res.end(JSON.stringify(result));
     });
   }
 
@@ -282,6 +278,7 @@ class insert {
               console.log("record Deleted" + result);
             }
           );
+          let count = 0;
           transactionlist.map((value) => {
             var insGroupLink =
               "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName) VALUES (";
@@ -300,16 +297,33 @@ class insert {
               value.Amount +
               "')";
             con.query(insGroupLink + insGroupLink1, function (err, result) {
+              count++;
               if (err) throw err;
               console.log("1 record inserted" + result);
+              if (count == transactionlist.length) {
+                console.log("response sent successfully");
+                res.writeHead(200, {
+                  "Content-Type": "text/plain",
+                });
+                res.write("Insert Completed");
+                res.end();
+              }
             });
           });
         }
       } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
+        if (result.length == 0 && memberInfo.length == 1) {
+          res.writeHead(200, {
+            "Content-Type": "text/plain",
+          });
+          res.write("Insert Completed");
+          res.end();
+        } else {
+          res.writeHead(401, {
+            "Content-Type": "text/plain",
+          });
+          res.end("UnSuccessful Login");
+        }
       }
     });
   }

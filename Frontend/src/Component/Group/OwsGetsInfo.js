@@ -30,6 +30,9 @@ class OwsGetDetail extends Component {
   componentDidUpdate(prevState) {
     if (prevState.name != this.props.name) {
       this.getGroupSummary();
+    } else if (prevState.updated != this.props.updated) {
+      console.log("came here");
+      this.getGroupSummary();
     }
   }
 

@@ -10,7 +10,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("getUserDetail" + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -81,7 +80,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("getGroupDetail " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -105,7 +103,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("getGroupNotification" + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -130,7 +127,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("gettransactionDetail " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -156,7 +152,6 @@ var group = class group {
     console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
-      console.log("getTransactionFromUser " + JSON.stringify(result));
       if (result) {
         res.writeHead(200, {
           "Content-Type": "text/plain",

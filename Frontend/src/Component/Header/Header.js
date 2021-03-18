@@ -49,8 +49,9 @@ class Header extends Component {
       var value = JSON.parse(localStorage.getItem("userData"));
       if (value != null) {
         if (value.UserProfilePic != null) picture = value.UserProfilePic;
+        else picture = "./assets/userIcon.jpg";
         memberName = value.Name;
-      } else picture = "../assets/userIcon.jpg";
+      } else picture = "./assets/userIcon.jpg";
       console.log(picture);
       registerOrLogin = (
         <div className="col col-sm-4 p-1" style={{ textAlign: "center" }}>

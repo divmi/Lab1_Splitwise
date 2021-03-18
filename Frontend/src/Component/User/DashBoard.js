@@ -432,13 +432,13 @@ class Dashboard extends Component {
                       style={{
                         borderStyle: "dotted",
                         borderRadius: 1,
+                        textDecoration: "none",
                       }}
                       type="number"
                       step="0.1"
-                      min="0"
-                      value={-this.state.Amount}
+                      value={this.state.Amount == 0 ? "" : -this.state.Amount}
+                      placeholder={this.state.Currency + "0.00"}
                       readOnly
-                      placeholder={this.state.Currency + " 0.00"}
                       required
                     />
                   </Form.Group>

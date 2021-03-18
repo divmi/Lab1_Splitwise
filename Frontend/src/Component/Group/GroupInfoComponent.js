@@ -32,11 +32,10 @@ class GroupInfo extends Component {
   closeModal = () => {
     this.setState({ isOpen: false });
     this.getTransactionDetail();
-    this.OpenOwsGetsAmount();
+    this.OpenOwsGetsAmount(false);
   };
 
   handleTransactionChange = (e) => {
-    console.log("Control reached :" + e.target.value);
     this.setState({
       transaction_description: e.target.value,
     });
@@ -52,7 +51,7 @@ class GroupInfo extends Component {
       }
     }
     this.setState({ transactionDetail: this.getTransactionDetail() });
-    this.OpenOwsGetsAmount();
+    this.OpenOwsGetsAmount(false);
     console.log(JSON.stringify(this.state.transactionDetail));
   }
 
@@ -73,7 +72,7 @@ class GroupInfo extends Component {
             transactionDetail: response.data,
             axiosCallInProgress: false,
           }));
-          console.log("Group info" + this.state.transactionDetail.length);
+          console.log("Divya got response :" + JSON.stringify(response));
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -91,13 +90,15 @@ class GroupInfo extends Component {
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
       this.getTransactionDetail();
-      this.OpenOwsGetsAmount();
+      this.OpenOwsGetsAmount(false);
     }
   }
 
-  OpenOwsGetsAmount() {
+  OpenOwsGetsAmount(transactionUpdated) {
     this.setState({
-      component: <OwsGetAmount name={this.props.name} />,
+      component: (
+        <OwsGetAmount name={this.props.name} updated={transactionUpdated} />
+      ),
     });
   }
 
@@ -128,7 +129,7 @@ class GroupInfo extends Component {
             authFlag: true,
           });
           this.getTransactionDetail();
-          this.OpenOwsGetsAmount();
+          this.OpenOwsGetsAmount(true);
         } else {
           this.setState({
             error: "Please enter correct credentials",
@@ -188,7 +189,7 @@ class GroupInfo extends Component {
       });
     } else {
       if (this.state.axiosCallInProgress) {
-        showTransaction = <div className="spinner-border text-success"></div>;
+        showTransaction = <p className="spinner-border text-text-muted"></p>;
       } else
         showTransaction = (
           <tr>
@@ -211,7 +212,7 @@ class GroupInfo extends Component {
     return (
       <div className="container-flex">
         <div className="row">
-          <div className="col col-sm-3">
+          <div className="col col-sm-4">
             <div
               className="row"
               style={{ alignItems: "center", marginTop: 15, marginLeft: 10 }}
@@ -222,15 +223,12 @@ class GroupInfo extends Component {
           </div>
           <hr></hr>
           <div className="col col-sm-2"></div>
-          <div
-            className="col col-sm-5"
-            style={{ textAlign: "center", marginRight: "100px" }}
-          >
+          <div className="col col-sm-5" style={{ textAlign: "left" }}>
             <Button
               variant="primary"
-              className="btn btn-Normal"
+              className="btn btn-Normal shadow-none"
               style={{
-                width: 100,
+                width: 90,
                 height: 50,
                 textAlign: "center",
                 fontSize: 12,
@@ -260,7 +258,7 @@ class GroupInfo extends Component {
                 <Row>
                   <Col xs={6} md={4}>
                     <Image
-                      width={150}
+                      width={130}
                       height={100}
                       src="./assets/Bill.png"
                       rounded
@@ -280,6 +278,7 @@ class GroupInfo extends Component {
                         required
                       />
                     </Form.Group>
+
                     <Form.Group>
                       <Form.Control
                         style={{
@@ -287,11 +286,13 @@ class GroupInfo extends Component {
                           borderRadius: 1,
                           textDecoration: "none",
                         }}
+                        name="amount"
+                        id="amount"
                         type="number"
                         step="0.1"
                         min="0"
                         onChange={this.handleAmountChange}
-                        placeholder={this.state.Currency + " 0.00"}
+                        placeholder={this.state.Currency + "0.00"}
                         required
                       />
                     </Form.Group>

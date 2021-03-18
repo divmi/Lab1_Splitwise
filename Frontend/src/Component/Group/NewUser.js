@@ -81,6 +81,7 @@ class NewUser extends Component {
               className="pding"
               id="free-solo-Name"
               name="Name"
+              autoHighlight={true}
               options={this.props.tableData}
               onChange={(e) => this.onNameChange(e)}
               onKeyDown={this.onKeyDownNameChange}
@@ -102,6 +103,7 @@ class NewUser extends Component {
               className="pding"
               id="free-solo-Email"
               name="Email"
+              autoHighlight={true}
               options={this.props.tableData}
               getOptionLabel={(option) => option.Email}
               onChange={(e) => this.onEmailChange(e)}
