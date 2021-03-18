@@ -367,7 +367,7 @@ class insert {
           "','" +
           body.Amount +
           "','" +
-          body.settleUpWith +
+          body.RealName +
           "')";
         con.query(
           addTransactionInTable + insTransaction,

@@ -27,6 +27,7 @@ class Dashboard extends Component {
       Currency: "",
       Email: "",
       GroupName: "",
+      RealName: "",
     };
   }
 
@@ -45,7 +46,9 @@ class Dashboard extends Component {
       Name: detail.MemberName,
       Amount: detail.Amount,
       GroupName: detail.GroupName,
+      RealName: detail.MemberOwsName,
     });
+    console.log(this.state.RealName);
   };
   calculateOwsGetsBasedOnDataReceived() {
     let sumOws = 0;
@@ -100,8 +103,6 @@ class Dashboard extends Component {
     });
     console.log(JSON.stringify("Divya " + this.state.userSpecificInfo));
     const memberInfo = [...new Set(this.state.userSpecificInfo)];
-    console.log(JSON.stringify(memberInfo));
-    console.log(JSON.stringify(this.state.show));
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
         let finalMoney = 0;
@@ -138,6 +139,7 @@ class Dashboard extends Component {
       Amount: this.state.Amount,
       MemberName: this.props.email,
       GroupName: this.state.GroupName,
+      RealName: this.state.RealName,
     };
     axios.defaults.withCredentials = true;
     axios
@@ -331,13 +333,14 @@ class Dashboard extends Component {
       }
     });
     const popover = memberOwList.map((detail, idx) => {
+      console.log("Check settle up Name :" + JSON.stringify(detail));
       return (
         <Dropdown.Item
           key={idx}
           action
           onClick={() => this.alertClicked(detail)}
         >
-          {detail.MemberName}
+          {detail.MemberOwsName}
         </Dropdown.Item>
       );
     });
@@ -462,7 +465,7 @@ class Dashboard extends Component {
                         borderRadius: 1,
                       }}
                       type="text"
-                      value={this.state.Name}
+                      value={this.state.RealName}
                       readOnly
                       placeholder="Person to settle up with"
                       required

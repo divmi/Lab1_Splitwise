@@ -191,9 +191,10 @@ class GroupInfo extends Component {
           <tr>
             <td>
               <img
-                src="./assets/NoTransactions.png"
+                src="./assets/transaction.png"
                 height={350}
                 width={300}
+                className="img"
               ></img>
               <h3>
                 You have not added any expenses yet{" "}

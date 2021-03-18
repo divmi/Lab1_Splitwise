@@ -177,11 +177,7 @@ class TransactionDetail extends Component {
       showTransaction = (
         <tr>
           <td>
-            <img
-              src="./assets/NoTransactions.png"
-              height={300}
-              width={300}
-            ></img>
+            <img src="./assets/transaction.png" height={300} width={300}></img>
             <h3>
               You have not added any expenses yet
               <i className="fas fa-frown"></i>
@@ -198,8 +194,12 @@ class TransactionDetail extends Component {
               Recent activity
             </label>
           </div>
-          <div className="col-col-6 offset-4">
-            <select className="form-control" onChange={this.OnGroupSelect}>
+          <div className="col-col-6 offset-3">
+            <select
+              className="form-control"
+              width={80}
+              onChange={this.OnGroupSelect}
+            >
               <option value="">Sort by Group</option>
               {showGroupName}
             </select>
