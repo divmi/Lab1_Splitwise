@@ -61,6 +61,10 @@ class Dashboard extends Component {
             MemberOws: value.MemberGets,
             Amount: -value.Amount,
             GroupName: value.GroupName,
+            MemberGetsName: value.MemberOwsName,
+            MemberOwsName: value.MemberGetsName,
+            MemberProfilePicOws: value.MemberProfilePicGets,
+            MemberProfilePicGets: value.MemberProfilePicOws,
           });
         } else {
           this.state.show.push(value);
@@ -94,16 +98,21 @@ class Dashboard extends Component {
     this.setState({
       memberWithAmountList: [],
     });
+    console.log(JSON.stringify("Divya " + this.state.userSpecificInfo));
     const memberInfo = [...new Set(this.state.userSpecificInfo)];
+    console.log(JSON.stringify(memberInfo));
+    console.log(JSON.stringify(this.state.show));
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
         let finalMoney = 0;
         const allTransaction = this.state.show.filter(
           (x) => x.MemberOws == memberName
         );
+        console.log(JSON.stringify(allTransaction));
         allTransaction.map((x) => {
           finalMoney += x.Amount;
         });
+        const findName = this.state.show.find((x) => x.MemberOws == memberName);
         this.setState({
           memberWithAmountList: [
             ...this.state.memberWithAmountList,
@@ -112,6 +121,8 @@ class Dashboard extends Component {
               Amount: finalMoney,
               Transaction: allTransaction,
               GroupName: allTransaction[0].GroupName,
+              MemberOwsName: findName.MemberOwsName,
+              MemberProfilePic: findName.MemberProfilePicOws,
             },
           ],
         });
@@ -215,38 +226,52 @@ class Dashboard extends Component {
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
-          <div key={idx} className="container orangeCode">
-            <p style={{ fontSize: "14px" }}>
-              {detail.MemberName} <br />
-              you ows {this.state.Currency}
-              {detail.Amount} <br />
-              {detail.Transaction.map((value, idy) => {
-                if (value.Amount < 0) {
-                  return (
-                    <label className="dashBoardLabel" key={idy}>
-                      o: you owe{" "}
-                      <strong className="orangeCode">
-                        {this.state.Currency}
-                        {-value.Amount.toFixed(2)}
-                      </strong>{" "}
-                      for {value.GroupName}
-                    </label>
-                  );
-                } else if (value.Amount > 0) {
-                  return (
-                    <label key={idy} className="dashBoardLabel">
-                      o: owes you{" "}
-                      <strong className="greenCode">
-                        {" "}
-                        {this.state.Currency}
-                        {value.Amount.toFixed(2)}
-                      </strong>{" "}
-                      for {value.GroupName}
-                    </label>
-                  );
+          <div key={idx} className="row orangeCode">
+            <div className="col col-sm-2">
+              <img
+                className="rounded-circle"
+                src={
+                  detail.MemberProfilePic == null
+                    ? "./assets/userIcon.png"
+                    : detail.MemberProfilePic
                 }
-              })}
-            </p>
+                width={30}
+                height={30}
+              ></img>
+            </div>
+            <div className="col">
+              <p style={{ fontSize: "14px" }}>
+                {detail.MemberOwsName} <br />
+                you ows {this.state.Currency}
+                {detail.Amount} <br />
+                {detail.Transaction.map((value, idy) => {
+                  if (value.Amount < 0) {
+                    return (
+                      <label className="dashBoardLabel" key={idy}>
+                        o: you owe{" "}
+                        <strong className="orangeCode">
+                          {this.state.Currency}
+                          {-value.Amount.toFixed(2)}
+                        </strong>{" "}
+                        for {value.GroupName}
+                      </label>
+                    );
+                  } else if (value.Amount > 0) {
+                    return (
+                      <label key={idy} className="dashBoardLabel">
+                        o: owes you{" "}
+                        <strong className="greenCode">
+                          {" "}
+                          {this.state.Currency}
+                          {value.Amount.toFixed(2)}
+                        </strong>{" "}
+                        for {value.GroupName}
+                      </label>
+                    );
+                  }
+                })}
+              </p>
+            </div>
           </div>
         );
       }
@@ -254,38 +279,53 @@ class Dashboard extends Component {
     componentGets = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount > 0) {
         return (
-          <div key={idx} className="container greenCode">
-            <p style={{ fontSize: "14px" }}>
-              {detail.MemberName}
-              <br /> owes you {this.state.Currency}
-              {detail.Amount} <br />
-              {detail.Transaction.map((value, idy) => {
-                if (value.Amount < 0) {
-                  return (
-                    <label className="dashBoardLabel" key={idy}>
-                      o: you owe{" "}
-                      <strong className="orangeCode">
-                        {this.state.Currency}
-                        {-value.Amount.toFixed(2)}
-                      </strong>{" "}
-                      for {value.GroupName}
-                    </label>
-                  );
-                } else if (value.Amount > 0) {
-                  return (
-                    <label key={idy} className="dashBoardLabel">
-                      o: owes you{" "}
-                      <strong className="greenCode">
-                        {" "}
-                        {this.state.Currency}
-                        {value.Amount.toFixed(2)}
-                      </strong>{" "}
-                      for {value.GroupName}
-                    </label>
-                  );
+          <div key={idx} className="row greenCode">
+            <div className="col col-sm-2">
+              {" "}
+              <img
+                className="rounded-circle"
+                src={
+                  detail.MemberProfilePic == null
+                    ? "./assets/userIcon.png"
+                    : detail.MemberProfilePic
                 }
-              })}
-            </p>
+                width={30}
+                height={30}
+              ></img>
+            </div>
+            <div className="col">
+              <p style={{ fontSize: "14px" }}>
+                {detail.MemberOwsName}
+                <br /> owes you {this.state.Currency}
+                {detail.Amount} <br />
+                {detail.Transaction.map((value, idy) => {
+                  if (value.Amount < 0) {
+                    return (
+                      <label className="dashBoardLabel" key={idy}>
+                        o: you owe{" "}
+                        <strong className="orangeCode">
+                          {this.state.Currency}
+                          {-value.Amount.toFixed(2)}
+                        </strong>{" "}
+                        for {value.GroupName}
+                      </label>
+                    );
+                  } else if (value.Amount > 0) {
+                    return (
+                      <label key={idy} className="dashBoardLabel">
+                        o: owes you{" "}
+                        <strong className="greenCode">
+                          {" "}
+                          {this.state.Currency}
+                          {value.Amount.toFixed(2)}
+                        </strong>{" "}
+                        for {value.GroupName}
+                      </label>
+                    );
+                  }
+                })}
+              </p>
+            </div>
           </div>
         );
       }

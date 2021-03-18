@@ -101,7 +101,6 @@ class Login extends Component {
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
-          console.log(JSON.stringify(response.data[0]));
           this.SetLocalStorage(JSON.stringify(response.data[0]));
           this.setState({
             authFlag: "true",
