@@ -142,9 +142,9 @@ class insert {
   FindGroupMemberList(con, body, res) {
     return new Promise((resolve, reject) => {
       con.query(
-        "Select MemberID from GroupMemberInfo where GroupName ='" +
+        " Select g.MemberID, u.Name, u.UserProfilePic from GroupMemberInfo as g Inner Join UserRegistration as u On (g.MemberID=u.Email) where g.GroupName ='" +
           body.groupname +
-          "' and Accepted=true",
+          "' and g.Accepted=true",
         (err, memberInfo) => {
           if (err) reject(err);
           return resolve(memberInfo);
@@ -256,6 +256,10 @@ class insert {
                 MemberPaid: memberInfo[member1].MemberID,
                 MemberOws: memberInfo[member2].MemberID,
                 Amount: finalValue,
+                MemberGetsName: memberInfo[member1].Name,
+                MemberOwsName: memberInfo[member2].Name,
+                MemberProfilePicGets: memberInfo[member1].UserProfilePic,
+                MemberProfilePicOws: memberInfo[member2].UserProfilePic,
               });
             }
           }
@@ -266,40 +270,44 @@ class insert {
             "Delete from  OwsGetsDetail where GroupName ='" + groupName + "'",
             function (err, result) {
               if (err) throw err;
+              let count = 0;
+              transactionlist.map((value) => {
+                var insGroupLink =
+                  "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName,MemberProfilePicGets, MemberProfilePicOws) VALUES (";
+                var insGroupLink1 =
+                  "'" +
+                  value.MemberPaid +
+                  "','" +
+                  value.MemberOws +
+                  "','" +
+                  value.Amount +
+                  "','" +
+                  groupName +
+                  "','" +
+                  value.MemberGetsName +
+                  "','" +
+                  value.MemberOwsName +
+                  "','" +
+                  value.MemberProfilePicGets +
+                  "','" +
+                  value.MemberProfilePicOws +
+                  "')";
+                con.query(insGroupLink + insGroupLink1, function (err, result) {
+                  count++;
+                  if (err) throw err;
+                  console.log("1 record inserted" + result);
+                  if (count == transactionlist.length) {
+                    console.log("response sent successfully");
+                    res.writeHead(200, {
+                      "Content-Type": "text/plain",
+                    });
+                    res.write("Insert Completed");
+                    res.end();
+                  }
+                });
+              });
             }
           );
-          let count = 0;
-          transactionlist.map((value) => {
-            var insGroupLink =
-              "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName) VALUES (";
-            var insGroupLink1 =
-              "'" +
-              value.MemberPaid +
-              "','" +
-              value.MemberOws +
-              "','" +
-              value.Amount +
-              "','" +
-              groupName +
-              "','" +
-              value.Amount +
-              "','" +
-              value.Amount +
-              "')";
-            con.query(insGroupLink + insGroupLink1, function (err, result) {
-              count++;
-              if (err) throw err;
-              console.log("1 record inserted" + result);
-              if (count == transactionlist.length) {
-                console.log("response sent successfully");
-                res.writeHead(200, {
-                  "Content-Type": "text/plain",
-                });
-                res.write("Insert Completed");
-                res.end();
-              }
-            });
-          });
         }
       } else {
         if (result.length == 0 && memberInfo.length == 1) {
@@ -330,6 +338,7 @@ class insert {
       "' && MemberGets='" +
       body.settleUpWith +
       "'";
+    console.log("settleup received");
     con.query(settleUpUser, function (err, result) {
       if (err) throw err;
       var deleteSettleUpTransaction =
