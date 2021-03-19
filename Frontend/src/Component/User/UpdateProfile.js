@@ -70,7 +70,7 @@ class UpdateProfile extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/updateProfile", this.state.userinfo)
+        .post("http://13.57.204.91:8000/updateProfile", this.state.userinfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -113,11 +113,11 @@ class UpdateProfile extends Component {
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://localhost:8000/upload", data)
+      .post("http://13.57.204.91:8000/upload", data)
       .then((response) => {
         console.log(response);
         let userinfo = this.state.userinfo;
-        userinfo.UserProfilePic = "http://localhost:8000/" + response.data;
+        userinfo.UserProfilePic = "http://13.57.204.91:8000/" + response.data;
         this.setState({
           userinfo,
         });

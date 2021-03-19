@@ -59,7 +59,7 @@ class GroupInfo extends Component {
       axiosCallInProgress: true,
     });
     axios
-      .get("http://localhost:8000/getTransactionInfo", {
+      .get("http://13.57.204.91:8000/getTransactionInfo", {
         params: {
           groupName: this.props.name,
         },
@@ -117,7 +117,7 @@ class GroupInfo extends Component {
     axios.defaults.withCredentials = true;
     //make a post request with the user data
     axios
-      .post("http://localhost:8000/insertGroupTransaction", data)
+      .post("http://13.57.204.91:8000/insertGroupTransaction", data)
       .then((response) => {
         if (response.status === 200) {
           this.setState({

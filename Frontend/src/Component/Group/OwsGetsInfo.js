@@ -35,7 +35,7 @@ class OwsGetDetail extends Component {
 
   GroupMemberName() {
     axios
-      .get("http://localhost:8000/getGroupMemberName", {
+      .get("http://13.57.204.91:8000/getGroupMemberName", {
         params: {
           groupName: this.props.name,
         },
@@ -61,7 +61,7 @@ class OwsGetDetail extends Component {
   }
   getGroupSummary() {
     axios
-      .get("http://localhost:8000/getGroupSummary", {
+      .get("http://13.57.204.91:8000/getGroupSummary", {
         params: {
           groupName: this.props.name,
         },
