@@ -75,7 +75,7 @@ class CreateGroup extends Component {
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:8000/createGroup", this.state)
+        .post("http://13.57.204.91:8000/createGroup", this.state)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -112,7 +112,7 @@ class CreateGroup extends Component {
 
   async getAllUser() {
     await axios
-      .get("http://localhost:8000/getAllUser")
+      .get("http://13.57.204.91/:8000/getAllUser")
       .then((response) => {
         if (response.status === 200) {
           console.log("All user:" + response.data);
@@ -166,11 +166,11 @@ class CreateGroup extends Component {
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://localhost:8000/upload", data)
+      .post("http://13.57.204.91:8000/upload", data)
       .then((response) => {
         console.log(response);
         this.setState({
-          groupPhoto: "http://localhost:8000/" + response.data,
+          groupPhoto: "http://13.57.204.91:8000/" + response.data,
         });
       })
       .catch((error) => console.log("error " + error));

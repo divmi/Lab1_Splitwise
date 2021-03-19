@@ -65,7 +65,7 @@ class Login extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/loginUser", data)
+        .post("http://13.57.204.91:8000/loginUser", data)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -93,7 +93,7 @@ class Login extends Component {
 
   getCurrentUserInfo() {
     axios
-      .get("http://localhost:8000/getUserInfo", {
+      .get("http://13.57.204.91:8000/getUserInfo", {
         params: {
           userEmail: this.state.email,
         },

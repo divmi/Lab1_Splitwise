@@ -15,7 +15,7 @@ class TransactionDetail extends Component {
 
   getTransactionDetail() {
     axios
-      .get("http://localhost:8000/getTransactionFromUser", {
+      .get("http://13.57.204.91:8000/getTransactionFromUser", {
         params: {
           email: this.props.email,
         },

@@ -17,7 +17,7 @@ class GroupNotification extends Component {
 
   GroupRequestAccepted = (name) => {
     axios
-      .post("http://localhost:8000/joinedGroup", name)
+      .post("http://13.57.204.91:8000/joinedGroup", name)
       .then((response) => {
         if (response.status === 200) {
           this.getGroupNotification();
@@ -37,7 +37,7 @@ class GroupNotification extends Component {
 
   getGroupNotification = () => {
     axios
-      .get("http://localhost:8000/getGroupNotification", {
+      .get("http://13.57.204.91:8000/getGroupNotification", {
         params: {
           memberID: cookie.load("cookie").Email,
         },

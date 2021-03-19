@@ -63,7 +63,7 @@ class Register extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://localhost:8000/signupUser", userInfo)
+        .post("http://13.57.204.91:8000/signupUser", userInfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {

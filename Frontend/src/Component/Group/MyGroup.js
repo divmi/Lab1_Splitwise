@@ -57,7 +57,7 @@ class MyGroup extends Component {
       memberID = cookie.load("cookie").Email;
     }
     axios
-      .get("http://localhost:8000/getCurrentUserGroup", {
+      .get("http://13.57.204.91:8000/getCurrentUserGroup", {
         params: {
           email: memberID,
         },
