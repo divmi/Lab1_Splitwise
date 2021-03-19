@@ -65,6 +65,7 @@ class insert {
       function (err, result) {
         if (err) throw err;
         if (result.length == 0) {
+          let count = 0;
           var sql =
             "INSERT INTO GroupInfo (GroupName, GroupProfilePicture) VALUES (";
           var sql1 = "'" + body.groupName + "','" + body.groupPhoto + "')";
@@ -72,34 +73,49 @@ class insert {
           con.query(sql + sql1, function (err, result) {
             if (err) throw err;
             console.log("1 record inserted" + result);
-          });
-          body.userData.map((value) => {
-            var insGroupLink =
-              "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-            var insGroupLink1 =
-              "'" + body.groupName + "','" + value.Email + "','" + false + "')";
-            con.query(insGroupLink + insGroupLink1, function (err, result) {
-              if (err) throw err;
-              console.log("1 record inserted" + result);
+            body.userData.map((value) => {
+              var insGroupLink =
+                "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
+              var insGroupLink1 =
+                "'" +
+                body.groupName +
+                "','" +
+                value.Email +
+                "','" +
+                false +
+                "')";
+              con.query(insGroupLink + insGroupLink1, function (err, result) {
+                if (err) throw err;
+                console.log("1 record inserted" + result);
+                count++;
+                if (count == body.userData.length) {
+                  count = 0;
+                  var insGroupForMainMember =
+                    "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
+                  var insGroupForMainMember1 =
+                    "'" +
+                    body.groupName +
+                    "','" +
+                    body.Email +
+                    "','" +
+                    1 +
+                    "')";
+                  con.query(
+                    insGroupForMainMember + insGroupForMainMember1,
+                    function (err, result) {
+                      if (err) throw err;
+                      console.log("1 record inserted" + result);
+
+                      res.writeHead(200, {
+                        "Content-Type": "text/plain",
+                      });
+                      res.end(JSON.stringify(result));
+                    }
+                  );
+                }
+              });
             });
           });
-
-          var insGroupForMainMember =
-            "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-          var insGroupForMainMember1 =
-            "'" + body.groupName + "','" + body.Email + "','" + 1 + "')";
-          con.query(
-            insGroupForMainMember + insGroupForMainMember1,
-            function (err, result) {
-              if (err) throw err;
-              console.log("1 record inserted" + result);
-            }
-          );
-
-          res.writeHead(200, {
-            "Content-Type": "text/plain",
-          });
-          res.end(JSON.stringify(result));
         } else {
           res.writeHead(401, {
             "Content-Type": "text/plain",
