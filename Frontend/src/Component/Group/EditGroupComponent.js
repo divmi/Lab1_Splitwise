@@ -204,7 +204,7 @@ class EditGroup extends Component {
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://13.57.204.91/:8000/upload", data)
+      .post("http://13.57.204.91:8000/upload", data)
       .then((response) => {
         console.log(response);
         this.setState({

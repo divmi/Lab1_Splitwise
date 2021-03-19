@@ -112,7 +112,7 @@ class CreateGroup extends Component {
 
   async getAllUser() {
     await axios
-      .get("http://13.57.204.91/:8000/getAllUser")
+      .get("http://13.57.204.91:8000/getAllUser")
       .then((response) => {
         if (response.status === 200) {
           console.log("All user:" + response.data);
