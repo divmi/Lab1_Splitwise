@@ -176,10 +176,10 @@ class GroupInfo extends Component {
                 color: "GrayText",
               }}
             >
-              {/* <p>
-                 <br /> paid <br /> {this.state.Currency}
+              <p>
+                <br /> paid <br /> {this.state.Currency}
                 {name.Amount}
-              </p> */}
+              </p>
             </td>
           </tr>
         );
