@@ -1,70 +1,41 @@
+const Users = require("./Model/UserRegistrationModel");
 var group = class group {
-  getAllUser(con, body, res) {
-    con.query("Select * from UserRegistration ", function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
-      } else {
+  getAllUser(body, res) {
+    Users.find({}, (error, user) => {
+      if (error) {
         res.writeHead(401, {
           "Content-Type": "text/plain",
         });
-        res.end("UnSuccessful Login");
-      }
-    });
-  }
-
-  UserLogin(con, body, res) {
-    console.log("Connected!");
-    var sql =
-      "Select * from UserRegistration where Email='" +
-      body.email +
-      "'and Password='" +
-      body.password +
-      "'";
-    console.log(sql);
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result[0].Password === body.password) {
-        res.cookie("cookie", result[0].Email);
-        console.log(res.cookie("cookie", result[0].Email));
-
+        res.end("Not able to read users");
+      } else if (user) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
-
-        res.end(JSON.stringify(result));
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
+        res.end(JSON.stringify(user));
       }
     });
   }
 
   getGroupDetail(con, email, res) {
-    console.log("Connected!");
-    var sql =
-      "Select * from GroupMemberInfo where MemberID='" +
-      email +
-      "' and Accepted=true";
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
-      }
-    });
+    // console.log("Connected!");
+    // var sql =
+    //   "Select * from GroupMemberInfo where MemberID='" +
+    //   email +
+    //   "' and Accepted=true";
+    // con.query(sql, function (err, result) {
+    //   if (err) throw err;
+    //   if (result) {
+    //     res.writeHead(200, {
+    //       "Content-Type": "text/plain",
+    //     });
+    //     res.end(JSON.stringify(result));
+    //   } else {
+    //     res.writeHead(401, {
+    //       "Content-Type": "text/plain",
+    //     });
+    //     res.end("UnSuccessful Login");
+    //   }
+    // });
   }
 
   getGroupNotification(con, email, res) {

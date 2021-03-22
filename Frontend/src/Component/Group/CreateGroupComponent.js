@@ -145,10 +145,20 @@ class CreateGroup extends Component {
 
   componentDidMount() {
     this.setState({ allUser: this.getAllUser() });
-    if (cookie.load("cookie")) {
-      this.setState({ Name: cookie.load("cookie").Name });
-      this.setState({ Email: cookie.load("cookie").Email });
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        console.log(JSON.parse(localStorage.getItem("userData")));
+        var data = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Name: data.Name,
+          Email: data.Email,
+        });
+      }
     }
+    // if (cookie.load("cookie")) {
+    //   this.setState({ Name: cookie.load("cookie").Name });
+    //   this.setState({ Email: cookie.load("cookie").Email });
+    // }
   }
 
   validateForm = () => {

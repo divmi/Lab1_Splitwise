@@ -1,5 +1,3 @@
-var mysql = require("mysql");
-
 class transactionDetail {
   groupJoinRequest(con, body, res) {
     var sql =
@@ -19,17 +17,16 @@ class transactionDetail {
   }
 
   getUserSpecificGetOwsInfo(con, email, res) {
-    var sql =
-      "SELECT * FROM SplitwiseDB.OwsGetsDetail where  MemberGets='" +
-      email +
-      "'OR MemberOws='" +
-      email +
-      "'";
-
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      res.end(JSON.stringify(result));
-    });
+    // var sql =
+    //   "SELECT * FROM SplitwiseDB.OwsGetsDetail where  MemberGets='" +
+    //   email +
+    //   "'OR MemberOws='" +
+    //   email +
+    //   "'";
+    // con.query(sql, function (err, result) {
+    //   if (err) throw err;
+    //   res.end(JSON.stringify(result));
+    // });
   }
 
   getWhetherUserCanbeDeleted(con, query, res) {

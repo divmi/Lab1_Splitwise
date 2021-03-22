@@ -130,7 +130,7 @@ app.post("/upload", (req, res, next) => {
 app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   var insgrp = new insert.insert();
-  insgrp.insert_Group(con, req.body, res);
+  insgrp.insert_Group(req.body, res);
 });
 
 app.get("/signupUser", function (req, res) {
@@ -193,7 +193,7 @@ app.get("/getGroupNotification", function (req, res) {
 
 app.get("/getAllUser", function (req, res) {
   var user = new group.group();
-  user.getAllUser(con, req, res);
+  user.getAllUser(req, res);
 });
 
 app.get("/getOwsDetail", function (req, res) {

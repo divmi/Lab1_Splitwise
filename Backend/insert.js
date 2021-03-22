@@ -1,6 +1,7 @@
 "use strict";
 const bcrypt = require("bcrypt");
 const Users = require("./Model/UserRegistrationModel");
+const GroupInfo = require("./Model/GroupInfoModel");
 
 class insert {
   async insert_user(body, res) {
@@ -50,72 +51,44 @@ class insert {
     }
   }
 
-  insert_Group(con, body, res) {
+  insert_Group(body, res) {
     console.log("Connected!");
-    con.query(
-      "Select * from GroupInfo where GroupName='" + body.groupName + "'",
-      function (err, result) {
-        if (err) throw err;
-        if (result.length == 0) {
-          let count = 0;
-          var sql =
-            "INSERT INTO GroupInfo (GroupName, GroupProfilePicture) VALUES (";
-          var sql1 = "'" + body.groupName + "','" + body.groupPhoto + "')";
-          console.log(sql + sql1);
-          con.query(sql + sql1, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted" + result);
-            body.userData.map((value) => {
-              var insGroupLink =
-                "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-              var insGroupLink1 =
-                "'" +
-                body.groupName +
-                "','" +
-                value.Email +
-                "','" +
-                false +
-                "')";
-              con.query(insGroupLink + insGroupLink1, function (err, result) {
-                if (err) throw err;
-                console.log("1 record inserted" + result);
-                count++;
-                if (count == body.userData.length) {
-                  count = 0;
-                  var insGroupForMainMember =
-                    "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-                  var insGroupForMainMember1 =
-                    "'" +
-                    body.groupName +
-                    "','" +
-                    body.Email +
-                    "','" +
-                    1 +
-                    "')";
-                  con.query(
-                    insGroupForMainMember + insGroupForMainMember1,
-                    function (err, result) {
-                      if (err) throw err;
-                      console.log("1 record inserted" + result);
-
-                      res.writeHead(200, {
-                        "Content-Type": "text/plain",
-                      });
-                      res.end(JSON.stringify(result));
-                    }
-                  );
-                }
-              });
-            });
-          });
-        } else {
-          res.writeHead(401, {
-            "Content-Type": "text/plain",
-          });
-          res.end("Group Name is already registered");
-        }
+    GroupInfo.findOne({ GroupName: body.groupName }, (error, groupInfo) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-Type": "text/plain",
+        });
+        res.end();
       }
-    );
+      if (groupInfo) {
+        res.writeHead(400, {
+          "Content-Type": "text/plain",
+        });
+        res.end("Group Name is already Registered");
+      } else {
+        var memberList = [];
+        body.userData.map((user) => {
+          memberList.push({ MemberID: user.Email, Accepted: false });
+        });
+        memberList.push({ MemberID: body.Email, Accepted: true });
+        var groupInfo = new GroupInfo({
+          GroupName: body.groupName,
+          GroupProfilePicture: body.groupPhoto,
+          GroupMemberInfo: memberList,
+        });
+        groupInfo.save((error, data) => {
+          if (error) {
+            res.writeHead(500, {
+              "Content-Type": "text/plain",
+            });
+            res.end();
+          } else {
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end();
+          }
+        });
+      }
+    });
   }
 
   async insert_TransactionForUserAndGroup(con, body, res) {

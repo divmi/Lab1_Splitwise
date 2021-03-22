@@ -1,5 +1,4 @@
 const bodyParser = require("body-parser");
-var mysql = require("mysql");
 var update = class update {
   updateUserProfile(con, req, res) {
     var sql =
