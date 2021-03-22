@@ -1,30 +1,28 @@
-var mysql = require("mysql");
 const bcrypt = require("bcrypt");
+const Users = require("./Model/UserRegistrationModel");
 
 var login = class login {
-  UserLogin(con, body, res) {
-    console.log("Connected!");
-    var sql =
-      "Select Name, Email, Password from UserRegistration where Email='" +
-      body.email +
-      "'";
-
-    console.log(sql);
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result.length > 0) {
-        console.log(result[0].Password);
+  UserLogin(body, res) {
+    Users.findOne({ Email: body.email }, (error, user) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-Type": "text/plain",
+        });
+        res.end();
+      }
+      if (user) {
         bcrypt.compare(
           body.password,
-          result[0].Password,
+          user.Password,
           function (err, matchPassword) {
             if (err) return error;
             if (matchPassword) {
-              res.cookie("cookie", JSON.stringify(result[0]));
+              console.log(JSON.stringify(user));
+              res.cookie("cookie", JSON.stringify(user.Email));
               res.writeHead(200, {
                 "Content-Type": "text/plain",
               });
-              res.end(JSON.stringify(result));
+              res.end(JSON.stringify(user));
             } else {
               res.writeHead(401, {
                 "Content-Type": "text/plain",

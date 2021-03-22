@@ -13,8 +13,8 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import config from "../../config";
-// import { connect } from "react-redux";
-// import * as Action from "../../actions/index";
+import { connect } from "react-redux";
+import * as Action from "../../actions/index";
 
 class Login extends Component {
   constructor(props) {
@@ -70,11 +70,10 @@ class Login extends Component {
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
-            this.getCurrentUserInfo();
+            this.SetLocalStorage(JSON.stringify(response.data));
             this.setState({
-              error: "",
+              authFlag: "true",
             });
-            //<Home></Home>;
           } else {
             this.setState({
               error: "Please enter correct credentials",
@@ -91,29 +90,6 @@ class Login extends Component {
       this.setState({ formerror });
     }
   };
-
-  getCurrentUserInfo() {
-    axios
-      .get(`http://${config.ipAddress}:8000/getUserInfo`, {
-        params: {
-          userEmail: this.state.email,
-        },
-      })
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
-          this.SetLocalStorage(JSON.stringify(response.data[0]));
-          this.setState({
-            authFlag: "true",
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          error: "Not able to find user",
-        });
-      });
-  }
 
   SetLocalStorage(data) {
     if (typeof Storage !== "undefined") {
@@ -197,10 +173,10 @@ class Login extends Component {
   }
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     UserState: (data) => dispatch(Action.UserState(data)),
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    UserState: (data) => dispatch(Action.UserState(data)),
+  };
+}
 
-export default Login; //connect(null, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(Login); //

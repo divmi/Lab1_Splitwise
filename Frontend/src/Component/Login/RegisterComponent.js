@@ -13,8 +13,8 @@ import {
 import axios from "axios";
 import { isEmail } from "validator";
 import config from "../../config";
-// import { connect } from "react-redux";
-// import * as Action from "../../actions/actionCreators";
+import { connect } from "react-redux";
+import * as Action from "../../actions/actionCreators";
 
 // const mapStateToProps = (state) => {
 //   return {
@@ -72,7 +72,7 @@ class Register extends Component {
               loginError: "",
               authFlag: true,
             });
-            //this.props.RegisterUser({ data }); //reducer call
+            this.props.RegisterUser({ data }); //reducer call
             this.SetLocalStorage(data);
             alert("Successfully Created! Please Continue to Login");
           } else {
@@ -212,10 +212,10 @@ class Register extends Component {
     );
   }
 }
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
+  };
+}
 
-export default Register; //connect(null, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(Register); //

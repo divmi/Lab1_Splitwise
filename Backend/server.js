@@ -1,10 +1,12 @@
 const express = require("express");
-const mysql = require("mysql");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
 const ipAddress = "localhost";
+
+const { mongoDB } = require("./config");
+const mongoose = require("mongoose");
 
 app.use(express.static("uploads"));
 const multer = require("multer"); //upload image on server
@@ -50,26 +52,28 @@ const insert = require("./insert");
 const login = require("./login");
 const group = require("./group");
 const Update = require("./update");
+var con = "";
 
 const transaction = require("./transactionDetail");
 
 app.set("view engine", "ejs");
-// const con = mysql.createConnection({
-//   host: "splitwise.c5rygpr3lt0j.us-west-1.rds.amazonaws.com",
-//   user: "admin",
-//   password: "splitwise",
-//   database: "SplitwiseDB",
-//   //connectionLimit: 500,
-// });
 
-var con = mysql.createPool({
-  //connectionLimit: 500, //important
-  host: "splitwise.c5rygpr3lt0j.us-west-1.rds.amazonaws.com",
-  user: "admin",
-  password: "splitwise",
-  database: "SplitwiseDB",
-  debug: false,
+var options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  poolSize: 500,
+  bufferMaxEntries: 0,
+};
+
+mongoose.connect(mongoDB, options, (err, res) => {
+  if (err) {
+    console.log(err);
+    console.log(`MongoDB Connection Failed`);
+  } else {
+    console.log(`MongoDB Connected`);
+  }
 });
+
 //use cors to allow cross origin resource sharing
 app.use(
   cors({
@@ -111,8 +115,7 @@ app.get("/api/UserRegistration", (req, res) => {
 
 app.post("/signupUser", function (req, res) {
   var ins = new insert.insert();
-  console.log("Divya :" + req.body.name);
-  ins.insert_user(con, req.body, res);
+  ins.insert_user(req.body, res);
 });
 
 app.post("/upload", (req, res, next) => {
@@ -138,7 +141,7 @@ app.get("/signupUser", function (req, res) {
 app.post("/loginUser", function (req, res) {
   console.log("Req Body : ", req.body);
   var loginUser = new login.login();
-  loginUser.UserLogin(con, req.body, res);
+  loginUser.UserLogin(req.body, res);
 });
 
 app.get("/getCurrentUserGroup", function (req, res) {
@@ -171,12 +174,6 @@ app.post("/insertGroupTransaction", function (req, res) {
   console.log("Req Body : ", req.body);
   var insertTransaction = new insert.insert();
   insertTransaction.insert_TransactionForUserAndGroup(con, req.body, res);
-});
-
-app.get("/getUserInfo", function (req, res) {
-  var userDetail = new group.group();
-  console.log("get user :" + req.query.userEmail);
-  userDetail.getUserDetail(con, req.query.userEmail, res);
 });
 
 app.get("/getTransactionInfo", function (req, res) {

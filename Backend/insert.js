@@ -1,60 +1,52 @@
 "use strict";
-var mysql = require("mysql");
 const bcrypt = require("bcrypt");
+const Users = require("./Model/UserRegistrationModel");
 
 class insert {
-  async insert_user(con, body, res) {
+  async insert_user(body, res) {
     try {
       const salt = await bcrypt.genSalt(10);
       // now we set user password to hashed password
       body.password = await bcrypt.hash(body.password, salt);
-      var checkUser =
-        "Select * from UserRegistration where Email='" + body.email + "'";
-      con.query(checkUser, function (err, result) {
-        if (err) throw err;
-        if (result.length == 0) {
-          console.log("Connected!");
-          var sql =
-            "INSERT INTO UserRegistration (Name, Password, Email, Currency, Timezone, Language, ContactNo) VALUES (";
-          var sql1 =
-            "'" +
-            body.name +
-            "','" +
-            body.password +
-            "','" +
-            body.email +
-            "','" +
-            "$" +
-            "','" +
-            "(GMT-08:00) Pacific Time" +
-            "','" +
-            "English" +
-            "','" +
-            "80XXXXXXXXX" +
-            "')";
-          console.log(sql + sql1);
-          con.query(sql + sql1, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted" + result);
-            let data = {
-              Name: body.name,
-              Email: body.email,
-            };
-            res.cookie("cookie", JSON.stringify(data));
-            res.writeHead(200, {
-              "Content-Type": "text/plain",
-            });
-            res.end(JSON.stringify(result));
+      Users.findOne({ Email: body.email }, (error, user) => {
+        if (error) {
+          res.writeHead(500, {
+            "Content-Type": "text/plain",
           });
-        } else {
-          res.writeHead(401, {
+          res.end();
+        }
+        if (user) {
+          res.writeHead(400, {
             "Content-Type": "text/plain",
           });
           res.end("User is already registered");
+        } else {
+          console.log("Came here");
+          var newUser = new Users({
+            Name: body.name,
+            Email: body.email,
+            Password: body.password,
+            Currency: "$",
+            Timezone: "(GMT-08:00) Pacific Time",
+            Language: "English",
+            ContactNo: "9999999999",
+            UserProfilePic: "",
+          });
+          newUser.save((error, data) => {
+            if (error) {
+              res.writeHead(500, {
+                "Content-Type": "text/plain",
+              });
+              res.end();
+            } else {
+              res.writeHead(200, { "Content-Type": "text/plain" });
+              res.end();
+            }
+          });
         }
       });
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   }
 

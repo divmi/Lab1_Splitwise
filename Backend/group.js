@@ -1,27 +1,4 @@
-var mysql = require("mysql");
-
 var group = class group {
-  getUserDetail(con, email, res) {
-    console.log("Connected!");
-    var sql =
-      "Select Name, Email, ContactNo, Currency, Timezone, Language, UserProfilePic from UserRegistration where Email='" +
-      email +
-      "'";
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
-      }
-    });
-  }
   getAllUser(con, body, res) {
     con.query("Select * from UserRegistration ", function (err, result) {
       if (err) throw err;
