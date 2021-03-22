@@ -7,6 +7,7 @@ import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
 import Dashboard from "../User/DashBoard";
 import OwsGetDetail from "../Group/OwsGetsInfo";
+import config from "../../config";
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,7 @@ class Home extends Component {
       MemberID = cookie.load("cookie").Email;
     }
     axios
-      .get("http://13.57.204.91:8000/getCurrentUserGroup", {
+      .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
         params: {
           email: MemberID,
         },

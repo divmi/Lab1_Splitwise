@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import cookie from "react-cookies";
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import config from "../../config";
 // import { Redirect, Link } from "react-router-dom";
 // import { Label } from "reactstrap";
 
@@ -17,29 +18,24 @@ class GroupNotification extends Component {
 
   GroupRequestAccepted = (name) => {
     axios
-      .post("http://13.57.204.91:8000/joinedGroup", name)
+      .post(`http://${config.ipAddress}:8000/joinedGroup`, name)
       .then((response) => {
         if (response.status === 200) {
           this.getGroupNotification();
           this.props.click();
-        } else {
-          this.setState({
-            error: "Server Error",
-          });
         }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Server Error" + e,
-        });
       });
   };
 
   getGroupNotification = () => {
+    let member = "";
+    if (cookie.load("cookie")) {
+      member = cookie.load("cookie").Email;
+    }
     axios
-      .get("http://13.57.204.91:8000/getGroupNotification", {
+      .get(`http://${config.ipAddress}:8000/getGroupNotification`, {
         params: {
-          memberID: cookie.load("cookie").Email,
+          memberID: member,
         },
       })
       .then((response) => {

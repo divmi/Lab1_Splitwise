@@ -5,6 +5,7 @@ import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
 import { Redirect } from "react-router-dom";
+import config from "../../config";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -70,9 +71,11 @@ class UpdateProfile extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://13.57.204.91:8000/updateProfile", this.state.userinfo)
+        .post(
+          `http://${config.ipAddress}:8000/updateProfile`,
+          this.state.userinfo
+        )
         .then((response) => {
-          console.log("Status Code : ", response.status);
           if (response.status === 200) {
             this.SetLocalStorage(JSON.stringify(this.state.userinfo));
             this.setState({
@@ -110,14 +113,14 @@ class UpdateProfile extends Component {
   handleFileUpload = (event) => {
     event.preventDefault();
     let data = new FormData();
-    console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://13.57.204.91:8000/upload", data)
+      .post(`http://${config.ipAddress}:8000/upload`, data)
       .then((response) => {
         console.log(response);
         let userinfo = this.state.userinfo;
-        userinfo.UserProfilePic = "http://13.57.204.91:8000/" + response.data;
+        userinfo.UserProfilePic =
+          `http://${config.ipAddress}:8000/` + response.data;
         this.setState({
           userinfo,
         });
@@ -149,7 +152,6 @@ class UpdateProfile extends Component {
         {key}
       </option>
     ));
-    console.log(this.state.userinfo.UserProfilePic);
     return (
       <div>
         {redirectVar}
@@ -187,6 +189,7 @@ class UpdateProfile extends Component {
                           type="text"
                           id="Name"
                           name="Name"
+                          data-testid="Name-input-box"
                           placeholder="First Name"
                           value={this.state.userinfo.Name}
                           onChange={this.handleChange}

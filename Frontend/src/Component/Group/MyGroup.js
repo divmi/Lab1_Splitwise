@@ -5,6 +5,7 @@ import { Label } from "reactstrap";
 import GroupNotification from "./GroupNotification";
 import axios from "axios";
 import GroupInfo from "./GroupInfoComponent";
+import config from "../../config";
 
 class MyGroup extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class MyGroup extends Component {
       memberID = cookie.load("cookie").Email;
     }
     axios
-      .get("http://13.57.204.91:8000/getCurrentUserGroup", {
+      .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
         params: {
           email: memberID,
         },
@@ -141,6 +142,7 @@ class MyGroup extends Component {
                 <div className="form-outline" style={{ width: "140px" }}>
                   <input
                     type="search"
+                    data-testid="search-input-box"
                     id="form1"
                     className="form-control"
                     placeholder="Search..."

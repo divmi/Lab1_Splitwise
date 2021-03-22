@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import config from "../../config";
 //import cookie from "react-cookies";
 class OwsGetDetail extends Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class OwsGetDetail extends Component {
 
   GroupMemberName() {
     axios
-      .get("http://13.57.204.91:8000/getGroupMemberName", {
+      .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
         params: {
           groupName: this.props.name,
         },
@@ -61,7 +62,7 @@ class OwsGetDetail extends Component {
   }
   getGroupSummary() {
     axios
-      .get("http://13.57.204.91:8000/getGroupSummary", {
+      .get(`http://${config.ipAddress}:8000/getGroupSummary`, {
         params: {
           groupName: this.props.name,
         },

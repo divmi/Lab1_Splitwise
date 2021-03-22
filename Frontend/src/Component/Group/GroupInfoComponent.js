@@ -12,6 +12,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 import OwsGetAmount from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
+import config from "../../config";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class GroupInfo extends Component {
       axiosCallInProgress: true,
     });
     axios
-      .get("http://13.57.204.91:8000/getTransactionInfo", {
+      .get(`http://${config.ipAddress}:8000/getTransactionInfo`, {
         params: {
           groupName: this.props.name,
         },
@@ -117,7 +118,7 @@ class GroupInfo extends Component {
     axios.defaults.withCredentials = true;
     //make a post request with the user data
     axios
-      .post("http://13.57.204.91:8000/insertGroupTransaction", data)
+      .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
       .then((response) => {
         if (response.status === 200) {
           this.setState({
@@ -175,10 +176,10 @@ class GroupInfo extends Component {
                 color: "GrayText",
               }}
             >
-              <p>
-                {name.Name} <br /> paid <br /> {this.state.Currency}
+              {/* <p>
+                 <br /> paid <br /> {this.state.Currency}
                 {name.Amount}
-              </p>
+              </p> */}
             </td>
           </tr>
         );

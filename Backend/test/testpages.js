@@ -10,7 +10,7 @@ describe("Splitwise App", function () {
     agent
       .get("/getAllUser")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(21);
+        expect(JSON.parse(res.text).length).to.equal(24);
         done();
       })
       .catch((e) => {
@@ -22,7 +22,7 @@ describe("Splitwise App", function () {
     agent
       .get("/getUserSpecificGetOwsInfo?email=tejas@gmail.com")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(5);
+        expect(JSON.parse(res.text).length).to.equal(1);
         done();
       })
       .catch((e) => {
@@ -34,29 +34,32 @@ describe("Splitwise App", function () {
     agent
       .get("/getGroupNotification?memberID=divyamittal@gmail.com")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(2);
+        expect(JSON.parse(res.text).length).to.equal(0);
         done();
       })
       .catch((e) => {
         done(e);
       });
   });
-  it("POST /updateProfile - Update the profile of user", function (done) {
+  it("POST /getUserInfo - Update the profile of user", function (done) {
     agent
-      .get("/getUserInfo?userEmail=divyamittal@gmail.com")
+      .post("/getUserInfo")
+      .set("content-type", "application/json")
+      .send({ userEmail: "tejas@gmail.com" })
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(1);
+        expect(JSON.parse(res.text).length).to.equal(0);
         done();
       })
       .catch((e) => {
         done(e);
       });
   });
-  it("Put /getGroupMemberName - Group Member Names", function (done) {
+
+  it("Get /getGroupMemberName - Group Member Names", function (done) {
     agent
-      .get("/getGroupMemberName?groupName=Group Divya")
+      .get("/getGroupMemberName?groupName=Farewell Party")
       .then(function (res) {
-        expect(JSON.parse(res.text).length).to.equal(4);
+        expect(JSON.parse(res.text).length).to.equal(3);
         done();
       })
       .catch((e) => {

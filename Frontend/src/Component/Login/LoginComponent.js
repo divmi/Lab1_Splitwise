@@ -12,8 +12,9 @@ import {
   FormFeedback,
 } from "reactstrap";
 import axios from "axios";
-import { connect } from "react-redux";
-import * as Action from "../../actions/index";
+import config from "../../config";
+// import { connect } from "react-redux";
+// import * as Action from "../../actions/index";
 
 class Login extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class Login extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://13.57.204.91:8000/loginUser", data)
+        .post(`http://${config.ipAddress}:8000/loginUser`, data)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -93,7 +94,7 @@ class Login extends Component {
 
   getCurrentUserInfo() {
     axios
-      .get("http://13.57.204.91:8000/getUserInfo", {
+      .get(`http://${config.ipAddress}:8000/getUserInfo`, {
         params: {
           userEmail: this.state.email,
         },
@@ -196,10 +197,10 @@ class Login extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    UserState: (data) => dispatch(Action.UserState(data)),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     UserState: (data) => dispatch(Action.UserState(data)),
+//   };
+// }
 
-export default connect(null, mapDispatchToProps)(Login); //
+export default Login; //connect(null, mapDispatchToProps)(

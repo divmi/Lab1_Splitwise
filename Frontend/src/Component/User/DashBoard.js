@@ -11,6 +11,7 @@ import {
 import React, { Component } from "react";
 import axios from "axios";
 import cookie from "react-cookies";
+import config from "../../config";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -143,7 +144,7 @@ class Dashboard extends Component {
     };
     axios.defaults.withCredentials = true;
     axios
-      .post("http://13.57.204.91:8000/settleUp", data)
+      .post(`http://${config.ipAddress}:8000/settleUp`, data)
       .then((response) => {
         console.log("Status Code : ", response.status);
         if (response.status === 200) {
@@ -169,7 +170,7 @@ class Dashboard extends Component {
 
   getUserSpecificTransactionDetail() {
     axios
-      .get("http://13.57.204.91:8000/getUserSpecificGetOwsInfo", {
+      .get(`http://${config.ipAddress}:8000/getUserSpecificGetOwsInfo`, {
         params: {
           email: cookie.load("cookie").Email,
         },

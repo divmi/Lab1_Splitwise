@@ -4,6 +4,7 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
+const ipAddress = "localhost";
 
 app.use(express.static("uploads"));
 const multer = require("multer"); //upload image on server
@@ -62,7 +63,7 @@ app.set("view engine", "ejs");
 // });
 
 var con = mysql.createPool({
-  connectionLimit: 10, //important
+  //connectionLimit: 500, //important
   host: "splitwise.c5rygpr3lt0j.us-west-1.rds.amazonaws.com",
   user: "admin",
   password: "splitwise",
@@ -72,14 +73,14 @@ var con = mysql.createPool({
 //use cors to allow cross origin resource sharing
 app.use(
   cors({
-    origin: "http://13.57.204.91:3000",
+    origin: `http://${ipAddress}:3000`,
     credentials: true,
   })
 );
 app.use(bodyParser.json());
 //Allow Access Control
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://13.57.204.91:3000");
+  res.setHeader("Access-Control-Allow-Origin", `http://${ipAddress}:3000`);
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -174,6 +175,7 @@ app.post("/insertGroupTransaction", function (req, res) {
 
 app.get("/getUserInfo", function (req, res) {
   var userDetail = new group.group();
+  console.log("get user :" + req.query.userEmail);
   userDetail.getUserDetail(con, req.query.userEmail, res);
 });
 

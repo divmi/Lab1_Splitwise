@@ -37,7 +37,7 @@ class NewUser extends Component {
   };
 
   render() {
-    console.log("Divya :" + this.props.val);
+    //console.log("Divya :" + this.props.val);
     if (this.props.val.Name != "" && this.props.val.Email != "") {
       return (
         <tr>
@@ -45,7 +45,7 @@ class NewUser extends Component {
             <input
               type="text"
               name="userName"
-              value={this.props.val.Name}
+              value={this.state.Name}
               data-id="0"
               id="userName"
               className="form-control "
@@ -55,6 +55,7 @@ class NewUser extends Component {
           <td>
             <input
               type="text"
+              data-testid="id-input-box"
               name="email"
               id="email"
               data-id="0"

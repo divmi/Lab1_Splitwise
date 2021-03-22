@@ -3,6 +3,7 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import NewUser from "./NewUser";
 import axios from "axios";
+import config from "../../config";
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
@@ -75,7 +76,7 @@ class CreateGroup extends Component {
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://13.57.204.91:8000/createGroup", this.state)
+        .post(`http://${config.ipAddress}:8000/createGroup`, this.state)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -112,7 +113,7 @@ class CreateGroup extends Component {
 
   async getAllUser() {
     await axios
-      .get("http://13.57.204.91:8000/getAllUser")
+      .get(`http://${config.ipAddress}:8000/getAllUser`)
       .then((response) => {
         if (response.status === 200) {
           console.log("All user:" + response.data);
@@ -166,11 +167,11 @@ class CreateGroup extends Component {
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://13.57.204.91:8000/upload", data)
+      .post(`http://${config.ipAddress}:8000/upload`, data)
       .then((response) => {
         console.log(response);
         this.setState({
-          groupPhoto: "http://13.57.204.91:8000/" + response.data,
+          groupPhoto: `http://${config.ipAddress}:8000/` + response.data,
         });
       })
       .catch((error) => console.log("error " + error));
@@ -245,12 +246,13 @@ class CreateGroup extends Component {
                               <label className="required">
                                 My Group shall be called:
                               </label>
-                              <textarea
+                              <input
                                 name="groupName"
+                                data-testid="groupName-input-box"
                                 id="groupName"
                                 className="form-control"
                                 onChange={this.groupNameEventHandler}
-                              ></textarea>
+                              ></input>
                             </div>
                           </div>
                         </div>

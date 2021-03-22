@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import config from "../../config";
 
 class TransactionDetail extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class TransactionDetail extends Component {
 
   getTransactionDetail() {
     axios
-      .get("http://13.57.204.91:8000/getTransactionFromUser", {
+      .get(`http://${config.ipAddress}:8000/getTransactionFromUser`, {
         params: {
           email: this.props.email,
         },

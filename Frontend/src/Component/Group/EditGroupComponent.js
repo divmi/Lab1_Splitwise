@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
-// import TextField from "@material-ui/core/TextField";
-// import Autocomplete from "@material-ui/lab/Autocomplete";
+import config from "../../config";
 import axios from "axios";
 
 class EditGroup extends Component {
@@ -80,7 +79,7 @@ class EditGroup extends Component {
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://13.57.204.91:8000/updateGroup", data)
+        .post(`http://${config.ipAddress}:8000/updateGroup`, data)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
@@ -117,7 +116,7 @@ class EditGroup extends Component {
 
   getMemberInfo() {
     axios
-      .get("http://13.57.204.91:8000/getGroupMemberName", {
+      .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
         params: {
           groupName: this.props.match.params.value,
         },
@@ -146,7 +145,7 @@ class EditGroup extends Component {
     e.preventDefault();
     var items = this.state.userData;
     axios
-      .get("http://13.57.204.91:8000/getUserCanBeDeleted", {
+      .get(`http://${config.ipAddress}:8000/getUserCanBeDeleted`, {
         params: {
           email: i.Email,
           groupName: this.props.match.params.value,
@@ -204,11 +203,11 @@ class EditGroup extends Component {
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
-      .post("http://13.57.204.91:8000/upload", data)
+      .post(`http://${config.ipAddress}:8000/upload`, data)
       .then((response) => {
         console.log(response);
         this.setState({
-          groupPhoto: "http://13.57.204.91:8000/" + response.data,
+          groupPhoto: `http://${config.ipAddress}:8000/` + response.data,
         });
         console.log(this.state.groupPhoto);
       })

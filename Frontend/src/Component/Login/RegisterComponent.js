@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { isEmail } from "validator";
+import config from "../../config";
 // import { connect } from "react-redux";
 // import * as Action from "../../actions/actionCreators";
 
@@ -63,7 +64,7 @@ class Register extends Component {
       axios.defaults.withCredentials = true;
       //make a post request with the user data
       axios
-        .post("http://13.57.204.91:8000/signupUser", userInfo)
+        .post(`http://${config.ipAddress}:8000/signupUser`, userInfo)
         .then((response) => {
           console.log("Status Code : ", response.status);
           if (response.status === 200) {
