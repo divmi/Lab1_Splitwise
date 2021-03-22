@@ -30,6 +30,7 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run eject`
+<<<<<<< HEAD
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -68,3 +69,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+>>>>>>> 26e5c08a0b3da4460de0e47948fda2f32754e0e6
