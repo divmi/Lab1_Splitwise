@@ -4,7 +4,7 @@ const defaultState = {
   registerUserData: [],
 };
 
-export const register = (state = defaultState, action) => {
+export default function (state = defaultState, action) {
   if (action.type == aType.REGISTER_USER) {
     console.log("processing in reducer from register user");
     return Object.assign({}, state, {
@@ -12,4 +12,4 @@ export const register = (state = defaultState, action) => {
     });
   }
   return state;
-};
+}

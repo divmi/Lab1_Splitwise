@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import { isEmail } from "validator";
 import {
@@ -11,24 +10,28 @@ import {
   Col,
   FormFeedback,
 } from "reactstrap";
-import axios from "axios";
-import config from "../../config";
 import { connect } from "react-redux";
-import * as Action from "../../actions/index";
+//import * as Action from "../../actions/loginAction";
+import PropTypes from "prop-types";
+import { userLogin } from "../../actions/loginAction";
 
 class Login extends Component {
   constructor(props) {
     super(props);
     {
       this.state = {
-        email: "",
-        password: "",
         error: "",
-        formerror: {},
-        auth: true,
+        formerror: "",
+        authFlag: "",
       };
     }
   }
+
+  // email: "",
+  // password: "",
+  // error: "",
+  // formerror: {},
+  // auth: true,
 
   validateForm = () => {
     const userInfo = this.state;
@@ -62,34 +65,27 @@ class Login extends Component {
     };
     const formerror = this.validateForm();
     if (Object.keys(formerror).length == 0) {
+      this.props.userLogin(data);
       //set the with credentials to true
-      axios.defaults.withCredentials = true;
-      //make a post request with the user data
-      axios
-        .post(`http://${config.ipAddress}:8000/loginUser`, data)
-        .then((response) => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            this.SetLocalStorage(JSON.stringify(response.data));
-            this.setState({
-              authFlag: "true",
-            });
-          } else {
-            this.setState({
-              error: "Please enter correct credentials",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            error: "Please enter correct credentials",
-          });
-        });
     } else {
       this.setState({ formerror });
     }
   };
+
+  componentDidUpdate(prevState) {
+    if (prevState.user != this.props.user) {
+      if (this.props.user == "UnSuccessful Login") {
+        this.setState({
+          authFlag: false,
+        });
+      } else {
+        this.setState({
+          authFlag: true,
+        });
+        this.SetLocalStorage(JSON.stringify(this.props.user));
+      }
+    }
+  }
 
   SetLocalStorage(data) {
     if (typeof Storage !== "undefined") {
@@ -100,8 +96,12 @@ class Login extends Component {
 
   render() {
     let redirectVar = null;
-    //console.log(cookie.load("cookie"));
-    if (cookie.load("cookie") && this.state.authFlag) {
+    if (
+      typeof this.props.user != "undefined" &&
+      typeof this.props.user.token != "undefined" &&
+      this.state.authFlag
+    ) {
+      console.log("Token is verified");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/login" />;
     return (
@@ -173,10 +173,15 @@ class Login extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    UserState: (data) => dispatch(Action.UserState(data)),
-  };
-}
+Login.propTypes = {
+  userLogin: PropTypes.func.isRequired,
+  user: PropTypes.object,
+};
 
-export default connect(null, mapDispatchToProps)(Login); //
+const mapStateToProps = (state) => {
+  return {
+    user: state.login.user,
+  };
+};
+
+export default connect(mapStateToProps, { userLogin })(Login);

@@ -16,6 +16,7 @@ class CreateGroup extends Component {
       allUser: [],
       Name: "",
       Email: "",
+      ID: "",
     };
   }
   OnNameChange = (e) => {
@@ -28,6 +29,7 @@ class CreateGroup extends Component {
       if (found) {
         let item = {
           ...userDataBackup[userDataBackup.length - 1],
+          ID: found._id,
           Name: found.Name,
           Email: found.Email,
         };
@@ -49,6 +51,7 @@ class CreateGroup extends Component {
       if (found) {
         let item = {
           ...userData[userData.length - 1],
+          ID: found._id,
           Name: found.Name,
           Email: found.Email,
         };
@@ -64,7 +67,7 @@ class CreateGroup extends Component {
   addNewRow = () => {
     this.setState((prevState) => ({
       i: prevState.i + 1,
-      userData: [...prevState.userData, { Name: "", Email: "" }],
+      userData: [...prevState.userData, { ID: "", Name: "", Email: "" }],
     }));
   };
 
@@ -75,6 +78,7 @@ class CreateGroup extends Component {
     //set the with credentials to true
     if (Object.keys(error).length == 0) {
       axios.defaults.withCredentials = true;
+      console.log("User Data : " + JSON.stringify(this.state));
       axios
         .post(`http://${config.ipAddress}:8000/createGroup`, this.state)
         .then((response) => {
@@ -152,6 +156,7 @@ class CreateGroup extends Component {
         this.setState({
           Name: data.Name,
           Email: data.Email,
+          ID: data._id,
         });
       }
     }

@@ -20,7 +20,7 @@ app.use(cookieParser());
 //use session to store user data between HTTP requests
 app.use(
   session({
-    secret: "SplitwiseSecretString",
+    secret: "cmpe273_kafka_passport_mongo",
     resave: false,
     saveUninitialized: true,
     duration: 60 * 60 * 1000, // Overall duration of Session : 30 minutes : 1800 seconds
@@ -146,7 +146,7 @@ app.post("/loginUser", function (req, res) {
 
 app.get("/getCurrentUserGroup", function (req, res) {
   var userDetail = new group.group();
-  userDetail.getGroupDetail(con, req.query.email, res);
+  userDetail.getGroupDetail(req.query.email, res);
 });
 
 app.post("/updateProfile", function (req, res) {
@@ -193,7 +193,7 @@ app.get("/getGroupNotification", function (req, res) {
 
 app.get("/getAllUser", function (req, res) {
   var user = new group.group();
-  user.getAllUser(req, res);
+  user.getAllUser(res);
 });
 
 app.get("/getOwsDetail", function (req, res) {

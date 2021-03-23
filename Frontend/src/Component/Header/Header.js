@@ -4,8 +4,8 @@ import { Redirect, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-// import { connect } from "react-redux";
-// import * as Action from "../../actions/actionCreators";
+import { connect } from "react-redux";
+import * as Action from "../../actions/loginAction";
 
 class Header extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class Header extends Component {
     if (e.target.id == "logout") {
       cookie.remove("cookie", { path: "/" });
       this.RemoveDataFromLocalStorage();
-      //this.props.LogoutUser();
+      this.props.LogoutUser();
     }
   };
 
@@ -155,10 +155,10 @@ class Header extends Component {
   }
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     LogoutUser: () => dispatch(Action.LogoutUser()),
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    LogoutUser: () => dispatch(Action.userLogout()),
+  };
+}
 
-export default Header; //connect(null, mapDispatchToProps)(
+export default connect(null, mapDispatchToProps)(Header); //

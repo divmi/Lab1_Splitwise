@@ -1,6 +1,7 @@
 const Users = require("./Model/UserRegistrationModel");
+const GroupInfo = require("./Model/GroupInfoModel");
 var group = class group {
-  getAllUser(body, res) {
+  getAllUser(res) {
     Users.find({}, (error, user) => {
       if (error) {
         res.writeHead(401, {
@@ -16,26 +17,20 @@ var group = class group {
     });
   }
 
-  getGroupDetail(con, email, res) {
-    // console.log("Connected!");
-    // var sql =
-    //   "Select * from GroupMemberInfo where MemberID='" +
-    //   email +
-    //   "' and Accepted=true";
-    // con.query(sql, function (err, result) {
-    //   if (err) throw err;
-    //   if (result) {
-    //     res.writeHead(200, {
-    //       "Content-Type": "text/plain",
-    //     });
-    //     res.end(JSON.stringify(result));
-    //   } else {
-    //     res.writeHead(401, {
-    //       "Content-Type": "text/plain",
-    //     });
-    //     res.end("UnSuccessful Login");
-    //   }
-    // });
+  getGroupDetail(email, res) {
+    console.log("Control came here :" + email);
+    GroupInfo.find(
+      { "GroupMemberInfo.MemberID": { $all: email } },
+      (error, grp) => {
+        if (error) {
+          res.writeHead(401, {
+            "Content-Type": "text/plain",
+          });
+        } else if (grp) {
+          console.log(JSON.stringify(grp));
+        }
+      }
+    );
   }
 
   getGroupNotification(con, email, res) {
