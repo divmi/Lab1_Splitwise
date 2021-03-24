@@ -17,6 +17,7 @@ class CreateGroup extends Component {
       Name: "",
       Email: "",
       ID: "",
+      UserProfilePic: "",
     };
   }
   OnNameChange = (e) => {
@@ -32,6 +33,7 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
+          UserProfilePic: found.UserProfilePic,
         };
         userDataBackup[userDataBackup.length - 1] = item;
         this.setState({
@@ -54,6 +56,7 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
+          UserProfilePic: found.UserProfilePic,
         };
         userData[userData.length - 1] = item;
         this.setState({
@@ -157,13 +160,10 @@ class CreateGroup extends Component {
           Name: data.Name,
           Email: data.Email,
           ID: data._id,
+          UserProfilePic: data.UserProfilePic,
         });
       }
     }
-    // if (cookie.load("cookie")) {
-    //   this.setState({ Name: cookie.load("cookie").Name });
-    //   this.setState({ Email: cookie.load("cookie").Email });
-    // }
   }
 
   validateForm = () => {

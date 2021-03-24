@@ -68,9 +68,19 @@ class insert {
       } else {
         var memberList = [];
         body.userData.map((user) => {
-          memberList.push({ MemberID: user.Email, Accepted: false });
+          memberList.push({
+            ID: user.ID,
+            MemberID: user.Email,
+            UserProfilePic: user.UserProfilePic,
+            Accepted: false,
+          });
         });
-        memberList.push({ MemberID: body.Email, Accepted: true });
+        memberList.push({
+          ID: body.ID,
+          MemberID: body.Email,
+          UserProfilePic: body.UserProfilePic,
+          Accepted: true,
+        });
         var groupInfo = new GroupInfo({
           GroupName: body.groupName,
           GroupProfilePicture: body.groupPhoto,

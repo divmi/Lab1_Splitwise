@@ -7,7 +7,9 @@ var groupInfoSchema = new Schema(
     GroupProfilePicture: { type: String },
     GroupMemberInfo: [
       {
+        ID: { type: Schema.Types.ObjectId },
         MemberID: { type: String, require: true },
+        UserProfilePic: { type: String },
         Accepted: { type: Boolean, defaultValue: false },
       },
     ],
