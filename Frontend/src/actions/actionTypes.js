@@ -15,3 +15,9 @@ export const Logout_USER = () => {
     type: "Logout_USER",
   };
 };
+
+export const Update_Profile = () => {
+  return {
+    type: "Update_Profile",
+  };
+};

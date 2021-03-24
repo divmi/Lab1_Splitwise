@@ -6,6 +6,9 @@ import timezones from "../../data/timezone";
 import map from "lodash/map";
 import { Redirect } from "react-router-dom";
 import config from "../../config";
+import { updateProfile } from "../../actions/updateUserProfile";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -67,36 +70,40 @@ class UpdateProfile extends Component {
     e.preventDefault();
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      //set the with credentials to true
-      axios.defaults.withCredentials = true;
-      //make a post request with the user data
-      axios
-        .post(
-          `http://${config.ipAddress}:8000/updateProfile`,
-          this.state.userinfo
-        )
-        .then((response) => {
-          if (response.status === 200) {
-            this.SetLocalStorage(JSON.stringify(this.state.userinfo));
-            this.setState({
-              authFlag: true,
-            });
-          } else {
-            this.setState({
-              loginError:
-                "<p style={{color: red}}>User is already registered</p>",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            loginError: "User is already registered",
-          });
-        });
-    } else {
-      this.setState({ error });
+      this.props.updateProfile(this.state.userinfo);
+      if (this.props.authFlag) {
+        this.SetLocalStorage(JSON.stringify(this.state.userinfo));
+      }
     }
+    //set the with credentials to true
+    //axios.defaults.withCredentials = true;
+    //   //make a post request with the user data
+    //   axios
+    //     .post(
+    //       `http://${config.ipAddress}:8000/updateProfile`,
+    //       this.state.userinfo
+    //     )
+    //     .then((response) => {
+    //       if (response.status === 200) {
+    //         this.setState({
+    //           authFlag: true,
+    //         });
+    //       } else {
+    //         this.setState({
+    //           loginError:
+    //             "<p style={{color: red}}>User is already registered</p>",
+    //           authFlag: false,
+    //         });
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.setState({
+    //         loginError: "User is already registered",
+    //       });
+    //     });
+    // } else {
+    //   this.setState({ error });
+    // }
   };
 
   validateForm = () => {
@@ -137,8 +144,9 @@ class UpdateProfile extends Component {
 
   render() {
     let redirectVar = null;
+    console.log(this.props.authFlag);
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
-    else if (this.state.authFlag) {
+    else if (this.props.authFlag) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/updateProfile" />;
     let picture = "";
@@ -356,8 +364,13 @@ class UpdateProfile extends Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return { userinfo: state.login.userinfo[0] };
-// };
+UpdateProfile.propTypes = {
+  updateProfile: PropTypes.func.isRequired,
+  authFlag: PropTypes.object,
+};
 
-export default UpdateProfile; //connect(mapStateToProps)
+const mapStateToProps = (state) => {
+  return { authFlag: state.updateProfile.authFlag };
+};
+
+export default connect(mapStateToProps, { updateProfile })(UpdateProfile); //connect(mapStateToProps)

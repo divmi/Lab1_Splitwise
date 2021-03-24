@@ -15,19 +15,14 @@ class Home extends Component {
       groupInfo: [],
       component: null,
       summary: null,
-      Email: "",
     };
   }
 
-  getUserDetails = () => {
-    let MemberID = "";
-    if (cookie.load("cookie")) {
-      MemberID = cookie.load("cookie").Email;
-    }
+  getUserDetails = (userID) => {
     axios
       .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
         params: {
-          email: MemberID,
+          ID: userID,
         },
       })
       .then((response) => {
@@ -52,20 +47,17 @@ class Home extends Component {
   };
 
   componentDidMount() {
+    var data;
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        const localStorageData = JSON.parse(localStorage.getItem("userData"));
-        this.setState({
-          Email: localStorageData.Email,
-        });
+        data = JSON.parse(localStorage.getItem("userData"));
+        this.setState({ groupInfo: this.getUserDetails(data._id) });
       }
     }
-    this.setState({ groupInfo: this.getUserDetails() });
-    console.log(JSON.stringify(this.state.groupInfo));
     if (this.state.component == null) {
-      if (cookie.load("cookie")) {
+      if (typeof data != "undefined") {
         this.setState({
-          component: <Dashboard email={cookie.load("cookie").Email} />,
+          component: <Dashboard email={data.Email} />,
         });
       }
     }

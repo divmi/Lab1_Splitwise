@@ -17,20 +17,21 @@ var group = class group {
     });
   }
 
-  getGroupDetail(email, res) {
-    console.log("Control came here :" + email);
-    GroupInfo.find(
-      { "GroupMemberInfo.MemberID": { $all: email } },
-      (error, grp) => {
-        if (error) {
-          res.writeHead(401, {
-            "Content-Type": "text/plain",
-          });
-        } else if (grp) {
-          console.log(JSON.stringify(grp));
-        }
+  getGroupDetail(ID, res) {
+    console.log("Control came here :" + ID);
+    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } }, (error, grp) => {
+      if (error) {
+        res.writeHead(401, {
+          "Content-Type": "text/plain",
+        });
+      } else if (grp) {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        console.log(JSON.stringify(grp));
+        res.end(JSON.stringify(grp));
       }
-    );
+    });
   }
 
   getGroupNotification(con, email, res) {

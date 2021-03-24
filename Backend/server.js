@@ -144,9 +144,9 @@ app.post("/loginUser", function (req, res) {
   loginUser.UserLogin(req.body, res);
 });
 
-app.get("/getCurrentUserGroup", function (req, res) {
+app.get("/getCurrentUserGroup/", function (req, res) {
   var userDetail = new group.group();
-  userDetail.getGroupDetail(req.query.email, res);
+  userDetail.getGroupDetail(req.query.ID, res);
 });
 
 app.post("/updateProfile", function (req, res) {

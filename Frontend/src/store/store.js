@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import register from "../reducers/register";
 import login from "../reducers/login";
+import updateProfile from "../reducers/updateProfile";
 import thunk from "redux-thunk";
 
 const initialState = {};
@@ -13,6 +14,7 @@ export const ConfigureStore = () => {
     combineReducers({
       login,
       register,
+      updateProfile,
     }),
     initialState,
     storeEnhancers(applyMiddleware(thunk))

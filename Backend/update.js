@@ -1,30 +1,19 @@
 const bodyParser = require("body-parser");
+const Users = require("./Model/UserRegistrationModel");
+
 var update = class update {
   updateUserProfile(con, req, res) {
-    var sql =
-      `UPDATE 
-      UserRegistration
-      SET 
-      Name = '` +
-      req.Name +
-      `', 
-      ContactNo = '` +
-      req.ContactNo +
-      `',
-      Currency = '` +
-      req.Currency +
-      `',
-      Timezone = '` +
-      req.Timezone +
-      `',
-      UserProfilePic = '` +
-      req.UserProfilePic +
-      `',
-      Language = '` +
-      req.Language +
-      "'Where Email ='" +
-      req.Email +
-      "'";
+    const filter = { _id: req._id };
+    const updateDoc = {
+      $set: {
+        Name: req.Name,
+        ContactNo: req.ContactNo,
+        Currency: req.Currency,
+        Timezone: req.Timezone,
+        Language: req.Language,
+        UserProfilePic: req.UserProfilePic,
+      },
+    };
     con.query(sql, function (err, result, fields) {
       if (err) throw err;
       res.writeHead(200, {
