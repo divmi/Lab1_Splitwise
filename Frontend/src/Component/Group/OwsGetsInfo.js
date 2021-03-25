@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import axios from "axios";
 import config from "../../config";
+import { connect } from "react-redux";
+import { getGroupSummary } from "../../actions/GroupOwsGetsInfo";
+
 //import cookie from "react-cookies";
 class OwsGetDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      owsGetDetail: [],
+      //owsGetDetail: [],
       componentMounted: false,
       memberWithAmountList: [],
       groupMemberName: [],
@@ -23,14 +26,14 @@ class OwsGetDetail extends Component {
         });
       }
     }
-    this.getGroupSummary();
+    this.props.getGroupSummary(this.props.name);
+    this.GroupMemberName();
   }
 
   componentDidUpdate(prevState) {
     if (prevState.name != this.props.name) {
-      this.getGroupSummary();
-    } else if (prevState.updated != this.props.updated) {
-      this.getGroupSummary();
+      this.props.getGroupSummary(this.props.name);
+      this.GroupMemberName();
     }
   }
 
@@ -60,34 +63,34 @@ class OwsGetDetail extends Component {
         });
       });
   }
-  getGroupSummary() {
-    axios
-      .get(`http://${config.ipAddress}:8000/getGroupSummary`, {
-        params: {
-          groupName: this.props.name,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({
-            owsGetDetail: response.data,
-          });
-          this.GroupMemberName();
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-            owsGetDetail: [],
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-          owsGetDetail: [],
-        });
-      });
-  }
+  // getGroupSummary() {
+  //   axios
+  //     .get(`http://${config.ipAddress}:8000/getGroupSummary`, {
+  //       params: {
+  //         groupName: this.props.name,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         this.setState({
+  //           owsGetDetail: response.data,
+  //         });
+  //         this.GroupMemberName();
+  //       } else {
+  //         this.setState({
+  //           error: "Please enter correct credentials",
+  //           authFlag: false,
+  //           owsGetDetail: [],
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Please enter correct credentials" + e,
+  //         owsGetDetail: [],
+  //       });
+  //     });
+  // }
 
   calculateMemberSpecificTable() {
     if (this.state.groupMemberName.length > 0) {
@@ -97,7 +100,7 @@ class OwsGetDetail extends Component {
       this.state.groupMemberName.map((memberName) => {
         let sum = 0;
         let sumOws = 0;
-        let memberDetail = this.state.owsGetDetail.filter(
+        let memberDetail = this.props.owsGetDetail.filter(
           (x) => x.MemberGets == memberName.Email
         );
         if (memberDetail.length > 0) {
@@ -105,7 +108,7 @@ class OwsGetDetail extends Component {
             sum = sum + member.Amount;
           });
         }
-        let memberOws = this.state.owsGetDetail.filter(
+        let memberOws = this.props.owsGetDetail.filter(
           (x) => x.MemberOws == memberName.Email
         );
         if (memberOws.length > 0) {
@@ -129,6 +132,7 @@ class OwsGetDetail extends Component {
             },
           ],
         });
+        console.log("processing over");
       });
     }
   }
@@ -153,6 +157,7 @@ class OwsGetDetail extends Component {
       } else {
         let display = "";
         if (detail.Amount == 0) {
+          console.log("Came here " + detail.Amount);
           display = (
             <label style={{ color: "GrayText" }}>
               {detail.Name} <br />
@@ -183,4 +188,10 @@ class OwsGetDetail extends Component {
   }
 }
 
-export default OwsGetDetail;
+const mapStateToProps = (state) => {
+  return {
+    owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
+  };
+};
+
+export default connect(mapStateToProps, { getGroupSummary })(OwsGetDetail);

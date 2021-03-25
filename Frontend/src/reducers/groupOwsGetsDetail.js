@@ -1,19 +1,16 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
-  user: {},
-  Currency: "",
+  owsGetDetail: [],
 };
 
 export default function (state = defaultState, action) {
+  console.log("control came here");
   switch (action.type) {
-    case aType.Login_USER:
+    case aType.Load_OwsGets_Detail:
       return {
         ...state,
-        user: action.payload,
-        Currency: action.payload[0].Currency,
+        owsGetDetail: action.payload,
       };
-    case aType.Logout_USER:
-      return {};
     default:
       return state;
   }

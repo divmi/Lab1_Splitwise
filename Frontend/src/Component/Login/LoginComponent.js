@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 //import * as Action from "../../actions/loginAction";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 import { userLogin } from "../../actions/loginAction";
 
 class Login extends Component {
@@ -82,7 +82,7 @@ class Login extends Component {
         this.setState({
           authFlag: true,
         });
-        this.SetLocalStorage(JSON.stringify(this.props.user));
+        this.SetLocalStorage(JSON.stringify(this.props.user[0]));
       }
     }
   }
@@ -96,11 +96,8 @@ class Login extends Component {
 
   render() {
     let redirectVar = null;
-    if (
-      typeof this.props.user != "undefined" &&
-      typeof this.props.user.token != "undefined" &&
-      this.state.authFlag
-    ) {
+    //typeof this.props.user.token != "undefined" &&
+    if (typeof this.props.user != "undefined" && this.state.authFlag) {
       console.log("Token is verified");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/login" />;
@@ -173,10 +170,10 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
-  userLogin: PropTypes.func.isRequired,
-  user: PropTypes.object,
-};
+// Login.propTypes = {
+//   userLogin: PropTypes.func.isRequired,
+//   user: PropTypes.object,
+// };
 
 const mapStateToProps = (state) => {
   return {

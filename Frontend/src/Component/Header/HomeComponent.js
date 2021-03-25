@@ -18,11 +18,13 @@ class Home extends Component {
     };
   }
 
-  getUserDetails = (userID) => {
+  // ID: userID,
+  getUserDetails = (Email) => {
+    console.log(Email);
     axios
       .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
         params: {
-          ID: userID,
+          email: cookie.load("cookie").Email,
         },
       })
       .then((response) => {
@@ -51,7 +53,7 @@ class Home extends Component {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         data = JSON.parse(localStorage.getItem("userData"));
-        this.setState({ groupInfo: this.getUserDetails(data._id) });
+        this.setState({ groupInfo: this.getUserDetails(data.Email) });
       }
     }
     if (this.state.component == null) {

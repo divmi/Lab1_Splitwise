@@ -21,3 +21,15 @@ export const Update_Profile = () => {
     type: "Update_Profile",
   };
 };
+
+export const Load_Transaction = () => {
+  return {
+    type: "Load_Transaction",
+  };
+};
+
+export const Load_OwsGets_Detail = () => {
+  return {
+    type: "Load_OwsGets_Detail",
+  };
+};

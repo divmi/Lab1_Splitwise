@@ -186,7 +186,13 @@ class GroupInfo extends Component {
       });
     } else {
       if (this.state.axiosCallInProgress) {
-        showTransaction = <p className="spinner-border text-text-muted"></p>;
+        showTransaction = (
+          <tr>
+            <td>
+              <p className="spinner-border text-text-muted"></p>
+            </td>
+          </tr>
+        );
       } else
         showTransaction = (
           <tr>

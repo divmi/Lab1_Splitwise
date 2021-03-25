@@ -1,54 +1,52 @@
 import React, { Component } from "react";
-import axios from "axios";
-import config from "../../config";
+import { transactionDetail } from "../../actions/transaction";
+import { connect } from "react-redux";
+//import PropTypes from "prop-types";
 
 class TransactionDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      transactionDetail: [],
-      Currency: "",
       sortbyGroup: "",
       showTransactionBasedOnFilter: [],
-      groupName: [],
     };
   }
 
-  getTransactionDetail() {
-    axios
-      .get(`http://${config.ipAddress}:8000/getTransactionFromUser`, {
-        params: {
-          email: this.props.email,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            transactionDetail: [response.data],
-          }));
-          this.setState({
-            showTransactionBasedOnFilter: this.state.transactionDetail[0],
-          });
-          this.setState({
-            groupName: this.state.transactionDetail[0].map(
-              (groupName) => groupName.GroupName
-            ),
-          });
-          console.log("Group info" + this.state.transactionDetail.length);
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  }
+  // getTransactionDetail() {
+  //   axios
+  //     .get(`http://${config.ipAddress}:8000/getTransactionFromUser`, {
+  //       params: {
+  //         email: this.props.email,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         console.log("All user:" + response.data);
+  //         this.setState(() => ({
+  //           transactionDetail: [response.data],
+  //         }));
+  //         this.setState({
+  //           showTransactionBasedOnFilter: this.state.transactionDetail[0],
+  //         });
+  //         this.setState({
+  //           groupName: this.state.transactionDetail[0].map(
+  //             (groupName) => groupName.GroupName
+  //           ),
+  //         });
+  //         console.log("Group info" + this.state.transactionDetail.length);
+  //       } else {
+  //         this.setState({
+  //           error: "Please enter correct credentials",
+  //           authFlag: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Please enter correct credentials" + e,
+  //       });
+  //     });
+  // }
 
   componentDidMount() {
     if (typeof Storage !== "undefined") {
@@ -59,9 +57,22 @@ class TransactionDetail extends Component {
         });
       }
     }
+    if (this.props.transaction.length == 0) {
+      this.props.transactionDetail(this.props.email);
+    }
+    console.log(this.props.transaction);
     this.setState({
-      transactionDetail: this.getTransactionDetail(),
+      showTransactionBasedOnFilter: this.props.transaction,
     });
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.transaction != this.props.transaction) {
+      console.log("Componnet did update");
+      this.setState({
+        showTransactionBasedOnFilter: this.props.transaction,
+      });
+    }
   }
 
   OnSortByAscOrDesc = (e) => {
@@ -86,13 +97,9 @@ class TransactionDetail extends Component {
   };
 
   OnGroupSelect = (e) => {
-    if (
-      this.state.transactionDetail != null &&
-      this.state.transactionDetail.length > 0 &&
-      this.state.transactionDetail[0].length > 0
-    ) {
+    if (this.props.transaction != null && this.props.transaction.length > 0) {
       if (e.target.value != "") {
-        const filterTransOnGroup = this.state.transactionDetail[0].filter(
+        const filterTransOnGroup = this.props.transaction.filter(
           (x) => x.GroupName == e.target.value
         );
         this.setState({
@@ -100,12 +107,12 @@ class TransactionDetail extends Component {
         });
       } else {
         this.setState({
-          showTransactionBasedOnFilter: this.state.transactionDetail[0],
+          showTransactionBasedOnFilter: this.props.transaction,
         });
       }
     } else {
       this.setState({
-        showTransactionBasedOnFilter: this.state.transactionDetail[0],
+        showTransactionBasedOnFilter: this.props.transaction,
       });
     }
     console.log(e.target.value);
@@ -113,7 +120,6 @@ class TransactionDetail extends Component {
 
   render() {
     let showTransaction = null;
-    //let groupName = [];
     let showGroupName = null;
     if (
       this.state.showTransactionBasedOnFilter != null &&
@@ -136,7 +142,7 @@ class TransactionDetail extends Component {
                   <strong> {name.SettleUpWith}</strong>
                 </td>
                 <td>
-                  <label>{this.state.Currency} </label>
+                  <label>{this.props.Currency} </label>
                   <label> {name.Amount}</label>
                 </td>
               </tr>
@@ -156,7 +162,7 @@ class TransactionDetail extends Component {
                   in <strong>{name.GroupName}</strong>
                 </td>
                 <td>
-                  <label>{this.state.Currency} </label>
+                  <label>{this.props.Currency} </label>
                   <label> {name.Amount}</label>
                 </td>
               </tr>
@@ -164,8 +170,8 @@ class TransactionDetail extends Component {
           }
         }
       );
-      if (this.state.groupName != null && this.state.groupName.length > 0) {
-        const groups = [...new Set(this.state.groupName)];
+      if (this.props.groupName != null && this.props.groupName.length > 0) {
+        const groups = [...new Set(this.props.groupName)];
         showGroupName = groups.map((name, idx) => {
           return (
             <option key={idx} value={name}>
@@ -223,4 +229,14 @@ class TransactionDetail extends Component {
   }
 }
 
-export default TransactionDetail;
+const mapStateToProps = (state) => {
+  return {
+    transaction: state.transaction.transaction,
+    groupName: state.transaction.groupName,
+    Currency: state.login.Currency,
+  };
+};
+
+export default connect(mapStateToProps, { transactionDetail })(
+  TransactionDetail
+);
