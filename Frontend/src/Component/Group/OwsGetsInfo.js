@@ -2,15 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getGroupSummary } from "../../actions/GroupOwsGetsInfo";
 
-//import cookie from "react-cookies";
 class OwsGetDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //owsGetDetail: [],
       componentMounted: false,
       memberWithAmountList: [],
-      // groupMemberName: [],
       Currency: "",
     };
   }

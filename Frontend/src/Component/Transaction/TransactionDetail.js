@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { transactionDetail } from "../../actions/transaction";
 import { connect } from "react-redux";
+import Pagination from "./Pagination";
+import Posts from "./Posts";
 //import PropTypes from "prop-types";
 
 class TransactionDetail extends Component {
@@ -9,6 +11,9 @@ class TransactionDetail extends Component {
     this.state = {
       sortbyGroup: "",
       showTransactionBasedOnFilter: [],
+      loading: false,
+      currentPage: 1,
+      postsPerPage: 2,
     };
   }
 
@@ -118,81 +123,36 @@ class TransactionDetail extends Component {
     console.log(e.target.value);
   };
 
+  onPageSelected = (e) => {
+    this.setState({
+      currentPage: 1,
+      postsPerPage: e.target.value,
+    });
+  };
+
   render() {
-    let showTransaction = null;
+    // let showTransaction = null;
     let showGroupName = null;
-    if (
-      this.state.showTransactionBasedOnFilter != null &&
-      this.state.showTransactionBasedOnFilter.length > 0
-    ) {
-      showTransaction = this.state.showTransactionBasedOnFilter.map(
-        (name, idx) => {
-          if (name.TransactionDetail == "SettleUp") {
-            return (
-              <tr key={idx} style={{ verticalAlign: "center" }}>
-                <td style={{ color: "GrayText" }}>
-                  {new Date(name.Time).toLocaleString("en-us", {
-                    weekday: "long",
-                  })}
-                </td>
-                <td>
-                  <i className="greenCode fas fa-receipt fa-2x"></i>
-                  <strong> {name.Name}</strong> is
-                  <strong> settled Up</strong> with
-                  <strong> {name.SettleUpWith}</strong>
-                </td>
-                <td>
-                  <label>{this.props.Currency} </label>
-                  <label> {name.Amount}</label>
-                </td>
-              </tr>
-            );
-          } else {
-            return (
-              <tr key={idx} style={{ verticalAlign: "center" }}>
-                <td style={{ color: "GrayText" }}>
-                  {new Date(name.Time).toLocaleString("en-us", {
-                    weekday: "long",
-                  })}
-                </td>
-                <td>
-                  <i className="greenCode fas fa-receipt fa-2x"></i>
-                  <strong> {name.Name}</strong> added
-                  <strong> {name.TransactionDetail} </strong>
-                  in <strong>{name.GroupName}</strong>
-                </td>
-                <td>
-                  <label>{this.props.Currency} </label>
-                  <label> {name.Amount}</label>
-                </td>
-              </tr>
-            );
-          }
-        }
-      );
-      if (this.props.groupName != null && this.props.groupName.length > 0) {
-        const groups = [...new Set(this.props.groupName)];
-        showGroupName = groups.map((name, idx) => {
-          return (
-            <option key={idx} value={name}>
-              {name}
-            </option>
-          );
-        });
-      }
-    } else {
-      showTransaction = (
-        <tr>
-          <td>
-            <img src="./assets/transaction.png" height={300} width={300}></img>
-            <h3>
-              You have not added any expenses yet
-              <i className="fas fa-frown"></i>
-            </h3>
-          </td>
-        </tr>
-      );
-    }
+    const {
+      currentPage,
+      postsPerPage,
+      showTransactionBasedOnFilter,
+      loading,
+    } = this.state;
+    console.log(showTransactionBasedOnFilter.length);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = showTransactionBasedOnFilter.slice(
+      indexOfFirstPost,
+      indexOfLastPost
+    );
+
+    const paginate = (pageNum) => this.setState({ currentPage: pageNum });
+
+    const nextPage = () => this.setState({ currentPage: currentPage + 1 });
+
+    const prevPage = () => this.setState({ currentPage: currentPage - 1 });
+
     return (
       <div className="container-fluid">
         <div className="row rounded">
@@ -201,7 +161,7 @@ class TransactionDetail extends Component {
               Recent activity
             </label>
           </div>
-          <div className="col-col-6 offset-3">
+          <div className="col-col-6 offset-2">
             <select
               className="form-control"
               width={80}
@@ -218,11 +178,24 @@ class TransactionDetail extends Component {
               <option value="Decending">Decending</option>
             </select>
           </div>
+          <div className="col-col-3" style={{ marginLeft: "4px" }}>
+            <select className="form-control" onChange={this.onPageSelected}>
+              <option value="">Page Size</option>
+              <option value="2">2</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>
+          </div>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded">
-          <table className="table">
-            <tbody>{showTransaction}</tbody>
-          </table>
+          <Posts posts={currentPosts} loading={loading} />
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={showTransactionBasedOnFilter.length}
+            paginate={paginate}
+            nextPage={nextPage}
+            prevPage={prevPage}
+          />
         </div>
       </div>
     );
