@@ -33,3 +33,9 @@ export const Load_OwsGets_Detail = () => {
     type: "Load_OwsGets_Detail",
   };
 };
+
+export const Load_Group_Member_Name = () => {
+  return {
+    type: "Load_Group_Member_Name",
+  };
+};

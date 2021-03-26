@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import config from "../../config";
 import { connect } from "react-redux";
 import { getGroupSummary } from "../../actions/GroupOwsGetsInfo";
 
@@ -12,12 +10,13 @@ class OwsGetDetail extends Component {
       //owsGetDetail: [],
       componentMounted: false,
       memberWithAmountList: [],
-      groupMemberName: [],
+      // groupMemberName: [],
       Currency: "",
     };
   }
 
   componentDidMount() {
+    console.log("Componnet Mounted");
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
@@ -27,42 +26,45 @@ class OwsGetDetail extends Component {
       }
     }
     this.props.getGroupSummary(this.props.name);
-    this.GroupMemberName();
   }
 
   componentDidUpdate(prevState) {
-    if (prevState.name != this.props.name) {
+    if (prevState.name !== this.props.name) {
       this.props.getGroupSummary(this.props.name);
-      this.GroupMemberName();
+    } else if (prevState.groupMemberName !== this.props.groupMemberName) {
+      this.calculateMemberSpecificTable();
+    } else if (prevState.updated !== this.props.updated) {
+      this.props.getGroupSummary(this.props.name);
+      this.calculateMemberSpecificTable();
     }
   }
 
-  GroupMemberName() {
-    axios
-      .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
-        params: {
-          groupName: this.props.name,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({
-            groupMemberName: response.data,
-          });
-          this.calculateMemberSpecificTable();
-        } else {
-          this.setState({
-            error: "Issue with Network",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Issue with Network" + e,
-        });
-      });
-  }
+  // GroupMemberName() {
+  //   axios
+  //     .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
+  //       params: {
+  //         groupName: this.props.name,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         this.setState({
+  //           groupMemberName: response.data,
+  //         });
+  //         this.calculateMemberSpecificTable();
+  //       } else {
+  //         this.setState({
+  //           error: "Issue with Network",
+  //           authFlag: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Issue with Network" + e,
+  //       });
+  //     });
+  // }
   // getGroupSummary() {
   //   axios
   //     .get(`http://${config.ipAddress}:8000/getGroupSummary`, {
@@ -93,11 +95,12 @@ class OwsGetDetail extends Component {
   // }
 
   calculateMemberSpecificTable() {
-    if (this.state.groupMemberName.length > 0) {
+    let memberlist = [];
+    if (this.props.groupMemberName.length > 0) {
       this.setState({
         memberWithAmountList: [],
       });
-      this.state.groupMemberName.map((memberName) => {
+      this.props.groupMemberName.map((memberName) => {
         let sum = 0;
         let sumOws = 0;
         let memberDetail = this.props.owsGetDetail.filter(
@@ -122,23 +125,22 @@ class OwsGetDetail extends Component {
         ) {
           memberName.UserProfilePic = "./assets/userIcon.png";
         }
-        this.setState({
-          memberWithAmountList: [
-            ...this.state.memberWithAmountList,
-            {
-              Name: memberName.Name,
-              Amount: sum + sumOws,
-              UserProfilePic: memberName.UserProfilePic,
-            },
-          ],
-        });
-        console.log("processing over");
+        let user = {
+          Name: memberName.Name,
+          Amount: sum + sumOws,
+          UserProfilePic: memberName.UserProfilePic,
+        };
+        memberlist.push(user);
+      });
+      this.setState({
+        memberWithAmountList: memberlist,
       });
     }
   }
 
   render() {
     let component = null;
+    console.log(JSON.stringify(this.state.memberWithAmountList));
     component = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount > 0) {
         return (
@@ -191,6 +193,7 @@ class OwsGetDetail extends Component {
 const mapStateToProps = (state) => {
   return {
     owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
+    groupMemberName: state.groupOwsGetsDetail.groupMemberName,
   };
 };
 
