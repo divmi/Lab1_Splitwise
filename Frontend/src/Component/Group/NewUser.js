@@ -26,13 +26,16 @@ class NewUser extends Component {
   };
 
   onEmailChange = (e) => {
-    var value = this.props.tableData.find((x) => x.Email == e.target.value);
+    console.log(e.target.textContent);
+    var value = this.props.tableData.find(
+      (x) => x.Email == e.target.textContent
+    );
     if (value) {
       this.setState({
         Name: value.Name,
         Email: e.target.value,
       });
-      this.props.change(e);
+      this.props.emailChange(e);
     }
   };
 
@@ -44,10 +47,10 @@ class NewUser extends Component {
           <td>
             <input
               type="text"
-              name="userName"
-              value={this.state.Name}
+              name="Name"
+              value={this.props.val.Name}
               data-id="0"
-              id="userName"
+              id="Name"
               className="form-control "
               onChange={() => {}}
             />

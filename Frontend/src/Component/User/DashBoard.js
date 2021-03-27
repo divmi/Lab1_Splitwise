@@ -29,10 +29,18 @@ class Dashboard extends Component {
       Email: "",
       GroupName: "",
       RealName: "",
+      error: "",
     };
   }
 
-  openModal = () => this.setState({ isOpen: true });
+  openModal = () =>
+    this.setState({
+      error: "",
+      RealName: "",
+      Name: "",
+      Amount: 0,
+      isOpen: true,
+    });
   closeModal = () => {
     this.setState({ isOpen: false });
   };
@@ -132,6 +140,13 @@ class Dashboard extends Component {
       console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
+
+  validateForm = () => {
+    let error = "";
+    if (this.state.Name === "") error = "Please fill mandatory field";
+    return error;
+  };
+
   handleSettleUp = (e) => {
     //prevent page from refresh
     e.preventDefault();
@@ -142,30 +157,37 @@ class Dashboard extends Component {
       GroupName: this.state.GroupName,
       RealName: this.state.RealName,
     };
-    axios.defaults.withCredentials = true;
-    axios
-      .post(`http://${config.ipAddress}:8000/settleUp`, data)
-      .then((response) => {
-        console.log("Status Code : ", response.status);
-        if (response.status === 200) {
-          this.closeModal();
+    const error = this.validateForm();
+    if (Object.keys(error).length == 0) {
+      axios.defaults.withCredentials = true;
+      axios
+        .post(`http://${config.ipAddress}:8000/settleUp`, data)
+        .then((response) => {
+          console.log("Status Code : ", response.status);
+          if (response.status === 200) {
+            this.closeModal();
+            this.setState({
+              show: [],
+            });
+            this.getUserSpecificTransactionDetail();
+          } else {
+            this.setState({
+              loginError:
+                "<p style={{color: red}}>User is already registered</p>",
+              authFlag: false,
+            });
+          }
+        })
+        .catch(() => {
           this.setState({
-            show: [],
+            loginError: "User is already registered",
           });
-          this.getUserSpecificTransactionDetail();
-        } else {
-          this.setState({
-            loginError:
-              "<p style={{color: red}}>User is already registered</p>",
-            authFlag: false,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          loginError: "User is already registered",
         });
+    } else {
+      this.setState({
+        error: error,
       });
+    }
   };
 
   getUserSpecificTransactionDetail() {
@@ -246,7 +268,7 @@ class Dashboard extends Component {
               <p style={{ fontSize: "14px" }}>
                 {detail.MemberOwsName} <br />
                 you ows {this.state.Currency}
-                {detail.Amount} <br />
+                {detail.Amount.toFixed(2)} <br />
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
@@ -300,7 +322,7 @@ class Dashboard extends Component {
               <p style={{ fontSize: "14px" }}>
                 {detail.MemberOwsName}
                 <br /> owes you {this.state.Currency}
-                {detail.Amount} <br />
+                {detail.Amount.toFixed(2)} <br />
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
@@ -431,6 +453,14 @@ class Dashboard extends Component {
           </Modal.Header>
           <Modal.Body>
             <Container>
+              <div
+                id="errorLogin"
+                hidden={this.state.error === "" ? true : false}
+                className="alert alert-danger"
+                role="alert"
+              >
+                {this.state.error}
+              </div>
               <Row>
                 <label style={{ alignSelf: "center", marginRight: 20 }}>
                   With you and{" "}

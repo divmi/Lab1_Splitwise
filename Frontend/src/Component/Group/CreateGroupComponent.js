@@ -30,6 +30,7 @@ class CreateGroup extends Component {
           ...userDataBackup[userDataBackup.length - 1],
           Name: found.Name,
           Email: found.Email,
+          Accepted: 0,
         };
         userDataBackup[userDataBackup.length - 1] = item;
         this.setState({
@@ -44,13 +45,14 @@ class CreateGroup extends Component {
     if (e.target.textContent != "") {
       let userData = [...this.state.userData];
       let found = this.state.allUser[0].find(
-        (element) => element.Name == e.target.textContent
+        (element) => element.Email == e.target.textContent
       );
       if (found) {
         let item = {
           ...userData[userData.length - 1],
           Name: found.Name,
           Email: found.Email,
+          Accepted: 0,
         };
         userData[userData.length - 1] = item;
         this.setState({
@@ -64,7 +66,7 @@ class CreateGroup extends Component {
   addNewRow = () => {
     this.setState((prevState) => ({
       i: prevState.i + 1,
-      userData: [...prevState.userData, { Name: "", Email: "" }],
+      userData: [...prevState.userData, { Name: "", Email: "", Accepted: 0 }],
     }));
   };
 
@@ -146,9 +148,23 @@ class CreateGroup extends Component {
   componentDidMount() {
     this.setState({ allUser: this.getAllUser() });
     if (cookie.load("cookie")) {
-      this.setState({ Name: cookie.load("cookie").Name });
-      this.setState({ Email: cookie.load("cookie").Email });
+      var data = {
+        Name: cookie.load("cookie").Name,
+        Email: cookie.load("cookie").Email,
+        Accepted: 1,
+      };
+      this.setState({
+        userData: [data],
+      });
     }
+  }
+
+  hasDuplicates(array) {
+    const uniqueValues = new Set(array.map((v) => v.Email));
+    if (uniqueValues.size < array.length) {
+      return true;
+    }
+    return false;
   }
 
   validateForm = () => {
@@ -158,6 +174,8 @@ class CreateGroup extends Component {
       error = "Group length should be greater than one";
     else if (this.state.userData.length >= 9)
       error = "Group length should be less than ten";
+    else if (this.hasDuplicates(this.state.userData))
+      error = "Duplicate Member exist. Please add unique members";
     return error;
   };
 
@@ -260,33 +278,7 @@ class CreateGroup extends Component {
                           Add Your Group Member
                         </div>
                         <table className="table">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="Name"
-                                  data-id="0"
-                                  id="Name"
-                                  value={this.state.Name}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="Email"
-                                  id="Email"
-                                  data-id="0"
-                                  value={this.state.Email}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                            </tr>
-                            {x}
-                          </tbody>
+                          <tbody>{x}</tbody>
                           <tfoot>
                             <tr>
                               <td>

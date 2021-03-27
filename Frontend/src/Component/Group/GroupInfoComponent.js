@@ -22,6 +22,7 @@ class GroupInfo extends Component {
       transaction_description: "",
       transactionDetail: [],
       amount: 0,
+      serverError: "",
       error: "",
       component: null,
       Currency: "",
@@ -29,7 +30,7 @@ class GroupInfo extends Component {
     };
   }
 
-  openModal = () => this.setState({ isOpen: true });
+  openModal = () => this.setState({ isOpen: true, error: "" });
   closeModal = () => {
     this.setState({ isOpen: false });
     this.getTransactionDetail();
@@ -106,6 +107,14 @@ class GroupInfo extends Component {
     });
   };
 
+  validateForm = () => {
+    let error = "";
+    if (this.state.transaction_description === "")
+      error = "Please fill transaction Detail";
+    else if (this.state.amount === 0) error = "Please fill the amount";
+    return error;
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     const data = {
@@ -114,32 +123,43 @@ class GroupInfo extends Component {
       groupname: this.props.name,
       memberID: cookie.load("cookie").Email,
     };
-    //set the with credentials to true
-    axios.defaults.withCredentials = true;
-    //make a post request with the user data
-    axios
-      .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
-      .then((response) => {
-        if (response.status === 200) {
+
+    const error = this.validateForm();
+    if (Object.keys(error).length == 0) {
+      //set the with credentials to true
+      axios.defaults.withCredentials = true;
+      //make a post request with the user data
+      axios
+        .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
+        .then((response) => {
+          if (response.status === 200) {
+            this.setState({
+              error: "",
+              authFlag: true,
+            });
+            this.getTransactionDetail();
+            this.OpenOwsGetsAmount(true);
+          } else {
+            this.setState({
+              serverError: "Issue with Network",
+              authFlag: false,
+            });
+          }
+        })
+        .catch(() => {
           this.setState({
-            error: "",
-            authFlag: true,
+            serverError: "Issue with Network",
           });
-          this.getTransactionDetail();
-          this.OpenOwsGetsAmount(true);
-        } else {
-          this.setState({
-            error: "Issue with Network",
-            authFlag: false,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          error: "Issue with Network",
         });
+      this.closeModal();
+    } else {
+      this.setState({
+        error: error,
+        authFlag: false,
+        transaction_description: "",
+        amount: 0,
       });
-    this.closeModal();
+    }
   };
 
   render() {
@@ -250,6 +270,14 @@ class GroupInfo extends Component {
             </Modal.Header>
             <Modal.Body>
               <Container>
+                <div
+                  id="errorLogin"
+                  hidden={this.state.error === "" ? true : false}
+                  className="alert alert-danger"
+                  role="alert"
+                >
+                  {this.state.error}
+                </div>
                 <Row>
                   <label>With you and : {this.props.name}</label>
                 </Row>

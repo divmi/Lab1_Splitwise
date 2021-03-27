@@ -79,12 +79,14 @@ class Login extends Component {
             this.setState({
               error: "Please enter correct credentials",
               authFlag: false,
+              formerror: {},
             });
           }
         })
         .catch(() => {
           this.setState({
             error: "Please enter correct credentials",
+            formerror: {},
           });
         });
     } else {
