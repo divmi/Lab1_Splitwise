@@ -82,39 +82,39 @@ class insert {
                 "','" +
                 value.Email +
                 "','" +
-                false +
+                value.Accepted +
                 "')";
               con.query(insGroupLink + insGroupLink1, function (err, result) {
                 if (err) throw err;
                 console.log("1 record inserted" + result);
-                count++;
-                if (count == body.userData.length) {
-                  count = 0;
-                  var insGroupForMainMember =
-                    "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
-                  var insGroupForMainMember1 =
-                    "'" +
-                    body.groupName +
-                    "','" +
-                    body.Email +
-                    "','" +
-                    1 +
-                    "')";
-                  con.query(
-                    insGroupForMainMember + insGroupForMainMember1,
-                    function (err, result) {
-                      if (err) throw err;
-                      console.log("1 record inserted" + result);
+                // count++;
+                // if (count == body.userData.length) {
+                //   count = 0;
+                //   var insGroupForMainMember =
+                //     "INSERT INTO GroupMemberInfo (GroupName, MemberID, Accepted) VALUES (";
+                //   var insGroupForMainMember1 =
+                //     "'" +
+                //     body.groupName +
+                //     "','" +
+                //     body.Email +
+                //     "','" +
+                //     1 +
+                //     "')";
+                //   con.query(
+                //     insGroupForMainMember + insGroupForMainMember1,
+                //     function (err, result) {
+                //       if (err) throw err;
+                // console.log("1 record inserted" + result);
 
-                      res.writeHead(200, {
-                        "Content-Type": "text/plain",
-                      });
-                      res.end(JSON.stringify(result));
-                    }
-                  );
-                }
+                // }
+                //);
+                //}
               });
             });
+            res.writeHead(200, {
+              "Content-Type": "text/plain",
+            });
+            res.end(JSON.stringify(result));
           });
         } else {
           res.writeHead(401, {
