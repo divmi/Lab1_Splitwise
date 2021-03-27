@@ -10,7 +10,6 @@ import {
 } from "react-bootstrap";
 import React, { Component } from "react";
 import axios from "axios";
-import cookie from "react-cookies";
 import config from "../../config";
 
 class Dashboard extends Component {
@@ -169,7 +168,7 @@ class Dashboard extends Component {
             this.setState({
               show: [],
             });
-            this.getUserSpecificTransactionDetail();
+            this.getUserSpecificTransactionDetail(this.state.Email);
           } else {
             this.setState({
               loginError:
@@ -190,11 +189,11 @@ class Dashboard extends Component {
     }
   };
 
-  getUserSpecificTransactionDetail() {
+  getUserSpecificTransactionDetail(Email) {
     axios
       .get(`http://${config.ipAddress}:8000/getUserSpecificGetOwsInfo`, {
         params: {
-          email: cookie.load("cookie").Email,
+          email: Email,
         },
       })
       .then((response) => {
@@ -220,16 +219,17 @@ class Dashboard extends Component {
 
   componentDidMount() {
     console.log("Control received in component did mount");
+    let localStorageData = {};
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
           Email: localStorageData.Email,
         });
       }
     }
-    this.getUserSpecificTransactionDetail();
+    this.getUserSpecificTransactionDetail(localStorageData.Email);
   }
 
   render() {

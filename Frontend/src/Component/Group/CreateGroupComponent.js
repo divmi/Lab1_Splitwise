@@ -142,6 +142,7 @@ class CreateGroup extends Component {
     items.splice(items.indexOf(i), 1);
     this.setState({
       userData: items,
+      error: "",
     });
   }
 

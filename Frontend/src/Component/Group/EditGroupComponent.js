@@ -153,9 +153,24 @@ class EditGroup extends Component {
       })
       .then((response) => {
         if (response.status === 200) {
+          let amountFound = false;
           console.log("All user:" + response.data);
           if (response.data.length > 0) {
-            alert("Please settle up the amount before leaving group");
+            response.data.map((member) => {
+              if (member.Amount !== 0) {
+                alert("Please settle up the amount before leaving group");
+                amountFound = true;
+              }
+            });
+            if (amountFound == false) {
+              items.splice(items.indexOf(i), 1);
+              this.setState({
+                userData: items,
+              });
+              this.setState({
+                itemDeleted: i,
+              });
+            }
           } else {
             items.splice(items.indexOf(i), 1);
             this.setState({
