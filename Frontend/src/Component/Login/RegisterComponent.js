@@ -72,12 +72,14 @@ class Register extends Component {
             this.setState({
               loginError: "User is already registered",
               authFlag: false,
+              error: {},
             });
           }
         })
         .catch(() => {
           this.setState({
             loginError: "User is already registered",
+            error: {},
           });
         });
     } else {

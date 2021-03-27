@@ -69,6 +69,7 @@ class Login extends Component {
       if (this.props.user == "UnSuccessful Login") {
         this.setState({
           authFlag: false,
+          formerror: {},
         });
       } else {
         this.setState({

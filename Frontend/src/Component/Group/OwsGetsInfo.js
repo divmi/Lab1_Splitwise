@@ -149,7 +149,7 @@ class OwsGetDetail extends Component {
             <p style={{ fontSize: "14px", marginLeft: "5px" }}>
               {detail.Name} <br />
               gets {this.state.Currency}
-              {detail.Amount} <br />
+              {detail.Amount.toFixed(2)} <br />
             </p>
           </div>
         );
@@ -167,7 +167,7 @@ class OwsGetDetail extends Component {
           display = (
             <label>
               {detail.Name} <br />
-              Ows {this.state.Currency} {detail.Amount}
+              Ows {this.state.Currency} {detail.Amount.toFixed(2)}
             </label>
           );
         }

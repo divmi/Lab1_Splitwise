@@ -33,7 +33,7 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
-          UserProfilePic: found.UserProfilePic,
+          Accepted: 0,
         };
         userDataBackup[userDataBackup.length - 1] = item;
         this.setState({
@@ -48,7 +48,7 @@ class CreateGroup extends Component {
     if (e.target.textContent != "") {
       let userData = [...this.state.userData];
       let found = this.state.allUser[0].find(
-        (element) => element.Name == e.target.textContent
+        (element) => element.Email == e.target.textContent
       );
       if (found) {
         let item = {
@@ -56,7 +56,7 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
-          UserProfilePic: found.UserProfilePic,
+          Accepted: 0,
         };
         userData[userData.length - 1] = item;
         this.setState({
@@ -70,7 +70,10 @@ class CreateGroup extends Component {
   addNewRow = () => {
     this.setState((prevState) => ({
       i: prevState.i + 1,
-      userData: [...prevState.userData, { ID: "", Name: "", Email: "" }],
+      userData: [
+        ...prevState.userData,
+        { ID: "", Name: "", Email: "", Accepted: 0 },
+      ],
     }));
   };
 
@@ -156,13 +159,22 @@ class CreateGroup extends Component {
       if (localStorage.key("userData")) {
         console.log(JSON.parse(localStorage.getItem("userData")));
         var data = JSON.parse(localStorage.getItem("userData"));
-        this.setState({
+        var user = {
           Name: data.Name,
           Email: data.Email,
-          ID: data._id,
-          UserProfilePic: data.UserProfilePic,
+          Accepted: 1,
+        };
+        this.setState({
+          userData: [user],
         });
       }
+    }
+  }
+
+  hasDuplicates(array) {
+    const uniqueValues = new Set(array.map((v) => v.Email));
+    if (uniqueValues.size < array.length) {
+      return true;
     }
   }
 
@@ -173,6 +185,8 @@ class CreateGroup extends Component {
       error = "Group length should be greater than one";
     else if (this.state.userData.length >= 9)
       error = "Group length should be less than ten";
+    else if (this.hasDuplicates(this.state.userData))
+      error = "Duplicate Member exist. Please add unique members";
     return error;
   };
 
@@ -275,33 +289,7 @@ class CreateGroup extends Component {
                           Add Your Group Member
                         </div>
                         <table className="table">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="Name"
-                                  data-id="0"
-                                  id="Name"
-                                  value={this.state.Name}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  name="Email"
-                                  id="Email"
-                                  data-id="0"
-                                  value={this.state.Email}
-                                  className="form-control "
-                                  readOnly
-                                />
-                              </td>
-                            </tr>
-                            {x}
-                          </tbody>
+                          <tbody>{x}</tbody>
                           <tfoot>
                             <tr>
                               <td>
