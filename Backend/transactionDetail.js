@@ -41,7 +41,7 @@ class transactionDetail {
       "'OR MemberOws='" +
       query.email +
       "')";
-
+    console.log(sql);
     con.query(sql, function (err, result) {
       if (err) throw err;
       res.end(JSON.stringify(result));
