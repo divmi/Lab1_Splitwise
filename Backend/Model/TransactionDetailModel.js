@@ -15,7 +15,7 @@ var transactionDetail = new Schema(
       ref: "GroupInfo",
       required: true,
     },
-    Amoutn: { type: float, required: true },
+    Amount: { type: float, required: true },
     SettleUpWith: { type: String },
   },
   {

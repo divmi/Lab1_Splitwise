@@ -34,6 +34,12 @@ export const Load_OwsGets_Detail = () => {
   };
 };
 
+export const Load_GroupName = () => {
+  return {
+    type: "Load_GroupName",
+  };
+};
+
 export const Load_Group_Member_Name = () => {
   return {
     type: "Load_Group_Member_Name",

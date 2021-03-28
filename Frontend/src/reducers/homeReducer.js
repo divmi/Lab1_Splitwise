@@ -1,20 +1,16 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
-  user: {},
-  Currency: "",
+  groupInfo: [],
 };
 
 export default function (state = defaultState, action) {
+  console.log("control came here");
   switch (action.type) {
-    case aType.Login_USER:
-      console.log(action.payload);
+    case aType.Load_GroupName:
       return {
         ...state,
-        user: action.payload,
-        Currency: action.payload.Currency,
+        groupInfo: action.payload,
       };
-    case aType.Logout_USER:
-      return {};
     default:
       return state;
   }

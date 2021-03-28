@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 var userTransactionOnGroup = new Schema(
   {
-    TransactionID: { type: Schema.Types.ObjectId },
+    TransactionID: { type: Schema.Types.ObjectId, ref: "TransactionDetail" },
     GroupName: { type: String, required: true },
     MemberPaid: { type: String, required: true },
     MemberOws: { type: String, required: true },

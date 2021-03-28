@@ -4,6 +4,7 @@ import login from "../reducers/login";
 import updateProfile from "../reducers/updateProfile";
 import transaction from "../reducers/transactionReducer";
 import groupOwsGetsDetail from "../reducers/groupOwsGetsDetail";
+import homeReducer from "../reducers/homeReducer";
 import thunk from "redux-thunk";
 
 const initialState = {};
@@ -19,6 +20,7 @@ export const ConfigureStore = () => {
       updateProfile,
       transaction,
       groupOwsGetsDetail,
+      homeReducer,
     }),
     initialState,
     storeEnhancers(applyMiddleware(thunk))

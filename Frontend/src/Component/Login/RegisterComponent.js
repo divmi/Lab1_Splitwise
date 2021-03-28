@@ -16,13 +16,6 @@ import config from "../../config";
 import { connect } from "react-redux";
 import * as Action from "../../actions/actionCreators";
 
-// const mapStateToProps = (state) => {
-//   return {
-//     name: state.name,
-//     email: state.email,
-//     password: state.password,
-//   };
-// };
 class Register extends Component {
   constructor(props) {
     super(props);

@@ -1,59 +1,28 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
-import axios from "axios";
 import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
 import Dashboard from "../User/DashBoard";
 import OwsGetDetail from "../Group/OwsGetsInfo";
-import config from "../../config";
+import { getUserDetails } from "../../actions/home";
+import { connect } from "react-redux";
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groupInfo: [],
       component: null,
       summary: null,
     };
   }
-
-  // ID: userID,
-  getUserDetails = (Email) => {
-    console.log(Email);
-    axios
-      .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
-        params: {
-          email: cookie.load("cookie").Email,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            groupInfo: [response.data],
-          }));
-          console.log("Group info" + this.state.groupInfo);
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  };
 
   componentDidMount() {
     var data;
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         data = JSON.parse(localStorage.getItem("userData"));
-        this.setState({ groupInfo: this.getUserDetails(data.Email) });
+        this.props.getUserDetails(data._id);
       }
     }
     if (this.state.component == null) {
@@ -89,8 +58,8 @@ class Home extends Component {
     let groupName = null;
     if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
-    if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {
-      groupName = this.state.groupInfo[0].map((name, idx) => {
+    if (this.props.groupInfo != null && this.props.groupInfo.length > 0) {
+      groupName = this.props.groupInfo.map((name, idx) => {
         return (
           <tr
             key={idx}
@@ -146,5 +115,10 @@ class Home extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    groupInfo: state.homeReducer.groupInfo,
+  };
+};
 
-export default Home;
+export default connect(mapStateToProps, { getUserDetails })(Home);

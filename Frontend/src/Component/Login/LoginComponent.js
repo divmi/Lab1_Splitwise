@@ -11,8 +11,6 @@ import {
   FormFeedback,
 } from "reactstrap";
 import { connect } from "react-redux";
-//import * as Action from "../../actions/loginAction";
-//import PropTypes from "prop-types";
 import { userLogin } from "../../actions/loginAction";
 
 class Login extends Component {
@@ -26,12 +24,6 @@ class Login extends Component {
       };
     }
   }
-
-  // email: "",
-  // password: "",
-  // error: "",
-  // formerror: {},
-  // auth: true,
 
   validateForm = () => {
     const userInfo = this.state;
@@ -82,7 +74,7 @@ class Login extends Component {
         this.setState({
           authFlag: true,
         });
-        this.SetLocalStorage(JSON.stringify(this.props.user[0]));
+        this.SetLocalStorage(JSON.stringify(this.props.user));
       }
     }
   }
@@ -169,11 +161,6 @@ class Login extends Component {
     );
   }
 }
-
-// Login.propTypes = {
-//   userLogin: PropTypes.func.isRequired,
-//   user: PropTypes.object,
-// };
 
 const mapStateToProps = (state) => {
   return {

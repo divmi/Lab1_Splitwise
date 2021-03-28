@@ -70,15 +70,11 @@ class insert {
         body.userData.map((user) => {
           memberList.push({
             ID: user.ID,
-            MemberID: user.Email,
-            UserProfilePic: user.UserProfilePic,
             Accepted: false,
           });
         });
         memberList.push({
           ID: body.ID,
-          MemberID: body.Email,
-          UserProfilePic: body.UserProfilePic,
           Accepted: true,
         });
         var groupInfo = new GroupInfo({
