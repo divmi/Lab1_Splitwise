@@ -70,12 +70,8 @@ class insert {
         body.userData.map((user) => {
           memberList.push({
             ID: user.ID,
-            Accepted: false,
+            Accepted: user.Accepted,
           });
-        });
-        memberList.push({
-          ID: body.ID,
-          Accepted: true,
         });
         var groupInfo = new GroupInfo({
           GroupName: body.groupName,
