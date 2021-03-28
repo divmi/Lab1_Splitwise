@@ -29,7 +29,17 @@ class GroupInfo extends Component {
     };
   }
 
-  openModal = () => this.setState({ isOpen: true });
+  openModal = (e, expenseDetail) => {
+    console.log(JSON.stringify(expenseDetail));
+    if (e.target.name == "btn-Edit-Expense") {
+      this.setState({
+        transaction_description: expenseDetail.TransactionDetail,
+        amount: expenseDetail.Amount,
+      });
+    }
+    console.log(this.state.transaction_description);
+    this.setState({ isOpen: true });
+  };
   closeModal = () => {
     this.setState({ isOpen: false });
     this.getTransactionDetail();
@@ -154,34 +164,47 @@ class GroupInfo extends Component {
       }
       showTransaction = this.state.transactionDetail.map((name, idx) => {
         return (
-          <tr key={idx} style={{ verticalAlign: "center" }}>
-            <td style={{ width: "8.33%", color: "GrayText" }}>
+          <div key={idx} className="row p-2">
+            <div className="col-sm-8">
               {new Date(name.Time).toLocaleDateString("default", {
                 month: "short",
                 day: "numeric",
-              })}
-            </td>
-            <td style={{ width: "60%" }}>
+              })}{" "}
+              &emsp;
               <i
                 className="fa fa-shopping-cart fa-2x"
                 style={{ color: "green", marginRight: 3 }}
-              ></i>
-              {name.TransactionDetail}
-            </td>
-            <td
-              style={{
-                width: "30%",
-                textAlign: "right",
-                fontSize: 12,
-                color: "GrayText",
-              }}
-            >
-              <p>
-                <br /> paid <br /> {this.state.Currency}
+              ></i>{" "}
+              <a
+                style={{ color: "black" }}
+                data-toggle="collapse"
+                href={"#" + idx}
+                aria-controls="collapseExample"
+              >
+                {name.TransactionDetail}
+              </a>
+            </div>
+            <div className="col-sm-4 p-1">
+              <p style={{ color: "GrayText", textAlign: "right" }}>
+                paid <br />
+                {this.state.Currency}
                 {name.Amount}
               </p>
-            </td>
-          </tr>
+            </div>
+            <div key={idx} className="collapse shadow-sm" id={idx}>
+              <p>
+                {name.TransactionDetail} <br />
+                {name.Amount} <br />
+              </p>
+              <button
+                name="btn-Edit-Expense"
+                className="orangeCode"
+                onClick={(e) => this.openModal(e, name)}
+              >
+                Edit expense
+              </button>
+            </div>
+          </div>
         );
       });
     } else {
@@ -278,6 +301,7 @@ class GroupInfo extends Component {
                           textDecoration: "none",
                         }}
                         type="text"
+                        value={this.state.transaction_description}
                         onChange={this.handleTransactionChange}
                         placeholder="Enter a description"
                         required
@@ -296,6 +320,7 @@ class GroupInfo extends Component {
                         type="number"
                         step="0.1"
                         min="0"
+                        value={this.state.amount}
                         onChange={this.handleAmountChange}
                         placeholder={this.state.Currency + "0.00"}
                         required
@@ -327,13 +352,7 @@ class GroupInfo extends Component {
           </Modal>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded border-right">
-          <div className="col col-sm-8">
-            <div className="row">
-              <table className="table">
-                <tbody>{showTransaction}</tbody>
-              </table>
-            </div>
-          </div>
+          <div className="col col-sm-8">{showTransaction}</div>
           <div className="col col-sm-4">
             <p style={{ fontWeight: "bold" }}>Group Summary</p>
             {this.state.component}

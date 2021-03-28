@@ -11,7 +11,6 @@ class TransactionDetail extends Component {
     this.state = {
       sortbyGroup: "",
       showTransactionBasedOnFilter: [],
-      loading: false,
       currentPage: 1,
       postsPerPage: 2,
     };
@@ -137,7 +136,6 @@ class TransactionDetail extends Component {
       currentPage,
       postsPerPage,
       showTransactionBasedOnFilter,
-      loading,
     } = this.state;
     console.log(showTransactionBasedOnFilter.length);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -188,7 +186,7 @@ class TransactionDetail extends Component {
           </div>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded">
-          <Posts posts={currentPosts} loading={loading} />
+          <Posts posts={currentPosts} />
           <Pagination
             postsPerPage={postsPerPage}
             totalPosts={showTransactionBasedOnFilter.length}

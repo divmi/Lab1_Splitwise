@@ -2,11 +2,8 @@ import React, { Component } from "react";
 
 export class Posts extends Component {
   render() {
-    const { posts, loading } = this.props;
+    const { posts } = this.props;
     let showTransaction = null;
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
 
     if (posts != null && posts.length > 0) {
       showTransaction = posts.map((name, idx) => {
