@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
-import axios from "axios";
 import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
 import { Redirect } from "react-router-dom";
-import config from "../../config";
-import { updateProfile } from "../../actions/updateUserProfile";
+import { updateProfile, UploadPicture } from "../../actions/updateUserProfile";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -75,35 +73,6 @@ class UpdateProfile extends Component {
         this.SetLocalStorage(JSON.stringify(this.state.userinfo));
       }
     }
-    //set the with credentials to true
-    //axios.defaults.withCredentials = true;
-    //   //make a post request with the user data
-    //   axios
-    //     .post(
-    //       `http://${config.ipAddress}:8000/updateProfile`,
-    //       this.state.userinfo
-    //     )
-    //     .then((response) => {
-    //       if (response.status === 200) {
-    //         this.setState({
-    //           authFlag: true,
-    //         });
-    //       } else {
-    //         this.setState({
-    //           loginError:
-    //             "<p style={{color: red}}>User is already registered</p>",
-    //           authFlag: false,
-    //         });
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.setState({
-    //         loginError: "User is already registered",
-    //       });
-    //     });
-    // } else {
-    //   this.setState({ error });
-    // }
   };
 
   validateForm = () => {
@@ -121,37 +90,18 @@ class UpdateProfile extends Component {
     event.preventDefault();
     let data = new FormData();
     data.append("file", event.target.files[0]);
-    axios
-      .post(`http://${config.ipAddress}:8000/upload`, data)
-      .then((response) => {
-        console.log(response);
-        let userinfo = this.state.userinfo;
-        userinfo.UserProfilePic =
-          `http://${config.ipAddress}:8000/` + response.data;
-        this.setState({
-          userinfo,
-        });
-      })
-      .catch((error) => {
-        console.log("error " + error);
-        let userinfo = this.state.userinfo;
-        userinfo.UserProfilePic = "./assets/userIcon.jpg";
-        this.setState({
-          userinfo,
-        });
-      });
+    this.props.UploadPicture(data);
   };
 
   render() {
     let redirectVar = null;
-    console.log(this.props.authFlag);
     if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
     else if (this.props.authFlag) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/updateProfile" />;
     let picture = "";
-    if (this.state.userinfo.UserProfilePic != "") {
-      picture = this.state.userinfo.UserProfilePic;
+    if (this.props.image != "") {
+      picture = this.props.image;
     } else {
       picture = "./assets/userIcon.jpg";
     }
@@ -308,12 +258,7 @@ class UpdateProfile extends Component {
                           </option>
                           {options}
                         </select>
-                        {/* {error.timezone && (
-                            <span className="help-block">{error.timezone}</span>
-                          )} */}
                       </FormGroup>
-                      {/* <FormFeedback>{this.state.error.email}</FormFeedback> */}
-
                       <FormGroup>
                         <Label htmlFor="language">Language</Label>
                         <select
@@ -329,7 +274,6 @@ class UpdateProfile extends Component {
                           <option>French</option>
                           <option>Russian</option>
                         </select>
-                        {/*<FormFeedback>{this.state.error.password}</FormFeedback> */}
                       </FormGroup>
                     </div>
                   </div>
@@ -366,11 +310,15 @@ class UpdateProfile extends Component {
 
 UpdateProfile.propTypes = {
   updateProfile: PropTypes.func.isRequired,
-  authFlag: PropTypes.object,
 };
 
 const mapStateToProps = (state) => {
-  return { authFlag: state.updateProfile.authFlag };
+  return {
+    authFlag: state.updateProfile.authFlag,
+    image: state.updateProfile.image,
+  };
 };
 
-export default connect(mapStateToProps, { updateProfile })(UpdateProfile); //connect(mapStateToProps)
+export default connect(mapStateToProps, { updateProfile, UploadPicture })(
+  UpdateProfile
+);

@@ -24,3 +24,21 @@ export const updateProfile = (userData) => (dispatch) => {
       }
     });
 };
+
+export const UploadPicture = (data) => (dispatch) => {
+  console.log(JSON.stringify(data));
+  axios
+    .post(`http://${config.ipAddress}:8000/upload`, data)
+    .then((response) => {
+      dispatch({
+        type: action.Upload_Image,
+        payload: `http://${config.ipAddress}:8000/` + response.data,
+      });
+    })
+    .catch(() => {
+      return dispatch({
+        type: action.Upload_Image,
+        payload: "./assets/userIcon.jpg",
+      });
+    });
+};

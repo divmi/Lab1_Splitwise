@@ -27,3 +27,25 @@ export const getUserDetails = (Email) => (dispatch) => {
       }
     });
 };
+
+export const editGroup = (data) => (dispatch) => {
+  console.log("dispatching the action");
+  axios.defaults.withCredentials = true;
+  //make a post request with the user data
+  axios
+    .post(`http://${config.ipAddress}:8000/updateGroup`, data)
+    .then((response) =>
+      dispatch({
+        type: action.Edit_Group,
+        payload: response.data,
+      })
+    )
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        return dispatch({
+          type: action.Edit_Group,
+          payload: Object.assign(error.response.data),
+        });
+      }
+    });
+};

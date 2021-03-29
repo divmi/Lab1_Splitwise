@@ -156,7 +156,7 @@ app.post("/updateProfile", function (req, res) {
 
 app.post("/updateGroup", function (req, res) {
   var update = new Update.update();
-  update.updateGroup(con, req.body, res);
+  update.updateGroup(req.body, res);
 });
 
 app.post("/joinedGroup", function (req, res) {

@@ -4,6 +4,9 @@ import { Redirect } from "react-router-dom";
 import NewUser from "./NewUser";
 import axios from "axios";
 import config from "../../config";
+import { connect } from "react-redux";
+import { getAllUser, sendCreateGroupRequest } from "../../actions/createGroup";
+
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
@@ -11,9 +14,7 @@ class CreateGroup extends Component {
       groupName: "",
       error: "",
       groupPhoto: "",
-      auth: false,
       userData: [],
-      allUser: [],
       Name: "",
       Email: "",
       ID: "",
@@ -21,10 +22,9 @@ class CreateGroup extends Component {
     };
   }
   OnNameChange = (e) => {
-    //if (["userName"].includes(e.target.id)) {
     if (e.target.textContent != "") {
       let userDataBackup = [...this.state.userData];
-      let found = this.state.allUser[0].find(
+      let found = this.props.allUser.find(
         (element) => element.Name == e.target.textContent
       );
       if (found) {
@@ -47,7 +47,7 @@ class CreateGroup extends Component {
   onEmailChange = (e) => {
     if (e.target.textContent != "") {
       let userData = [...this.state.userData];
-      let found = this.state.allUser[0].find(
+      let found = this.props.allUser.find(
         (element) => element.Email == e.target.textContent
       );
       if (found) {
@@ -78,35 +78,10 @@ class CreateGroup extends Component {
   };
 
   handleSubmit = (e) => {
-    //prevent page from refresh
     e.preventDefault();
     let error = this.validateForm();
-    //set the with credentials to true
     if (Object.keys(error).length == 0) {
-      axios.defaults.withCredentials = true;
-      console.log("User Data : " + JSON.stringify(this.state));
-      axios
-        .post(`http://${config.ipAddress}:8000/createGroup`, this.state)
-        .then((response) => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            this.setState({
-              error: "",
-              authFlag: true,
-            });
-          } else {
-            this.setState({
-              error: "Group is already registered",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            error: "Group is already registered",
-            authFlag: false,
-          });
-        });
+      this.props.sendCreateGroupRequest(this.state);
     } else {
       this.setState({
         error: error,
@@ -121,29 +96,6 @@ class CreateGroup extends Component {
     });
   };
 
-  async getAllUser() {
-    await axios
-      .get(`http://${config.ipAddress}:8000/getAllUser`)
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            allUser: [response.data],
-          }));
-        } else {
-          this.setState({
-            error: "User Not Found",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "User Not Found" + e,
-        });
-      });
-  }
-
   handleItemDeleted(e, i) {
     e.preventDefault();
     var items = this.state.userData;
@@ -155,18 +107,28 @@ class CreateGroup extends Component {
   }
 
   componentDidMount() {
-    this.setState({ allUser: this.getAllUser() });
+    this.props.getAllUser();
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        console.log(JSON.parse(localStorage.getItem("userData")));
         var data = JSON.parse(localStorage.getItem("userData"));
         var user = {
+          ID: data._id,
           Name: data.Name,
           Email: data.Email,
           Accepted: 1,
         };
         this.setState({
           userData: [user],
+        });
+      }
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.authFlag != this.props.authFlag) {
+      if (!this.props.authFlag) {
+        this.setState({
+          error: "Group Name is already registered",
         });
       }
     }
@@ -216,7 +178,7 @@ class CreateGroup extends Component {
     } else {
       picture = this.state.groupPhoto;
     }
-    if (this.state.authFlag) {
+    if (this.props.authFlag) {
       message = <Redirect to="/home" />;
     }
     let x = this.state.userData.map((val, idx) => {
@@ -226,7 +188,7 @@ class CreateGroup extends Component {
           val={val}
           delete={this.handleItemDeleted.bind(this)}
           userData={this.state.userData}
-          tableData={this.state.allUser[0]}
+          tableData={this.props.allUser}
           change={this.OnNameChange.bind(this)}
           emailChange={this.onEmailChange.bind(this)}
         />
@@ -332,4 +294,13 @@ class CreateGroup extends Component {
   }
 }
 
-export default CreateGroup;
+const mapStateToProps = (state) => {
+  return {
+    allUser: state.createGroup.allUser,
+    authFlag: state.createGroup.authFlag,
+  };
+};
+
+export default connect(mapStateToProps, { getAllUser, sendCreateGroupRequest })(
+  CreateGroup
+);

@@ -1,5 +1,6 @@
 const bodyParser = require("body-parser");
 const Users = require("./Model/UserRegistrationModel");
+const GroupInfo = require("./Model/GroupInfoModel");
 
 var update = class update {
   updateUserProfile(con, req, res) {
@@ -23,36 +24,49 @@ var update = class update {
     });
   }
 
-  updateGroup(con, req, res) {
-    var sql =
-      `UPDATE 
-      GroupInfo
-      SET 
-      GroupName = '` +
-      req.newGroupName +
-      `',
-      GroupProfilePicture = '` +
-      req.groupPhoto +
-      "'Where GroupName ='" +
-      req.prevGroupName +
-      "'";
-    con.query(sql, function (err, result, fields) {
-      if (err) throw err;
-      if (Object.keys(req.itemDeleted).length !== 0) {
-        var deleteMember =
-          "Delete from GroupMemberInfo where Memberid='" +
-          req.itemDeleted.Email +
-          "' and GroupName='" +
-          req.prevGroupName +
-          "'";
-        con.query(deleteMember, function (err, result, fields) {
-          if (err) throw err;
+  updateGroup(req, res) {
+    GroupInfo.findOne({ GroupName: req.prevGroupName }, (error, findGroup) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-Type": "text/plain",
         });
+        res.end();
       }
-      res.writeHead(200, {
-        "Content-Type": "application/json",
-      });
-      res.end(JSON.stringify(result));
+      if (findGroup) {
+        const updateDoc = {
+          $set: {
+            GroupName: req.newGroupName,
+            GroupProfilePicture: req.groupPhoto,
+          },
+        };
+        GroupInfo.updateOne(
+          { GroupName: req.prevGroupName },
+          updateDoc,
+          (error, success) => {
+            if (error) {
+              res.writeHead(500, {
+                "Content-Type": "text/plain",
+              });
+              res.end();
+            }
+            if (success) {
+              if (Object.keys(req.itemDeleted).length !== 0) {
+                GroupInfo.deleteOne(
+                  { GroupName: req.prevGroupName },
+                  (error, success) => {
+                    if (success) {
+                      res.writeHead(200, {
+                        "Content-Type": "application/json",
+                      });
+                      res.end(JSON.stringify(success));
+                    }
+                  }
+                );
+              }
+            }
+          }
+        );
+      }
     });
   }
 };

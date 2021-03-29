@@ -11,6 +11,11 @@ export default function (state = defaultState, action) {
         ...state,
         groupInfo: action.payload,
       };
+    case aType.Edit_Group:
+      return {
+        ...state,
+        groupInfo: action.payload,
+      };
     default:
       return state;
   }

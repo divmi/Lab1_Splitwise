@@ -1,20 +1,22 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
+  allUser: [],
   authFlag: false,
-  image: "",
 };
 
 export default function (state = defaultState, action) {
-  console.log("payload received: " + action.payload);
+  console.log("control came here");
   switch (action.type) {
-    case aType.Update_Profile:
+    case aType.Load_AllUser:
+      return {
+        ...state,
+        allUser: action.payload,
+        authFlag: false,
+      };
+    case aType.Create_Group:
       return {
         ...state,
         authFlag: action.payload,
-      };
-    case aType.Upload_Image:
-      return {
-        image: action.payload,
       };
     default:
       return state;

@@ -3,6 +3,8 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import config from "../../config";
 import axios from "axios";
+import { editGroup } from "../../actions/home";
+import { connect } from "react-redux";
 
 class EditGroup extends Component {
   constructor(props) {
@@ -14,58 +16,10 @@ class EditGroup extends Component {
       groupPhoto: "",
       auth: false,
       userData: [],
-      allUser: [],
       itemDeleted: {},
     };
   }
 
-  handleNameChange = (e) => {
-    //if (["userName"].includes(e.target.id)) {
-    if (typeof e.target != "undefined" && e.target.innerText != "") {
-      let userData = [...this.state.userData];
-      //userData[e.target.dataset.id][e.target.name] = e.target.innerText;
-      let found = this.state.allUser.find(
-        (element) => element.Name == e.target.innerText
-      );
-      if (found) {
-        let item = {
-          ...userData[userData.length - 1],
-          Name: found.Name,
-          Email: found.Email,
-          GroupProfilePicture: found.GroupProfilePicture,
-        };
-        userData[userData.length - 1] = item;
-        this.setState({
-          userData,
-        });
-        console.log(JSON.stringify(this.state.userData));
-      }
-    }
-  };
-
-  handleEmailChange = (e) => {
-    if (typeof e.target != "undefined" && e.target.innerText != "") {
-      let userData = [...this.state.userData];
-      let found = this.state.allUser.find(
-        (element) => element.Name == e.target.innerText
-      );
-      if (found) {
-        console.log("EXCEPTION 11111");
-        let item = {
-          ...userData[userData.length - 1],
-          Name: found.Name,
-          Email: found.Email,
-          GroupProfilePicture: found.GroupProfilePicture,
-        };
-        userData[userData.length - 1] = item;
-        this.setState({
-          userData,
-        });
-      }
-    }
-  };
-
-  ///LoginUser'
   handleSubmit = (e) => {
     //prevent page from refresh
     e.preventDefault();
@@ -77,29 +31,7 @@ class EditGroup extends Component {
       itemDeleted: this.state.itemDeleted,
     };
     if (Object.keys(error).length == 0) {
-      axios.defaults.withCredentials = true;
-      axios
-        .post(`http://${config.ipAddress}:8000/updateGroup`, data)
-        .then((response) => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            this.setState({
-              error: "",
-              authFlag: true,
-            });
-          } else {
-            this.setState({
-              error: "Group is already registered",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            error: "Group is already registered",
-            authFlag: false,
-          });
-        });
+      this.props.editGroup(data);
     } else {
       this.setState({
         error: error,
@@ -115,30 +47,39 @@ class EditGroup extends Component {
   };
 
   getMemberInfo() {
-    axios
-      .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
-        params: {
-          groupName: this.props.match.params.value,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            userData: response.data,
-          }));
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
+    let findGroup = this.props.groupInfo.find(
+      (x) => x.GroupName == this.props.match.params.value
+    );
+    if (typeof findGroup != "undefined") {
+      this.setState({
+        userData: findGroup.GroupMemberInfo,
       });
+      console.log(JSON.stringify(this.state.userData));
+    }
+    // axios
+    //   .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
+    //     params: {
+    //       groupName: this.props.match.params.value,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       console.log("All user:" + response.data);
+    //       this.setState(() => ({
+    //         userData: response.data,
+    //       }));
+    //     } else {
+    //       this.setState({
+    //         error: "Please enter correct credentials",
+    //         authFlag: false,
+    //       });
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     this.setState({
+    //       error: "Please enter correct credentials" + e,
+    //     });
+    //   });
   }
 
   handleItemDeleted(e, i) {
@@ -191,21 +132,14 @@ class EditGroup extends Component {
 
   componentDidMount() {
     console.log(this.props.match.params.value);
-    if (
-      this.props.match.params.value != null &&
-      this.props.match.params.value != ""
-    ) {
+    if (this.props.match.params.value != "") {
       this.setState({
         groupName: this.props.match.params.value,
       });
-      this.setState({ userData: this.getMemberInfo() });
-      console.log(JSON.stringify(this.state.userData));
+      this.getMemberInfo();
     }
   }
 
-  handleInputChange = (e) => {
-    console.log(e);
-  };
   validateForm = () => {
     let error = "";
     if (this.state.groupName === "") error = "Group Name should not be blank";
@@ -238,10 +172,10 @@ class EditGroup extends Component {
       message = <Redirect to="/home" />;
     }
     if (this.state.userData != null && this.state.userData.length > 0) {
-      if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
-      else if (this.state.userData[0].GroupProfilePicture == "")
-        picture = "../assets/userIcon.jpg";
-      else picture = this.state.userData[0].GroupProfilePicture;
+      // if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
+      // else if (this.state.userData[0].GroupProfilePicture == "")
+      //   picture = "../assets/userIcon.jpg";
+      // else picture = this.state.userData[0].GroupProfilePicture;
 
       groupMemberName = this.state.userData.map((val, idx) => {
         console.log(val);
@@ -366,4 +300,10 @@ class EditGroup extends Component {
   }
 }
 
-export default EditGroup;
+const mapStateToProps = (state) => {
+  return {
+    groupInfo: state.homeReducer.groupInfo,
+  };
+};
+
+export default connect(mapStateToProps, { editGroup })(EditGroup);

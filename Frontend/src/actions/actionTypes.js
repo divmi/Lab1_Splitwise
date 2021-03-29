@@ -45,3 +45,27 @@ export const Load_Group_Member_Name = () => {
     type: "Load_Group_Member_Name",
   };
 };
+
+export const Upload_Image = () => {
+  return {
+    type: "Upload_Image",
+  };
+};
+
+export const Load_AllUser = () => {
+  return {
+    type: "Load_AllUser",
+  };
+};
+
+export const Create_Group = () => {
+  return {
+    type: "Create_Group",
+  };
+};
+
+export const Edit_Group = () => {
+  return {
+    type: "Edit_Group",
+  };
+};

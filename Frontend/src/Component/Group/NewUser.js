@@ -40,7 +40,6 @@ class NewUser extends Component {
   };
 
   render() {
-    //console.log("Divya :" + this.props.val);
     if (this.props.val.Name != "" && this.props.val.Email != "") {
       return (
         <tr>
