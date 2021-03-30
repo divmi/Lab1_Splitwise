@@ -161,7 +161,7 @@ app.post("/updateGroup", function (req, res) {
 
 app.post("/joinedGroup", function (req, res) {
   var trans = new transaction.transactionDetail();
-  trans.groupJoinRequest(con, req.body, res);
+  trans.groupJoinRequest(req.body, res);
 });
 
 app.post("/settleUp", function (req, res) {
@@ -173,12 +173,12 @@ app.post("/settleUp", function (req, res) {
 app.post("/insertGroupTransaction", function (req, res) {
   console.log("Req Body : ", req.body);
   var insertTransaction = new insert.insert();
-  insertTransaction.insert_TransactionForUserAndGroup(con, req.body, res);
+  insertTransaction.insert_TransactionForUserAndGroup(req.body, res);
 });
 
 app.get("/getTransactionInfo", function (req, res) {
   var userDetail = new group.group();
-  userDetail.gettransactionDetail(con, req.query.groupName, res);
+  userDetail.gettransactionDetail(req.query.ID, res);
 });
 
 app.get("/getTransactionFromUser", function (req, res) {
@@ -188,7 +188,7 @@ app.get("/getTransactionFromUser", function (req, res) {
 
 app.get("/getGroupNotification", function (req, res) {
   var userDetail = new group.group();
-  userDetail.getGroupNotification(con, req.query.memberID, res);
+  userDetail.getGroupNotification(req.query.memberID, res);
 });
 
 app.get("/getAllUser", function (req, res) {

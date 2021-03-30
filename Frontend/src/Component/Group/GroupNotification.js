@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
-import axios from "axios";
 import { Button } from "react-bootstrap";
-import config from "../../config";
-// import { Redirect, Link } from "react-router-dom";
-// import { Label } from "reactstrap";
+import { getUserDetails, GroupRequestAccepted } from "../../actions/home";
+import { connect } from "react-redux";
 
 class GroupNotification extends Component {
   constructor(props) {
@@ -13,52 +10,56 @@ class GroupNotification extends Component {
       component: null,
       userNotification: [],
       Accepted: "",
+      ID: "",
     };
   }
 
   GroupRequestAccepted = (name) => {
-    axios
-      .post(`http://${config.ipAddress}:8000/joinedGroup`, name)
-      .then((response) => {
-        if (response.status === 200) {
-          this.getGroupNotification();
-          this.props.click();
-        }
-      });
+    this.props.GroupRequestAccepted(name, this.state.ID);
+    // axios
+    //   .post(`http://${config.ipAddress}:8000/joinedGroup`, name)
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       console.log("Response received");
+    //     }
+    //   });
   };
 
-  getGroupNotification = () => {
-    let member = "";
-    if (cookie.load("cookie")) {
-      member = cookie.load("cookie").Email;
+  componentDidUpdate(prevState) {
+    if (prevState.groupInfo != this.props.groupInfo) {
+      this.getGroupNotification(this.state.ID);
     }
-    axios
-      .get(`http://${config.ipAddress}:8000/getGroupNotification`, {
-        params: {
-          memberID: member,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState({
-            userNotification: response.data,
-          });
-        } else {
-          this.setState({
-            error: "group Notification Not Found",
-            authFlag: false,
-          });
+  }
+
+  getGroupNotification = (ID) => {
+    let userNotification = [];
+    if (this.props.groupInfo.length > 0) {
+      this.props.groupInfo.map((group) => {
+        let member = group.GroupMemberInfo.find((x) => x.ID == ID);
+        if (typeof member != "undefined") {
+          if (!member.Accepted) {
+            console.log("Group added successfully");
+            userNotification.push(group);
+          }
         }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "group Notification Not Found" + e,
-        });
       });
+      this.setState({
+        userNotification: userNotification,
+      });
+    }
   };
 
   componentDidMount() {
-    this.getGroupNotification();
+    var data;
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        data = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          ID: data._id,
+        });
+        this.getGroupNotification(data._id);
+      }
+    }
   }
 
   render() {
@@ -111,5 +112,13 @@ class GroupNotification extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    groupInfo: state.homeReducer.groupInfo,
+  };
+};
 
-export default GroupNotification;
+export default connect(mapStateToProps, {
+  getUserDetails,
+  GroupRequestAccepted,
+})(GroupNotification);

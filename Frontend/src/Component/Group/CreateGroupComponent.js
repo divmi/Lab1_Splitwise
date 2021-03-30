@@ -6,6 +6,7 @@ import axios from "axios";
 import config from "../../config";
 import { connect } from "react-redux";
 import { getAllUser, sendCreateGroupRequest } from "../../actions/createGroup";
+import { resetSuccessFlag } from "../../actions/loginAction";
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class CreateGroup extends Component {
       Email: "",
       ID: "",
       UserProfilePic: "",
+      success: "",
     };
   }
   OnNameChange = (e) => {
@@ -85,7 +87,7 @@ class CreateGroup extends Component {
     } else {
       this.setState({
         error: error,
-        authFlag: false,
+        success: false,
       });
     }
   };
@@ -129,6 +131,11 @@ class CreateGroup extends Component {
       if (!this.props.authFlag) {
         this.setState({
           error: "Group Name is already registered",
+        });
+      } else {
+        this.props.resetSuccessFlag();
+        this.setState({
+          success: true,
         });
       }
     }
@@ -178,7 +185,7 @@ class CreateGroup extends Component {
     } else {
       picture = this.state.groupPhoto;
     }
-    if (this.props.authFlag) {
+    if (this.state.success) {
       message = <Redirect to="/home" />;
     }
     let x = this.state.userData.map((val, idx) => {
@@ -301,6 +308,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { getAllUser, sendCreateGroupRequest })(
-  CreateGroup
-);
+export default connect(mapStateToProps, {
+  getAllUser,
+  sendCreateGroupRequest,
+  resetSuccessFlag,
+})(CreateGroup);

@@ -69,3 +69,21 @@ export const Edit_Group = () => {
     type: "Edit_Group",
   };
 };
+
+export const Reset_Success_Flag = () => {
+  return {
+    type: "Reset_Success_Flag",
+  };
+};
+
+export const Load_GroupBased_Transaction = () => {
+  return {
+    type: "Load_GroupBased_Transaction",
+  };
+};
+
+export const Insert_Group_Transaction = () => {
+  return {
+    type: "Insert_Group_Transaction",
+  };
+};

@@ -14,22 +14,42 @@ class Home extends Component {
     this.state = {
       component: null,
       summary: null,
+      groupInfo: [],
+      ID: "",
     };
   }
 
+  componentDidUpdate(prevState) {
+    if (prevState.groupInfo != this.props.groupInfo) {
+      let groupInfo = [];
+      this.props.groupInfo.map((info) => {
+        const member = info.GroupMemberInfo.find((x) => x.ID == this.state.ID);
+        if (typeof member != "undefined" && member.Accepted) {
+          groupInfo.push(info);
+        }
+      });
+      this.setState({
+        groupInfo: groupInfo,
+      });
+    }
+  }
+
   componentDidMount() {
-    var data;
+    let data;
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         data = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          ID: data._id,
+        });
         this.props.getUserDetails(data._id);
       }
-    }
-    if (this.state.component == null) {
-      if (typeof data != "undefined") {
-        this.setState({
-          component: <Dashboard email={data.Email} />,
-        });
+      if (this.state.component == null) {
+        if (typeof data != "undefined") {
+          this.setState({
+            component: <Dashboard email={data.Email} />,
+          });
+        }
       }
     }
   }
@@ -40,10 +60,22 @@ class Home extends Component {
     });
   };
 
-  OpenGroupInfo(param) {
+  OpenGroupInfo(param, groupName, groupMemberName) {
     this.setState({
-      component: <GroupInfo name={param} />,
-      summary: <OwsGetDetail name={param} />,
+      component: (
+        <GroupInfo
+          name={param}
+          groupName={groupName}
+          groupMember={groupMemberName}
+        />
+      ),
+      summary: (
+        <OwsGetDetail
+          name={param}
+          groupName={groupName}
+          groupMember={groupMemberName}
+        />
+      ),
     });
   }
 
@@ -58,13 +90,15 @@ class Home extends Component {
     let groupName = null;
     if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
-    if (this.props.groupInfo != null && this.props.groupInfo.length > 0) {
-      groupName = this.props.groupInfo.map((name, idx) => {
+    if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {
+      groupName = this.state.groupInfo.map((name, idx) => {
         return (
           <tr
             key={idx}
             style={{ verticalAlign: "center" }}
-            onClick={() => this.OpenGroupInfo(name.GroupName)}
+            onClick={() =>
+              this.OpenGroupInfo(name._id, name.GroupName, name.GroupMemberInfo)
+            }
           >
             <td>
               <i className="fa fa-users"></i>

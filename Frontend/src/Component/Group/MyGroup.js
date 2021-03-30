@@ -3,9 +3,9 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import { Label } from "reactstrap";
 import GroupNotification from "./GroupNotification";
-import axios from "axios";
 import GroupInfo from "./GroupInfoComponent";
-import config from "../../config";
+import { getUserDetails } from "../../actions/home";
+import { connect } from "react-redux";
 
 class MyGroup extends Component {
   constructor(props) {
@@ -15,6 +15,7 @@ class MyGroup extends Component {
       groupInfo: [],
       error: "",
       searchName: "",
+      ID: "",
     };
   }
 
@@ -34,7 +35,7 @@ class MyGroup extends Component {
     const findGroup = this.state.groupInfo.find(
       (x) => x.GroupName == this.state.searchName
     );
-    console.log("GroupSeacrh" + this.state.searchName);
+    console.log("GroupSearch" + this.state.searchName);
     if (typeof findGroup != "undefined") {
       this.setState({
         component: <GroupInfo name={this.state.searchName} />,
@@ -52,42 +53,34 @@ class MyGroup extends Component {
     });
   };
 
-  getUserDetails = () => {
-    let memberID = "";
-    if (cookie.load("cookie")) {
-      memberID = cookie.load("cookie").Email;
-    }
-    axios
-      .get(`http://${config.ipAddress}:8000/getCurrentUserGroup`, {
-        params: {
-          email: memberID,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState(() => ({
-            groupInfo: response.data,
-          }));
-          console.log("Group info" + this.state.groupInfo);
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  };
-
   componentDidMount() {
-    this.getUserDetails();
+    var data;
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        data = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          ID: data._id,
+        });
+      }
+    }
     if (this.state.component == null) {
       this.setState({
         component: <GroupNotification click={this.GroupAccepted.bind(this)} />,
+      });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.groupInfo != this.props.groupInfo) {
+      let groupInfo = [];
+      this.props.groupInfo.map((info) => {
+        const member = info.GroupMemberInfo.find((x) => x.ID == this.state.ID);
+        if (typeof member != "undefined" && member.Accepted) {
+          groupInfo.push(info);
+        }
+      });
+      this.setState({
+        groupInfo: groupInfo,
       });
     }
   }
@@ -176,5 +169,10 @@ class MyGroup extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    groupInfo: state.homeReducer.groupInfo,
+  };
+};
 
-export default MyGroup;
+export default connect(mapStateToProps, { getUserDetails })(MyGroup);

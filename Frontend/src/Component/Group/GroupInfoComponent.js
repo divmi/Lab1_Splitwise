@@ -9,10 +9,11 @@ import {
   Form,
 } from "react-bootstrap";
 import axios from "axios";
-import cookie from "react-cookies";
 import OwsGetAmount from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import config from "../../config";
+import { getTransactionDetail } from "../../actions/groupInfo";
+import { connect } from "react-redux";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -20,13 +21,12 @@ class GroupInfo extends Component {
     this.state = {
       isOpen: false,
       transaction_description: "",
-      transactionDetail: [],
       amount: 0,
       serverError: "",
       error: "",
       component: null,
       Currency: "",
-      axiosCallInProgress: false,
+      UserId: "",
     };
   }
 
@@ -43,7 +43,7 @@ class GroupInfo extends Component {
   };
   closeModal = () => {
     this.setState({ isOpen: false });
-    this.getTransactionDetail();
+    this.props.getTransactionDetail(this.props.name);
     this.OpenOwsGetsAmount(false);
   };
 
@@ -59,46 +59,49 @@ class GroupInfo extends Component {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
+          UserId: localStorageData._id,
         });
       }
     }
-    this.setState({ transactionDetail: this.getTransactionDetail() });
+    this.setState({
+      transactionDetail: this.props.getTransactionDetail(this.props.name),
+    });
     this.OpenOwsGetsAmount(false);
   }
 
-  getTransactionDetail() {
-    this.setState({
-      axiosCallInProgress: true,
-    });
-    axios
-      .get(`http://${config.ipAddress}:8000/getTransactionInfo`, {
-        params: {
-          groupName: this.props.name,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          this.setState(() => ({
-            transactionDetail: response.data,
-            axiosCallInProgress: false,
-          }));
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  }
+  // getTransactionDetail() {
+  //   this.setState({
+  //     axiosCallInProgress: true,
+  //   });
+  //   axios
+  //     .get(`http://${config.ipAddress}:8000/getTransactionInfo`, {
+  //       params: {
+  //         groupName: this.props.name,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         this.setState(() => ({
+  //           transactionDetail: response.data,
+  //           axiosCallInProgress: false,
+  //         }));
+  //       } else {
+  //         this.setState({
+  //           error: "Please enter correct credentials",
+  //           authFlag: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       this.setState({
+  //         error: "Please enter correct credentials" + e,
+  //       });
+  //     });
+  // }
 
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
-      this.getTransactionDetail();
+      this.props.getTransactionDetail(this.props.name);
       this.OpenOwsGetsAmount(false);
     }
   }
@@ -130,8 +133,9 @@ class GroupInfo extends Component {
     const data = {
       transactionDetail: this.state.transaction_description,
       amount: this.state.amount,
-      groupname: this.props.name,
-      memberID: cookie.load("cookie").Email,
+      groupID: this.props.name,
+      groupMember: this.props.groupMember,
+      memberID: this.state.UserId,
     };
 
     const error = this.validateForm();
@@ -147,7 +151,7 @@ class GroupInfo extends Component {
               error: "",
               authFlag: true,
             });
-            this.getTransactionDetail();
+            this.props.getTransactionDetail(this.props.name);
             this.OpenOwsGetsAmount(true);
           } else {
             this.setState({
@@ -262,7 +266,7 @@ class GroupInfo extends Component {
           <div className="col col-sm-4">
             <div className="row" style={{ marginLeft: 10, marginTop: 5 }}>
               <img src={picture} className="rounded-circle profileImage"></img>
-              <h4>{this.props.name}</h4>
+              <h4>{this.props.groupName}</h4>
             </div>
           </div>
           <hr></hr>
@@ -308,7 +312,7 @@ class GroupInfo extends Component {
                   {this.state.error}
                 </div>
                 <Row>
-                  <label>With you and : {this.props.name}</label>
+                  <label>With you and : {this.props.groupName}</label>
                 </Row>
                 <hr></hr>
                 <Row>
@@ -391,4 +395,10 @@ class GroupInfo extends Component {
   }
 }
 
-export default GroupInfo;
+const mapStateToProps = (state) => {
+  return {
+    groupInfo: state.homeReducer.groupInfo,
+  };
+};
+
+export default connect(mapStateToProps, { getTransactionDetail })(GroupInfo);

@@ -1,21 +1,22 @@
+const { Double } = require("mongodb");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 var transactionDetail = new Schema(
   {
     TransactionDetail: { type: String, required: true },
-    Time: { type: datetime, required: true },
+    Time: { type: Date, default: Date.now },
     MemberID: {
       type: Schema.Types.ObjectId,
       ref: "UserRegistration",
       required: true,
     },
-    GroupName: {
+    GroupID: {
       type: Schema.Types.ObjectId,
       ref: "GroupInfo",
       required: true,
     },
-    Amount: { type: float, required: true },
+    Amount: { type: Schema.Types.Decimal128, required: true },
     SettleUpWith: { type: String },
   },
   {

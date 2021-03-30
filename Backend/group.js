@@ -34,48 +34,19 @@ var group = class group {
     });
   }
 
-  getGroupNotification(con, email, res) {
+  gettransactionDetail(ID, res) {
     console.log("Connected!");
-    var sql =
-      "Select * from GroupMemberInfo where MemberID='" +
-      email +
-      "' and Accepted=false";
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        res.end(JSON.stringify(result));
-      } else {
+    GroupInfo.find({ GroupID: ID }, (err, transaction) => {
+      if (err) {
         res.writeHead(401, {
           "Content-Type": "text/plain",
         });
-        res.end("UnSuccessful Login");
-      }
-    });
-  }
-
-  gettransactionDetail(con, name, res) {
-    console.log("Connected!");
-    var sql =
-      "Select detail.*, userinfo.Name , g.GroupProfilePicture from TransactionDetail as detail INNER JOIN UserRegistration as userinfo ON (detail.MemberID=userinfo.Email) Inner Join GroupInfo as g on (detail.GroupName=g.GroupName) where g.GroupName='" +
-      name +
-      "'" +
-      "order by Time desc";
-    console.log(sql);
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result) {
+      } else if (transaction) {
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
-        res.end(JSON.stringify(result));
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
+        console.log(JSON.stringify(transaction));
+        res.end(JSON.stringify(transaction));
       }
     });
   }

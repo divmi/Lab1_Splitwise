@@ -4,10 +4,22 @@ const Schema = mongoose.Schema;
 var userTransactionOnGroup = new Schema(
   {
     TransactionID: { type: Schema.Types.ObjectId, ref: "TransactionDetail" },
-    GroupName: { type: String, required: true },
-    MemberPaid: { type: String, required: true },
-    MemberOws: { type: String, required: true },
-    Amount: { type: float, required: true },
+    GroupID: {
+      type: Schema.Types.ObjectId,
+      ref: "GroupInfo",
+      required: true,
+    },
+    MemberPaid: {
+      type: Schema.Types.ObjectId,
+      ref: "UserRegistration",
+      required: true,
+    },
+    MemberOws: {
+      type: Schema.Types.ObjectId,
+      ref: "UserRegistration",
+      required: true,
+    },
+    Amount: { type: Schema.Types.Decimal128, required: true },
   },
   {
     versionKey: false,

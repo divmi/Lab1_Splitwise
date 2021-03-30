@@ -2,18 +2,18 @@ import * as action from "./actionTypes";
 import config from "../config";
 import axios from "axios";
 
-export const getUserDetails = (Email) => (dispatch) => {
+export const getTransactionDetail = (ID) => (dispatch) => {
   console.log("dispatching the action");
   axios.defaults.withCredentials = true;
   //make a get request with the user data
-  const url = `http://${config.ipAddress}:8000/getCurrentUserGroup?ID=${Email}`;
+  const url = `http://${config.ipAddress}:8000/getTransactionInfo?ID=${ID}`;
   console.log(url);
   axios
     .get(url)
     .then((response) => {
       if (response.status == 200) {
         dispatch({
-          type: action.Load_GroupName,
+          type: action.Load_GroupBased_Transaction,
           payload: response.data,
         });
       }
@@ -21,51 +21,29 @@ export const getUserDetails = (Email) => (dispatch) => {
     .catch((error) => {
       if (error.response && error.response.data) {
         return dispatch({
-          type: action.Load_GroupName,
+          type: action.Load_GroupBased_Transaction,
           payload: Object.assign(error.response.data),
         });
       }
     });
 };
 
-export const editGroup = (data) => (dispatch) => {
+export const addTransactionToDatabase = (data) => (dispatch) => {
   console.log("dispatching the action");
   axios.defaults.withCredentials = true;
   //make a post request with the user data
   axios
-    .post(`http://${config.ipAddress}:8000/updateGroup`, data)
+    .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
     .then((response) =>
       dispatch({
-        type: action.Edit_Group,
+        type: action.Insert_Group_Transaction,
         payload: response.data,
       })
     )
     .catch((error) => {
       if (error.response && error.response.data) {
         return dispatch({
-          type: action.Edit_Group,
-          payload: Object.assign(error.response.data),
-        });
-      }
-    });
-};
-
-export const GroupRequestAccepted = (name, id) => (dispatch) => {
-  let data = {
-    name: name,
-    id: id,
-  };
-  axios
-    .post(`http://${config.ipAddress}:8000/joinedGroup`, data)
-    .then((response) => {
-      if (response.status === 200) {
-        dispatch(getUserDetails(id));
-      }
-    })
-    .catch((error) => {
-      if (error.response && error.response.data) {
-        return dispatch({
-          type: action.Load_GroupName,
+          type: action.Insert_Group_Transaction,
           payload: Object.assign(error.response.data),
         });
       }

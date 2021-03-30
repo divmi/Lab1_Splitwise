@@ -24,6 +24,12 @@ export const userLogin = (loginData) => (dispatch) => {
     });
 };
 
+export const resetSuccessFlag = () => (dispatch) => {
+  dispatch({
+    type: action.Reset_Success_Flag,
+  });
+};
+
 export const userLogout = () => (dispatch) => {
   return dispatch({ type: action.Logout_USER, payload: {} });
 };
