@@ -15,12 +15,18 @@ var update = class update {
         UserProfilePic: req.UserProfilePic,
       },
     };
-    con.query(sql, function (err, result, fields) {
-      if (err) throw err;
-      res.writeHead(200, {
-        "Content-Type": "application/json",
-      });
-      res.end(JSON.stringify(result));
+    Users.updateOne(filter, updateDoc, (error, result) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-Type": "text/plain",
+        });
+        res.end();
+      } else {
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+        res.end(JSON.stringify(result));
+      }
     });
   }
 

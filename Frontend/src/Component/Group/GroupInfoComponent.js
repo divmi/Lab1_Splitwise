@@ -63,9 +63,7 @@ class GroupInfo extends Component {
         });
       }
     }
-    this.setState({
-      transactionDetail: this.props.getTransactionDetail(this.props.name),
-    });
+    this.props.getTransactionDetail(this.props.name);
     this.OpenOwsGetsAmount(false);
   }
 
@@ -101,6 +99,7 @@ class GroupInfo extends Component {
 
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
+      console.log(this.props.name);
       this.props.getTransactionDetail(this.props.name);
       this.OpenOwsGetsAmount(false);
     }
@@ -179,16 +178,14 @@ class GroupInfo extends Component {
   render() {
     let showTransaction = null;
     let picture = "../assets/userIcon.png";
-    if (
-      this.state.transactionDetail != null &&
-      this.state.transactionDetail.length > 0
-    ) {
-      if (this.state.transactionDetail[0].GroupProfilePicture != "") {
-        picture = this.state.transactionDetail[0].GroupProfilePicture;
-      }
-      showTransaction = this.state.transactionDetail.map((name, idx) => {
+    console.log(this.props.transactionDetail.length);
+    if (this.props.transactionDetail.length > 0) {
+      // if (this.props.transactionDetail.GroupProfilePicture != "") {
+      //   picture = this.state.transactionDetail[0].GroupProfilePicture;
+      // }
+      showTransaction = this.props.transactionDetail.map((name, idx) => {
         return (
-          <div key={idx} className="row p-2">
+          <div key={idx} className="row">
             <div className="col-sm-8">
               {new Date(name.Time).toLocaleDateString("default", {
                 month: "short",
@@ -208,8 +205,10 @@ class GroupInfo extends Component {
                 {name.TransactionDetail}
               </a>
             </div>
-            <div className="col-sm-4 p-1">
+            <div className="col-sm-4">
               <p style={{ color: "GrayText", textAlign: "right" }}>
+                {name.MemberID.Name}
+                <br />
                 paid <br />
                 {this.state.Currency}
                 {name.Amount}
@@ -233,30 +232,22 @@ class GroupInfo extends Component {
       });
     } else {
       if (this.state.axiosCallInProgress) {
-        showTransaction = (
-          <tr>
-            <td>
-              <p className="spinner-border text-text-muted"></p>
-            </td>
-          </tr>
-        );
+        showTransaction = <p className="spinner-border text-text-muted"></p>;
       } else
         showTransaction = (
-          <tr>
-            <td>
-              <img
-                src="./assets/transaction.png"
-                height={350}
-                width={300}
-                className="img"
-              ></img>
-              <h3>
-                You have not added any expenses yet{" "}
-                <i className="fas fa-frown"></i>
-              </h3>
-              <h5>Click on Add Expense button to start</h5>
-            </td>
-          </tr>
+          <div>
+            <img
+              src="./assets/transaction.png"
+              height={350}
+              width={300}
+              className="img"
+            ></img>
+            <h3>
+              You have not added any expenses yet{" "}
+              <i className="fas fa-frown"></i>
+            </h3>
+            <h5>Click on Add Expense button to start</h5>
+          </div>
         );
     }
 
@@ -397,7 +388,7 @@ class GroupInfo extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    groupInfo: state.homeReducer.groupInfo,
+    transactionDetail: state.groupInfo.transactionDetail,
   };
 };
 

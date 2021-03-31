@@ -13,6 +13,7 @@ class TransactionDetail extends Component {
       showTransactionBasedOnFilter: [],
       currentPage: 1,
       postsPerPage: 2,
+      ID: "",
     };
   }
 
@@ -53,21 +54,17 @@ class TransactionDetail extends Component {
   // }
 
   componentDidMount() {
+    let localStorageData = {};
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
-        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
+          ID: localStorageData._id,
         });
       }
     }
-    if (this.props.transaction.length == 0) {
-      this.props.transactionDetail(this.props.email);
-    }
-    console.log(this.props.transaction);
-    this.setState({
-      showTransactionBasedOnFilter: this.props.transaction,
-    });
+    this.props.transactionDetail(localStorageData._id);
   }
 
   componentDidUpdate(prevState) {
@@ -151,6 +148,16 @@ class TransactionDetail extends Component {
 
     const prevPage = () => this.setState({ currentPage: currentPage - 1 });
 
+    if (this.props.groupName != null && this.props.groupName.length > 0) {
+      showGroupName = this.props.groupName.map((name, idx) => {
+        return (
+          <option key={idx} value={name}>
+            {name}
+          </option>
+        );
+      });
+    }
+
     return (
       <div className="container-fluid">
         <div className="row rounded">
@@ -185,8 +192,10 @@ class TransactionDetail extends Component {
             </select>
           </div>
         </div>
-        <div className="row shadow p-3 mb-5 bg-light rounded">
+        <div className="row shadow p-2 bg-light rounded">
           <Posts posts={currentPosts} />
+        </div>
+        <div className="row">
           <Pagination
             postsPerPage={postsPerPage}
             totalPosts={showTransactionBasedOnFilter.length}

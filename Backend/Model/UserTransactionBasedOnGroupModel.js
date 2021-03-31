@@ -19,7 +19,7 @@ var userTransactionOnGroup = new Schema(
       ref: "UserRegistration",
       required: true,
     },
-    Amount: { type: Schema.Types.Decimal128, required: true },
+    Amount: { type: Number, required: true },
   },
   {
     versionKey: false,

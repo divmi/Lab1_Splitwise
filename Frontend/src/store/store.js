@@ -6,6 +6,7 @@ import transaction from "../reducers/transactionReducer";
 import groupOwsGetsDetail from "../reducers/groupOwsGetsDetail";
 import homeReducer from "../reducers/homeReducer";
 import createGroup from "../reducers/createGroupReducer";
+import groupInfo from "../reducers/groupInfoReducer";
 import thunk from "redux-thunk";
 
 const initialState = {};
@@ -23,6 +24,7 @@ export const ConfigureStore = () => {
       groupOwsGetsDetail,
       homeReducer,
       createGroup,
+      groupInfo,
     }),
     initialState,
     storeEnhancers(applyMiddleware(thunk))

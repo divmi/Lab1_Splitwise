@@ -48,7 +48,7 @@ export const GroupMemberName = (groupName) => (dispatch) => {
     .catch((error) => {
       if (error.response && error.response.data) {
         return dispatch({
-          type: action.Load_OwsGets_Detail,
+          type: action.Load_Group_Member_Name,
           payload: Object.assign(error.response.data),
         });
       }

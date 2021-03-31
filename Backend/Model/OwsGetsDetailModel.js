@@ -3,13 +3,22 @@ const Schema = mongoose.Schema;
 
 var owsGetsDetail = new Schema(
   {
-    MemberGets: { type: String, required: true },
-    MemberOws: { type: String, required: true },
-    Amount: { type: Schema.Types.Decimal128, required: true },
-    MemberGetsName: { type: String, required: true },
-    MemberOwsName: { type: String, required: true },
-    MemberProfilePicGets: { type: String, required: true },
-    MemberProfilePicOws: { type: String, required: true },
+    MemberGets: {
+      type: Schema.Types.ObjectId,
+      ref: "UserRegistration",
+      required: true,
+    },
+    MemberOws: {
+      type: Schema.Types.ObjectId,
+      ref: "UserRegistration",
+      required: true,
+    },
+    GroupID: {
+      type: Schema.Types.ObjectId,
+      ref: "GroupInfo",
+      required: true,
+    },
+    Amount: { type: Number, required: true },
   },
   {
     versionKey: false,

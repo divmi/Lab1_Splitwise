@@ -2,11 +2,11 @@ import * as action from "./actionTypes";
 import config from "../config";
 import axios from "axios";
 
-export const transactionDetail = (Email) => (dispatch) => {
+export const transactionDetail = (ID) => (dispatch) => {
   console.log("dispatching the action");
   axios.defaults.withCredentials = true;
   //make a get request with the user data
-  const url = `http://${config.ipAddress}:8000/getTransactionFromUser?email=${Email}`;
+  const url = `http://${config.ipAddress}:8000/getTransactionFromUser?ID=${ID}`;
   console.log(url);
   axios
     .get(url)

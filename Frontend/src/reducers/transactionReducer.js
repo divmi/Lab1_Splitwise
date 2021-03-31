@@ -10,8 +10,8 @@ export default function (state = defaultState, action) {
     case aType.Load_Transaction:
       return {
         ...state,
-        transaction: state.transaction.concat(action.payload),
-        groupName: action.payload.map((x) => x.GroupName),
+        transaction: action.payload,
+        groupName: [...new Set(action.payload.map((x) => x.GroupID.GroupName))],
       };
     default:
       return state;

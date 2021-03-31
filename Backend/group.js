@@ -1,5 +1,6 @@
 const Users = require("./Model/UserRegistrationModel");
 const GroupInfo = require("./Model/GroupInfoModel");
+const TransactionDetail = require("./Model/TransactionDetailModel");
 var group = class group {
   getAllUser(res) {
     Users.find({}, (error, user) => {
@@ -16,64 +17,42 @@ var group = class group {
       }
     });
   }
-
+  // To find the ref column .populate("GroupMemberInfo.ID", ["Name", "Email"])
   getGroupDetail(ID, res) {
     console.log("Control came here :" + ID);
-    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } }, (error, grp) => {
-      if (error) {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-      } else if (grp) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
-        });
-        console.log(JSON.stringify(grp));
-        res.end(JSON.stringify(grp));
-      }
+    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } }).then((grp) => {
+      res.writeHead(200, {
+        "Content-Type": "text/plain",
+      });
+      res.end(JSON.stringify(grp));
     });
   }
 
   gettransactionDetail(ID, res) {
     console.log("Connected!");
-    GroupInfo.find({ GroupID: ID }, (err, transaction) => {
-      if (err) {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-      } else if (transaction) {
+    TransactionDetail.find({ GroupID: ID })
+      .populate("GroupID", ["GroupName"])
+      .populate("MemberID", ["Name"])
+      .then((transaction) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
-        console.log(JSON.stringify(transaction));
         res.end(JSON.stringify(transaction));
-      }
-    });
+      });
   }
 
-  getTransactionFromUser(con, email, res) {
+  getTransactionFromUser(ID, res) {
     console.log("Connected!");
-    var sql =
-      "Select detail.*, userinfo.Name , userinfo.Currency from TransactionDetail as detail INNER JOIN UserRegistration " +
-      "as userinfo ON (detail.MemberID=userinfo.Email) where GroupName In(Select GroupName " +
-      "from GroupMemberInfo where MemberID='" +
-      email +
-      "') ORDER BY Time desc";
-    console.log(sql);
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      if (result) {
+    TransactionDetail.find({ MemberID: ID })
+      .populate("GroupID", ["GroupName"])
+      .populate("MemberID", ["Name"])
+      .then((transaction) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
-        res.end(JSON.stringify(result));
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
-        });
-        res.end("UnSuccessful Login");
-      }
-    });
+        res.end(JSON.stringify(transaction));
+      });
+    console.log("Connected!");
   }
 };
 

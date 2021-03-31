@@ -1,4 +1,3 @@
-const { Double } = require("mongodb");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -16,7 +15,7 @@ var transactionDetail = new Schema(
       ref: "GroupInfo",
       required: true,
     },
-    Amount: { type: Schema.Types.Decimal128, required: true },
+    Amount: { type: Number, required: true },
     SettleUpWith: { type: String },
   },
   {

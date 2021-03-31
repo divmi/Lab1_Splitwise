@@ -17,7 +17,7 @@ export class Posts extends Component {
               </td>
               <td>
                 <i className="greenCode fas fa-receipt fa-2x"></i>
-                <strong> {name.Name}</strong> is
+                <strong> {name.MemberID.Name}</strong> is
                 <strong> settled Up</strong> with
                 <strong> {name.SettleUpWith}</strong>
               </td>
@@ -37,9 +37,9 @@ export class Posts extends Component {
               </td>
               <td>
                 <i className="greenCode fas fa-receipt fa-2x"></i>
-                <strong> {name.Name}</strong> added
+                <strong> {name.MemberID.Name}</strong> added
                 <strong> {name.TransactionDetail} </strong>
-                in <strong>{name.GroupName}</strong>
+                in <strong>{name.GroupID.GroupName}</strong>
               </td>
               <td>
                 <label>{this.props.Currency} </label>
@@ -49,16 +49,6 @@ export class Posts extends Component {
           );
         }
       });
-      //   if (this.props.groupName != null && this.props.groupName.length > 0) {
-      //     const groups = [...new Set(this.props.groupName)];
-      //     showGroupName = groups.map((name, idx) => {
-      //       return (
-      //         <option key={idx} value={name}>
-      //           {name}
-      //         </option>
-      //       );
-      //     });
-      //   }
     } else {
       showTransaction = (
         <tr>

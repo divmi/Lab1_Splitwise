@@ -97,12 +97,15 @@ class insert {
   }
 
   async insert_TransactionForUserAndGroup(body, res) {
-    const result = this.insert_Promise(body, res);
-    console.log("member inserted");
+    const result = await this.insert_Promise(body, res);
     try {
-      const data = await this.FindGroupMemberList(body, res);
+      const data = await this.FindGroupMemberList(body, res, result);
       console.log("member inserted successfully");
-      await this.getOwsGetsDetail(body.groupID, res, data);
+      const success = await this.getOwsGetsDetail(body.groupID, res, data);
+      if (success) {
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.end();
+      }
     } catch (e) {
       console.log("Error:" + e);
     }
@@ -129,7 +132,7 @@ class insert {
     );
   }
 
-  FindGroupMemberList(body, res) {
+  FindGroupMemberList(body, res, trans_ID) {
     return new Promise((resolve, reject) => {
       let memberlist = [];
       let transactionList = [];
@@ -143,6 +146,7 @@ class insert {
         for (let value of memberlist) {
           if (value.ID != body.memberID) {
             let transaction = {
+              TransactionDetail: trans_ID,
               GroupID: body.groupID,
               MemberPaid: body.memberID,
               MemberOws: value.ID,
@@ -168,128 +172,83 @@ class insert {
   }
 
   insert_Promise(body, res) {
-    var insTransaction = new TransactionModel({
-      TransactionDetail: body.transactionDetail,
-      MemberID: body.memberID,
-      GroupID: body.groupID,
-      Amount: body.amount,
-      SettleWith: "",
-    });
-    insTransaction.save((error, data) => {
-      if (error) {
-        res.writeHead(500, {
-          "Content-Type": "text/plain",
-        });
-        res.end();
-      }
+    return new Promise((resolve, reject) => {
+      var insTransaction = new TransactionModel({
+        TransactionDetail: body.transactionDetail,
+        MemberID: body.memberID,
+        GroupID: body.groupID,
+        Amount: body.amount,
+        SettleWith: "",
+      });
+      insTransaction.save((error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(insTransaction._id);
+        }
+      });
     });
   }
 
-  getOwsGetsDetail(groupName, res, data) {
-    let transactionlist = [];
-    if (data.transactionList.length > 0) {
-      if (data.memberInfo.length > 0) {
-        for (let member1 = 0; member1 < data.memberInfo.length; member1++) {
-          for (
-            let member2 = member1 + 1;
-            member2 < data.memberInfo.length;
-            member2++
-          ) {
-            let member1ToMember2TransList = data.transactionList.filter(
-              (x) =>
-                x.MemberPaid == data.memberInfo[member1].ID &&
-                x.MemberOws == data.memberInfo[member2].ID
-            );
-            let member1GetsFromMember2 = 0;
-            let member2GetsFromMember1 = 0;
-            if (member1ToMember2TransList.length > 0) {
-              member1ToMember2TransList.forEach((element) => {
-                member1GetsFromMember2 += element.Amount;
-              });
-            }
+  getOwsGetsDetail(groupID, res, data) {
+    return new Promise((resolve, reject) => {
+      let transactionlist = [];
+      if (data.transactionList.length > 0) {
+        if (data.memberInfo.length > 0) {
+          for (let member1 = 0; member1 < data.memberInfo.length; member1++) {
+            for (
+              let member2 = member1 + 1;
+              member2 < data.memberInfo.length;
+              member2++
+            ) {
+              let member1ToMember2TransList = data.transactionList.filter(
+                (x) =>
+                  x.MemberPaid == data.memberInfo[member1].ID &&
+                  x.MemberOws == data.memberInfo[member2].ID
+              );
+              let member1GetsFromMember2 = 0;
+              let member2GetsFromMember1 = 0;
+              if (member1ToMember2TransList.length > 0) {
+                member1ToMember2TransList.forEach((element) => {
+                  member1GetsFromMember2 += element.Amount;
+                });
+              }
 
-            let member2ToMember1TransList = data.transactionList.filter(
-              (x) =>
-                x.MemberPaid == data.memberInfo[member2].ID &&
-                x.MemberOws == data.memberInfo[member1].ID
-            );
-            if (member2ToMember1TransList.length > 0) {
-              member2ToMember1TransList.forEach((element) => {
-                member2GetsFromMember1 += element.Amount;
+              let member2ToMember1TransList = data.transactionList.filter(
+                (x) =>
+                  x.MemberPaid == data.memberInfo[member2].ID &&
+                  x.MemberOws == data.memberInfo[member1].ID
+              );
+              if (member2ToMember1TransList.length > 0) {
+                member2ToMember1TransList.forEach((element) => {
+                  member2GetsFromMember1 += element.Amount;
+                });
+              }
+              let finalValue = member1GetsFromMember2 - member2GetsFromMember1;
+              transactionlist.push({
+                MemberGets: data.memberInfo[member1].ID,
+                MemberOws: data.memberInfo[member2].ID,
+                GroupID: groupID,
+                Amount: finalValue,
               });
             }
-            let finalValue = member1GetsFromMember2 - member2GetsFromMember1;
-            transactionlist.push({
-              MemberPaid: data.memberInfo[member1].ID,
-              MemberOws: data.memberInfo[member2].ID,
-              Amount: finalValue,
-              MemberGetsName: data.memberInfo[member1].Name,
-              MemberOwsName: data.memberInfo[member2].Name,
-              MemberProfilePicGets: data.memberInfo[member1].UserProfilePic,
-              MemberProfilePicOws: data.memberInfo[member2].UserProfilePic,
-            });
           }
         }
-      }
-
-      if (transactionlist.length > 0) {
-        con.query(
-          "Delete from  OwsGetsDetail where GroupName ='" + groupName + "'",
-          function (err, result) {
-            if (err) throw err;
-            let count = 0;
-            transactionlist.map((value) => {
-              var insGroupLink =
-                "INSERT INTO OwsGetsDetail (MemberGets, MemberOws, Amount, GroupName, MemberGetsName, MemberOwsName,MemberProfilePicGets, MemberProfilePicOws) VALUES (";
-              var insGroupLink1 =
-                "'" +
-                value.MemberPaid +
-                "','" +
-                value.MemberOws +
-                "','" +
-                value.Amount +
-                "','" +
-                groupName +
-                "','" +
-                value.MemberGetsName +
-                "','" +
-                value.MemberOwsName +
-                "','" +
-                value.MemberProfilePicGets +
-                "','" +
-                value.MemberProfilePicOws +
-                "')";
-              con.query(insGroupLink + insGroupLink1, function (err, result) {
-                count++;
-                if (err) throw err;
-                console.log("1 record inserted" + result);
-                if (count == transactionlist.length) {
-                  console.log("response sent successfully");
-                  res.writeHead(200, {
-                    "Content-Type": "text/plain",
-                  });
-                  res.write("Insert Completed");
-                  res.end();
-                }
-              });
-            });
+        console.log(JSON.stringify(transactionlist));
+        OwsGetsDetail.deleteMany({ GroupID: groupID }, (err, result) => {
+          if (err) {
+            reject(error);
           }
-        );
-      }
-    } else {
-      if (result.length == 0 && memberInfo.length == 1) {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
         });
-        res.write("Insert Completed");
-        res.end();
-      } else {
-        res.writeHead(401, {
-          "Content-Type": "text/plain",
+        OwsGetsDetail.insertMany(transactionlist, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
         });
-        res.end("UnSuccessful Login");
       }
-    }
+    });
   }
 
   settleUp(con, body, res) {
