@@ -1,6 +1,7 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
   groupInfo: [],
+  userAmountDetails: [],
 };
 
 export default function (state = defaultState, action) {
@@ -15,6 +16,11 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         groupInfo: action.payload,
+      };
+    case aType.Load_Transaction_Per_User:
+      return {
+        ...state,
+        userAmountDetails: action.payload,
       };
     default:
       return state;

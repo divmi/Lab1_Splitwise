@@ -47,39 +47,22 @@ class EditGroup extends Component {
   };
 
   getMemberInfo() {
+    let userData = [];
     let findGroup = this.props.groupInfo.find(
-      (x) => x.GroupName == this.props.match.params.value
+      (x) => x._id == this.props.match.params.value
     );
     if (typeof findGroup != "undefined") {
+      findGroup.GroupMemberInfo.map((member) => {
+        userData.push({
+          Name: member.ID.Name,
+          Email: member.ID.Email,
+        });
+      });
       this.setState({
-        userData: findGroup.GroupMemberInfo,
+        userData: userData,
       });
       console.log(JSON.stringify(this.state.userData));
     }
-    // axios
-    //   .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
-    //     params: {
-    //       groupName: this.props.match.params.value,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       console.log("All user:" + response.data);
-    //       this.setState(() => ({
-    //         userData: response.data,
-    //       }));
-    //     } else {
-    //       this.setState({
-    //         error: "Please enter correct credentials",
-    //         authFlag: false,
-    //       });
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     this.setState({
-    //       error: "Please enter correct credentials" + e,
-    //     });
-    //   });
   }
 
   handleItemDeleted(e, i) {
@@ -133,9 +116,15 @@ class EditGroup extends Component {
   componentDidMount() {
     console.log(this.props.match.params.value);
     if (this.props.match.params.value != "") {
-      this.setState({
-        groupName: this.props.match.params.value,
-      });
+      const findName = this.props.groupInfo.find(
+        (x) => x._id == this.props.match.params.value
+      );
+      if (typeof findName != "undefined") {
+        const name = findName.GroupName;
+        this.setState({
+          groupName: name,
+        });
+      }
       this.getMemberInfo();
     }
   }

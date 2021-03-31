@@ -203,9 +203,9 @@ app.get("/getOwsDetail", function (req, res) {
 });
 
 app.get("/getUserSpecificGetOwsInfo", function (req, res) {
-  console.log("Req Body getUserSpecificGetOwsInfo: ", req.query.email);
+  console.log("Req Body getUserSpecificGetOwsInfo: ", req.query.ID);
   var tdetail = new transaction.transactionDetail();
-  tdetail.getUserSpecificGetOwsInfo(req.query.email, res);
+  tdetail.getUserSpecificGetOwsInfo(req.query.ID, res);
 });
 
 app.get("/getUserCanBeDeleted", function (req, res) {

@@ -87,3 +87,9 @@ export const Insert_Group_Transaction = () => {
     type: "Insert_Group_Transaction",
   };
 };
+
+export const Load_Transaction_Per_User = () => {
+  return {
+    type: "Load_Transaction_Per_User",
+  };
+};

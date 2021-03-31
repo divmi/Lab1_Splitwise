@@ -35,6 +35,7 @@ var group = class group {
     TransactionDetail.find({ GroupID: ID })
       .populate("GroupID", ["GroupName"])
       .populate("MemberID", ["Name"])
+      .sort({ Time: "desc" })
       .then((transaction) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",
@@ -48,6 +49,7 @@ var group = class group {
     TransactionDetail.find({ MemberID: ID })
       .populate("GroupID", ["GroupName"])
       .populate("MemberID", ["Name"])
+      .sort({ Time: "desc" })
       .then((transaction) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",

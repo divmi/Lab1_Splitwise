@@ -11,21 +11,21 @@ import {
 import React, { Component } from "react";
 import axios from "axios";
 import config from "../../config";
+import { connect } from "react-redux";
+import { getUserSpecificTransactionDetail } from "../../actions/dashboardAction";
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      owsgetsDetail: [],
       isOpen: false,
       show: [],
       Name: "",
       Amount: 0,
       anchorEl: null,
-      userSpecificInfo: [],
       memberWithAmountList: [],
       Currency: "",
-      Email: "",
+      ID: "",
       GroupName: "",
       RealName: "",
       error: "",
@@ -64,23 +64,33 @@ class Dashboard extends Component {
     this.setState({
       show: [],
     });
-    if (this.state.owsgetsDetail.length > 0) {
-      this.state.owsgetsDetail[0].map((value) => {
-        if (value.MemberOws == this.props.email) {
+    if (this.props.userAmountDetails.length > 0) {
+      this.props.userAmountDetails.map((value) => {
+        if (value.MemberOws == this.state.ID) {
           this.state.show.push({
-            MemberGets: value.MemberOws,
-            MemberOws: value.MemberGets,
+            MemberGets: value.MemberOws._id,
+            MemberOws: value.MemberGets._id,
             Amount: -value.Amount,
-            GroupName: value.GroupName,
-            MemberGetsName: value.MemberOwsName,
-            MemberOwsName: value.MemberGetsName,
-            MemberProfilePicOws: value.MemberProfilePicGets,
-            MemberProfilePicGets: value.MemberProfilePicOws,
+            GroupName: value.GroupID.GroupName,
+            MemberGetsName: value.MemberOws.Name,
+            MemberOwsName: value.MemberGets.Name,
+            MemberProfilePicOws: value.MemberGets.UserProfilepic,
+            MemberProfilePicGets: value.MemberOws.UserProfilepic,
           });
         } else {
-          this.state.show.push(value);
+          this.state.show.push({
+            MemberGets: value.MemberGets._id,
+            MemberOws: value.MemberOws._id,
+            Amount: -value.Amount,
+            GroupName: value.GroupID.GroupName,
+            MemberGetsName: value.MemberGets.Name,
+            MemberOwsName: value.MemberOws.Name,
+            MemberProfilePicOws: value.MemberOws.UserProfilepic,
+            MemberProfilePicGets: value.MemberGets.UserProfilepic,
+          });
         }
       });
+      console.log(JSON.stringify(this.state.show));
       this.calculateMemberSpecificTable();
       this.state.show.map((detail) => {
         console.log(detail.Amount);
@@ -102,17 +112,14 @@ class Dashboard extends Component {
 
   calculateMemberSpecificTable() {
     this.setState({
-      userSpecificInfo: this.state.show.map(
-        (memberName) => memberName.MemberOws
-      ),
-    });
-    this.setState({
       memberWithAmountList: [],
     });
-    console.log(JSON.stringify("Divya " + this.state.userSpecificInfo));
-    const memberInfo = [...new Set(this.state.userSpecificInfo)];
+    const memberInfo = [
+      ...new Set(this.state.show.map((memberName) => memberName.MemberOws)),
+    ];
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
+        console.log(JSON.stringify(memberName));
         let finalMoney = 0;
         const allTransaction = this.state.show.filter(
           (x) => x.MemberOws == memberName
@@ -126,10 +133,9 @@ class Dashboard extends Component {
           memberWithAmountList: [
             ...this.state.memberWithAmountList,
             {
-              MemberName: memberName,
               Amount: finalMoney,
               Transaction: allTransaction,
-              GroupName: allTransaction[0].GroupName,
+              GroupName: findName.GroupName,
               MemberOwsName: findName.MemberOwsName,
               MemberProfilePic: findName.MemberProfilePicOws,
             },
@@ -189,34 +195,6 @@ class Dashboard extends Component {
     }
   };
 
-  getUserSpecificTransactionDetail(Email) {
-    axios
-      .get(`http://${config.ipAddress}:8000/getUserSpecificGetOwsInfo`, {
-        params: {
-          email: Email,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("All user:" + response.data);
-          this.setState(() => ({
-            owsgetsDetail: [response.data],
-          }));
-          this.calculateOwsGetsBasedOnDataReceived();
-        } else {
-          this.setState({
-            error: "Please enter correct credentials",
-            authFlag: false,
-          });
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Please enter correct credentials" + e,
-        });
-      });
-  }
-
   componentDidMount() {
     console.log("Control received in component did mount");
     let localStorageData = {};
@@ -225,11 +203,17 @@ class Dashboard extends Component {
         localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
-          Email: localStorageData.Email,
+          ID: localStorageData._id,
         });
       }
     }
-    this.getUserSpecificTransactionDetail(localStorageData.Email);
+    this.props.getUserSpecificTransactionDetail(localStorageData._id);
+  }
+
+  componentDidUpdate(prevState) {
+    if (prevState.userAmountDetails != this.props.userAmountDetails) {
+      this.calculateOwsGetsBasedOnDataReceived();
+    }
   }
 
   render() {
@@ -240,6 +224,7 @@ class Dashboard extends Component {
       sumGets = 0,
       total = 0;
     this.state.memberWithAmountList.map((detail) => {
+      console.log(JSON.stringify(detail));
       if (detail.Amount < 0) {
         sumOws += detail.Amount;
       } else {
@@ -248,6 +233,7 @@ class Dashboard extends Component {
     });
     total = sumGets + sumOws;
     componentOws = this.state.memberWithAmountList.map((detail, idx) => {
+      console.log(JSON.stringify(this.state.memberWithAmountList));
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
@@ -540,4 +526,12 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    userAmountDetails: state.homeReducer.userAmountDetails,
+  };
+};
+
+export default connect(mapStateToProps, { getUserSpecificTransactionDetail })(
+  Dashboard
+);

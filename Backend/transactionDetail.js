@@ -21,7 +21,18 @@ class transactionDetail {
     });
   }
 
-  getUserSpecificGetOwsInfo(con, email, res) {
+  getUserSpecificGetOwsInfo(ID, res) {
+    OwsGetsDetail.find({ $or: [{ MemberGets: ID }, { MemberOws: ID }] })
+      .populate("MemberGets", ["Name", "UserProfilePic"])
+      .populate("MemberOws", ["Name", "UserProfilePic"])
+      .populate("GroupID", ["GroupName"])
+      .then((result) => {
+        console.log(JSON.stringify(result));
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      });
     // var sql =
     //   "SELECT * FROM SplitwiseDB.OwsGetsDetail where  MemberGets='" +
     //   email +

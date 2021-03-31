@@ -18,42 +18,6 @@ class TransactionDetail extends Component {
     };
   }
 
-  // getTransactionDetail() {
-  //   axios
-  //     .get(`http://${config.ipAddress}:8000/getTransactionFromUser`, {
-  //       params: {
-  //         email: this.props.email,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         console.log("All user:" + response.data);
-  //         this.setState(() => ({
-  //           transactionDetail: [response.data],
-  //         }));
-  //         this.setState({
-  //           showTransactionBasedOnFilter: this.state.transactionDetail[0],
-  //         });
-  //         this.setState({
-  //           groupName: this.state.transactionDetail[0].map(
-  //             (groupName) => groupName.GroupName
-  //           ),
-  //         });
-  //         console.log("Group info" + this.state.transactionDetail.length);
-  //       } else {
-  //         this.setState({
-  //           error: "Please enter correct credentials",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //       });
-  //     });
-  // }
-
   componentDidMount() {
     let localStorageData = {};
     if (typeof Storage !== "undefined") {

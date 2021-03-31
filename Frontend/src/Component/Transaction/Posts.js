@@ -64,7 +64,7 @@ export class Posts extends Component {
     }
 
     return (
-      <div>
+      <div className="container">
         <table className="table">
           <tbody>{showTransaction}</tbody>
         </table>
