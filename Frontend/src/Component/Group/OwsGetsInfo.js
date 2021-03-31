@@ -28,68 +28,13 @@ class OwsGetDetail extends Component {
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
       this.props.getGroupSummary(this.props.name);
-    } else if (prevState.groupMemberName !== this.props.groupMemberName) {
+    } else if (prevState.owsGetDetail !== this.props.owsGetDetail) {
+      console.log("got called from here");
       this.calculateMemberSpecificTable();
     } else if (prevState.updated !== this.props.updated) {
       this.props.getGroupSummary(this.props.name);
-      this.calculateMemberSpecificTable();
     }
   }
-
-  // GroupMemberName() {
-  //   axios
-  //     .get(`http://${config.ipAddress}:8000/getGroupMemberName`, {
-  //       params: {
-  //         groupName: this.props.name,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         this.setState({
-  //           groupMemberName: response.data,
-  //         });
-  //         this.calculateMemberSpecificTable();
-  //       } else {
-  //         this.setState({
-  //           error: "Issue with Network",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Issue with Network" + e,
-  //       });
-  //     });
-  // }
-  // getGroupSummary() {
-  //   axios
-  //     .get(`http://${config.ipAddress}:8000/getGroupSummary`, {
-  //       params: {
-  //         groupName: this.props.name,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         this.setState({
-  //           owsGetDetail: response.data,
-  //         });
-  //         this.GroupMemberName();
-  //       } else {
-  //         this.setState({
-  //           error: "Please enter correct credentials",
-  //           authFlag: false,
-  //           owsGetDetail: [],
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //         owsGetDetail: [],
-  //       });
-  //     });
-  // }
 
   calculateMemberSpecificTable() {
     let memberlist = [];
@@ -101,7 +46,7 @@ class OwsGetDetail extends Component {
         let sum = 0;
         let sumOws = 0;
         let memberDetail = this.props.owsGetDetail.filter(
-          (x) => x.MemberGets == memberName.Email
+          (x) => x.MemberGets == memberName.ID._id
         );
         if (memberDetail.length > 0) {
           memberDetail.map((member) => {
@@ -109,7 +54,7 @@ class OwsGetDetail extends Component {
           });
         }
         let memberOws = this.props.owsGetDetail.filter(
-          (x) => x.MemberOws == memberName.Email
+          (x) => x.MemberOws == memberName.ID._id
         );
         if (memberOws.length > 0) {
           memberOws.map((member) => {
@@ -117,15 +62,15 @@ class OwsGetDetail extends Component {
           });
         }
         if (
-          memberName.UserProfilePic == "" ||
-          memberName.UserProfilePic == null
+          memberName.ID.UserProfilePic == "" ||
+          memberName.ID.UserProfilePic == null
         ) {
-          memberName.UserProfilePic = "./assets/userIcon.png";
+          memberName.ID.UserProfilePic = "./assets/userIcon.png";
         }
         let user = {
-          Name: memberName.Name,
+          Name: memberName.ID.Name,
           Amount: sum + sumOws,
-          UserProfilePic: memberName.UserProfilePic,
+          UserProfilePic: memberName.ID.UserProfilePic,
         };
         memberlist.push(user);
       });
@@ -190,7 +135,6 @@ class OwsGetDetail extends Component {
 const mapStateToProps = (state) => {
   return {
     owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
-    groupMemberName: state.groupOwsGetsDetail.groupMemberName,
   };
 };
 

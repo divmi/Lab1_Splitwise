@@ -8,11 +8,13 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-import axios from "axios";
 import OwsGetAmount from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
-import config from "../../config";
-import { getTransactionDetail } from "../../actions/groupInfo";
+import {
+  getTransactionDetail,
+  addTransactionToDatabase,
+} from "../../actions/groupInfo";
+import { resetSuccessFlag } from "../../actions/loginAction";
 import { connect } from "react-redux";
 
 class GroupInfo extends Component {
@@ -44,7 +46,7 @@ class GroupInfo extends Component {
   closeModal = () => {
     this.setState({ isOpen: false });
     this.props.getTransactionDetail(this.props.name);
-    this.OpenOwsGetsAmount(false);
+    this.OpenOwsGetsAmount(true);
   };
 
   handleTransactionChange = (e) => {
@@ -103,12 +105,21 @@ class GroupInfo extends Component {
       this.props.getTransactionDetail(this.props.name);
       this.OpenOwsGetsAmount(false);
     }
+    if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
+      console.log("came here");
+      this.closeModal();
+      this.props.resetSuccessFlag();
+    }
   }
 
   OpenOwsGetsAmount(transactionUpdated) {
     this.setState({
       component: (
-        <OwsGetAmount name={this.props.name} updated={transactionUpdated} />
+        <OwsGetAmount
+          name={this.props.name}
+          groupMemberName={this.props.groupMember}
+          updated={transactionUpdated}
+        />
       ),
     });
   }
@@ -139,32 +150,7 @@ class GroupInfo extends Component {
 
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      //set the with credentials to true
-      axios.defaults.withCredentials = true;
-      //make a post request with the user data
-      axios
-        .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
-        .then((response) => {
-          if (response.status === 200) {
-            this.setState({
-              error: "",
-              authFlag: true,
-            });
-            this.props.getTransactionDetail(this.props.name);
-            this.OpenOwsGetsAmount(true);
-          } else {
-            this.setState({
-              serverError: "Issue with Network",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            serverError: "Issue with Network",
-          });
-        });
-      this.closeModal();
+      this.props.addTransactionToDatabase(data);
     } else {
       this.setState({
         error: error,
@@ -185,8 +171,8 @@ class GroupInfo extends Component {
       // }
       showTransaction = this.props.transactionDetail.map((name, idx) => {
         return (
-          <div key={idx} className="row">
-            <div className="col-sm-8">
+          <div key={idx} className="row border-bottom">
+            <div className="col-sm-8 p-3">
               {new Date(name.Time).toLocaleDateString("default", {
                 month: "short",
                 day: "numeric",
@@ -205,8 +191,10 @@ class GroupInfo extends Component {
                 {name.TransactionDetail}
               </a>
             </div>
-            <div className="col-sm-4">
-              <p style={{ color: "GrayText", textAlign: "right" }}>
+            <div className="col-sm-4 p-1">
+              <p
+                style={{ color: "GrayText", textAlign: "right", fontSize: 13 }}
+              >
                 {name.MemberID.Name}
                 <br />
                 paid <br />
@@ -389,7 +377,12 @@ class GroupInfo extends Component {
 const mapStateToProps = (state) => {
   return {
     transactionDetail: state.groupInfo.transactionDetail,
+    authFlag: state.groupInfo.authFlag,
   };
 };
 
-export default connect(mapStateToProps, { getTransactionDetail })(GroupInfo);
+export default connect(mapStateToProps, {
+  getTransactionDetail,
+  addTransactionToDatabase,
+  resetSuccessFlag,
+})(GroupInfo);

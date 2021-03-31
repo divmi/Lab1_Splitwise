@@ -16,13 +16,6 @@ class GroupNotification extends Component {
 
   GroupRequestAccepted = (name) => {
     this.props.GroupRequestAccepted(name, this.state.ID);
-    // axios
-    //   .post(`http://${config.ipAddress}:8000/joinedGroup`, name)
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       console.log("Response received");
-    //     }
-    //   });
   };
 
   componentDidUpdate(prevState) {

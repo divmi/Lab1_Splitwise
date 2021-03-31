@@ -17,15 +17,17 @@ var group = class group {
       }
     });
   }
-  // To find the ref column .populate("GroupMemberInfo.ID", ["Name", "Email"])
+  // To find the ref column
   getGroupDetail(ID, res) {
     console.log("Control came here :" + ID);
-    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } }).then((grp) => {
-      res.writeHead(200, {
-        "Content-Type": "text/plain",
+    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } })
+      .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
+      .then((grp) => {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(grp));
       });
-      res.end(JSON.stringify(grp));
-    });
   }
 
   gettransactionDetail(ID, res) {

@@ -14,6 +14,7 @@ class TransactionDetail extends Component {
       currentPage: 1,
       postsPerPage: 2,
       ID: "",
+      Currency: "",
     };
   }
 
@@ -193,7 +194,7 @@ class TransactionDetail extends Component {
           </div>
         </div>
         <div className="row shadow p-2 bg-light rounded">
-          <Posts posts={currentPosts} />
+          <Posts posts={currentPosts} Currency={this.state.Currency} />
         </div>
         <div className="row">
           <Pagination

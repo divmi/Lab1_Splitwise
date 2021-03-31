@@ -29,17 +29,18 @@ export const getTransactionDetail = (ID) => (dispatch) => {
 };
 
 export const addTransactionToDatabase = (data) => (dispatch) => {
-  console.log("dispatching the action");
+  console.log("dispatching the action addTransactionToDatabase");
   axios.defaults.withCredentials = true;
   //make a post request with the user data
   axios
     .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)
-    .then((response) =>
-      dispatch({
-        type: action.Insert_Group_Transaction,
-        payload: response.data,
-      })
-    )
+    .then((response) => {
+      if (response.status == 200)
+        dispatch({
+          type: action.Insert_Group_Transaction,
+          payload: response.data,
+        });
+    })
     .catch((error) => {
       if (error.response && error.response.data) {
         return dispatch({

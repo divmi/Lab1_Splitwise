@@ -97,8 +97,8 @@ class insert {
   }
 
   async insert_TransactionForUserAndGroup(body, res) {
-    const result = await this.insert_Promise(body, res);
     try {
+      const result = await this.insert_Promise(body, res);
       const data = await this.FindGroupMemberList(body, res, result);
       console.log("member inserted successfully");
       const success = await this.getOwsGetsDetail(body.groupID, res, data);
@@ -146,7 +146,7 @@ class insert {
         for (let value of memberlist) {
           if (value.ID != body.memberID) {
             let transaction = {
-              TransactionDetail: trans_ID,
+              TransactionID: trans_ID,
               GroupID: body.groupID,
               MemberPaid: body.memberID,
               MemberOws: value.ID,
@@ -193,61 +193,65 @@ class insert {
   getOwsGetsDetail(groupID, res, data) {
     return new Promise((resolve, reject) => {
       let transactionlist = [];
-      if (data.transactionList.length > 0) {
-        if (data.memberInfo.length > 0) {
-          for (let member1 = 0; member1 < data.memberInfo.length; member1++) {
-            for (
-              let member2 = member1 + 1;
-              member2 < data.memberInfo.length;
-              member2++
-            ) {
-              let member1ToMember2TransList = data.transactionList.filter(
-                (x) =>
-                  x.MemberPaid == data.memberInfo[member1].ID &&
-                  x.MemberOws == data.memberInfo[member2].ID
-              );
-              let member1GetsFromMember2 = 0;
-              let member2GetsFromMember1 = 0;
-              if (member1ToMember2TransList.length > 0) {
-                member1ToMember2TransList.forEach((element) => {
-                  member1GetsFromMember2 += element.Amount;
-                });
-              }
+      UserTransactionBasedOnGroup.find({ GroupID: groupID }).then((result) => {
+        let transactionList = JSON.parse(JSON.stringify(result));
+        if (transactionList.length > 0) {
+          if (data.memberInfo.length > 0) {
+            for (let member1 = 0; member1 < data.memberInfo.length; member1++) {
+              for (
+                let member2 = member1 + 1;
+                member2 < data.memberInfo.length;
+                member2++
+              ) {
+                let member1ToMember2TransList = transactionList.filter(
+                  (x) =>
+                    x.MemberPaid == data.memberInfo[member1].ID._id &&
+                    x.MemberOws == data.memberInfo[member2].ID._id
+                );
+                let member1GetsFromMember2 = 0;
+                let member2GetsFromMember1 = 0;
+                if (member1ToMember2TransList.length > 0) {
+                  member1ToMember2TransList.forEach((element) => {
+                    member1GetsFromMember2 += element.Amount;
+                  });
+                }
 
-              let member2ToMember1TransList = data.transactionList.filter(
-                (x) =>
-                  x.MemberPaid == data.memberInfo[member2].ID &&
-                  x.MemberOws == data.memberInfo[member1].ID
-              );
-              if (member2ToMember1TransList.length > 0) {
-                member2ToMember1TransList.forEach((element) => {
-                  member2GetsFromMember1 += element.Amount;
+                let member2ToMember1TransList = transactionList.filter(
+                  (x) =>
+                    x.MemberPaid == data.memberInfo[member2].ID._id &&
+                    x.MemberOws == data.memberInfo[member1].ID._id
+                );
+                if (member2ToMember1TransList.length > 0) {
+                  member2ToMember1TransList.forEach((element) => {
+                    member2GetsFromMember1 += element.Amount;
+                  });
+                }
+                let finalValue =
+                  member1GetsFromMember2 - member2GetsFromMember1;
+                transactionlist.push({
+                  MemberGets: data.memberInfo[member1].ID._id,
+                  MemberOws: data.memberInfo[member2].ID._id,
+                  GroupID: groupID,
+                  Amount: finalValue,
                 });
               }
-              let finalValue = member1GetsFromMember2 - member2GetsFromMember1;
-              transactionlist.push({
-                MemberGets: data.memberInfo[member1].ID,
-                MemberOws: data.memberInfo[member2].ID,
-                GroupID: groupID,
-                Amount: finalValue,
-              });
             }
           }
+          console.log(JSON.stringify(transactionlist));
+          OwsGetsDetail.deleteMany({ GroupID: groupID }, (err, result) => {
+            if (err) {
+              reject(error);
+            }
+          });
+          OwsGetsDetail.insertMany(transactionlist, (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          });
         }
-        console.log(JSON.stringify(transactionlist));
-        OwsGetsDetail.deleteMany({ GroupID: groupID }, (err, result) => {
-          if (err) {
-            reject(error);
-          }
-        });
-        OwsGetsDetail.insertMany(transactionlist, (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        });
-      }
+      });
     });
   }
 

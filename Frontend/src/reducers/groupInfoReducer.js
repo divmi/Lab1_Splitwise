@@ -18,6 +18,7 @@ export default function (state = defaultState, action) {
         authFlag: false,
       };
     case aType.Insert_Group_Transaction:
+      console.log("Insert_Group_Transaction : ");
       return {
         ...state,
         authFlag: true,

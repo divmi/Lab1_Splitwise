@@ -1,4 +1,5 @@
 const GroupInfo = require("./Model/GroupInfoModel");
+const OwsGetsDetail = require("./Model/OwsGetsDetailModel");
 class transactionDetail {
   groupJoinRequest(body, res) {
     const query = { _id: body.name._id, "GroupMemberInfo.ID": body.id };
@@ -49,16 +50,21 @@ class transactionDetail {
     });
   }
 
-  getGroupSummary(con, groupName, res) {
-    // var sql =
-    //   "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" +
-    //   groupName +
-    //   "'";
-    // con.query(sql, function (err, result) {
-    //   if (err) throw err;
-    //   //console.log("found record" + result);
-    //   res.end(JSON.stringify(result));
-    // });
+  getGroupSummary(ID, res) {
+    console.log("GroupID :" + ID);
+    OwsGetsDetail.find({ GroupID: ID }, (error, result) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-Type": "text/plain",
+        });
+        res.end();
+      } else {
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+        });
+        res.end(JSON.stringify(result));
+      }
+    });
   }
 }
 

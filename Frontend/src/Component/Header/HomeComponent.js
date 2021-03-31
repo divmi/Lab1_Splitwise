@@ -23,7 +23,9 @@ class Home extends Component {
     if (prevState.groupInfo != this.props.groupInfo) {
       let groupInfo = [];
       this.props.groupInfo.map((info) => {
-        const member = info.GroupMemberInfo.find((x) => x.ID == this.state.ID);
+        const member = info.GroupMemberInfo.find(
+          (x) => x.ID._id == this.state.ID
+        );
         if (typeof member != "undefined" && member.Accepted) {
           groupInfo.push(info);
         }
