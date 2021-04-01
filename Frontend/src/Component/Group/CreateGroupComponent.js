@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import NewUser from "./NewUser";
 import axios from "axios";
@@ -201,7 +200,10 @@ class CreateGroup extends Component {
         />
       );
     });
-    if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data == null) {
+      redirectVar = <Redirect to="/login" />;
+    }
     return (
       <div className="container-fluid">
         {message}

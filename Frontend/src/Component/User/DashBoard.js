@@ -158,7 +158,7 @@ class Dashboard extends Component {
     const data = {
       settleUpWith: this.state.Name,
       Amount: this.state.Amount,
-      MemberName: this.props.email,
+      MemberName: this.state.ID,
       GroupName: this.state.GroupName,
       RealName: this.state.RealName,
     };
@@ -174,7 +174,7 @@ class Dashboard extends Component {
             this.setState({
               show: [],
             });
-            this.getUserSpecificTransactionDetail(this.props.email);
+            this.props.getUserSpecificTransactionDetail(this.state.ID);
           } else {
             this.setState({
               loginError:

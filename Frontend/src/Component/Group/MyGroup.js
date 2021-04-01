@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import { Label } from "reactstrap";
 import GroupNotification from "./GroupNotification";
@@ -61,6 +60,7 @@ class MyGroup extends Component {
         this.setState({
           ID: data._id,
         });
+        this.GetGroupInfo(data._id);
       }
     }
     if (this.state.component == null) {
@@ -70,18 +70,22 @@ class MyGroup extends Component {
     }
   }
 
+  GetGroupInfo(ID) {
+    let groupInfo = [];
+    this.props.groupInfo.map((info) => {
+      const member = info.GroupMemberInfo.find((x) => x.ID._id == ID);
+      if (typeof member != "undefined" && member.Accepted) {
+        groupInfo.push(info);
+      }
+    });
+    this.setState({
+      groupInfo: groupInfo,
+    });
+  }
+
   componentDidUpdate(prevState) {
     if (prevState.groupInfo != this.props.groupInfo) {
-      let groupInfo = [];
-      this.props.groupInfo.map((info) => {
-        const member = info.GroupMemberInfo.find((x) => x.ID == this.state.ID);
-        if (typeof member != "undefined" && member.Accepted) {
-          groupInfo.push(info);
-        }
-      });
-      this.setState({
-        groupInfo: groupInfo,
-      });
+      this.GetGroupInfo(this.state.ID);
     }
   }
 
@@ -94,8 +98,12 @@ class MyGroup extends Component {
   render() {
     let redirectVar = null;
     let groupName = null;
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/myGroup" />;
-    else redirectVar = <Redirect to="/login" />;
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data == null) {
+      redirectVar = <Redirect to="/login" />;
+    } else {
+      redirectVar = <Redirect to="/myGroup" />;
+    }
     if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {
       groupName = this.state.groupInfo.map((name, idx) => {
         return (

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import { Label } from "reactstrap";
 import GroupInfo from "../Group/GroupInfoComponent";
@@ -52,7 +51,7 @@ class Home extends Component {
       if (this.state.component == null) {
         if (typeof data != "undefined") {
           this.setState({
-            component: <Dashboard email={data.Email} />,
+            component: <Dashboard email={data._id} />,
           });
         }
       }
@@ -61,7 +60,7 @@ class Home extends Component {
 
   OpenDashBoard = () => {
     this.setState({
-      component: <Dashboard email={cookie.load("cookie").Email} />,
+      component: <Dashboard />,
     });
   };
 
@@ -86,7 +85,7 @@ class Home extends Component {
 
   OpenRecentActivity = () => {
     this.setState({
-      component: <TransactionDetail email={cookie.load("cookie").Email} />,
+      component: <TransactionDetail />,
     });
   };
 

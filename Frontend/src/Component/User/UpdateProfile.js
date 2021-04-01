@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
-import cookie from "react-cookies";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
 import { Redirect } from "react-router-dom";
@@ -95,8 +94,10 @@ class UpdateProfile extends Component {
 
   render() {
     let redirectVar = null;
-    if (!cookie.load("cookie")) redirectVar = <Redirect to="/login" />;
-    else if (this.props.authFlag) {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data == null) {
+      redirectVar = <Redirect to="/login" />;
+    } else if (this.props.authFlag) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/updateProfile" />;
     let picture = "";
