@@ -13,7 +13,6 @@ var transactionDetail = new Schema(
     GroupID: {
       type: Schema.Types.ObjectId,
       ref: "GroupInfo",
-      required: true,
     },
     Amount: { type: Number, required: true },
     SettleUpWith: { type: String },

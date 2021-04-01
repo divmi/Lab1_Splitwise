@@ -19,7 +19,6 @@ var group = class group {
   }
   // To find the ref column
   getGroupDetail(ID, res) {
-    console.log("Control came here :" + ID);
     GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } })
       .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
       .then((grp) => {
@@ -31,7 +30,6 @@ var group = class group {
   }
 
   gettransactionDetail(ID, res) {
-    console.log("Connected!");
     TransactionDetail.find({ GroupID: ID })
       .populate("GroupID", ["GroupName"])
       .populate("MemberID", ["Name"])
@@ -45,7 +43,6 @@ var group = class group {
   }
 
   getTransactionFromUser(ID, res) {
-    console.log("Connected!");
     TransactionDetail.find({ MemberID: ID })
       .populate("GroupID", ["GroupName"])
       .populate("MemberID", ["Name"])

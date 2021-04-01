@@ -81,7 +81,7 @@ class insert {
             let transaction = {
               TransactionID: trans_ID,
               GroupID: body.groupID,
-              MemberPaid: body.memberID,
+              MemberGets: body.memberID,
               MemberOws: value.ID,
               Amount: ows,
             };
@@ -139,7 +139,7 @@ class insert {
               ) {
                 let member1ToMember2TransList = transaction.filter(
                   (x) =>
-                    x.MemberPaid == memberInfo[member1].ID._id &&
+                    x.MemberGets == memberInfo[member1].ID._id &&
                     x.MemberOws == memberInfo[member2].ID._id
                 );
                 let member1GetsFromMember2 = 0;
@@ -152,7 +152,7 @@ class insert {
 
                 let member2ToMember1TransList = transaction.filter(
                   (x) =>
-                    x.MemberPaid == memberInfo[member2].ID._id &&
+                    x.MemberGets == memberInfo[member2].ID._id &&
                     x.MemberOws == memberInfo[member1].ID._id
                 );
                 if (member2ToMember1TransList.length > 0) {
@@ -189,62 +189,104 @@ class insert {
     });
   }
 
-  settleUp(con, body, res) {
+  settleUp(body, res) {
     console.log("Connected!");
-    OwsGetsDetail.deleteMany({ $or: [{ MemberGets: ID }, { MemberOws: ID }] });
-    var settleUpUser =
-      "Delete from OwsGetsDetail where MemberGets='" +
-      body.MemberName +
-      "' && MemberOws='" +
-      body.settleUpWith +
-      "' or MemberOws='" +
-      body.MemberName +
-      "' && MemberGets='" +
-      body.settleUpWith +
-      "'";
-    console.log("settleup received");
-    con.query(settleUpUser, function (err, result) {
-      if (err) throw err;
-      var deleteSettleUpTransaction =
-        "Delete from UserTransactionBasedOnGroup where MemberPaid='" +
-        body.MemberName +
-        "' && MemberOws='" +
-        body.settleUpWith +
-        "' or MemberOws='" +
-        body.MemberName +
-        "' && MemberPaid='" +
-        body.settleUpWith +
-        "'";
-      con.query(deleteSettleUpTransaction, function (err, result) {
-        if (err) throw err;
-        var addTransactionInTable =
-          "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount,SettleUpWith) VALUES (";
-        var insTransaction =
-          "'" +
-          "SettleUp" +
-          "','" +
-          `${new Date().toISOString().slice(0, 19).replace("T", " ")}` +
-          "','" +
-          body.MemberName +
-          "','" +
-          body.GroupName +
-          "','" +
-          body.Amount +
-          "','" +
-          body.RealName +
-          "')";
-        con.query(
-          addTransactionInTable + insTransaction,
-          function (err, result) {
-            if (err) throw err;
-            res.writeHead(200, {
-              "Content-Type": "text/plain",
-            });
-            res.end(JSON.stringify(result));
-          }
-        );
-      });
-    });
+    OwsGetsDetail.deleteMany(
+      {
+        $or: [
+          { MemberOws: body.MemberOws, MemberGets: body.MemberID },
+          { MemberOws: body.MemberID, MemberGets: body.MemberOws },
+        ],
+      },
+      (error, result) => {
+        if (error) {
+        } else {
+          UserTransactionBasedOnGroup.deleteMany(
+            {
+              $or: [
+                { MemberOws: body.MemberOws, MemberGets: body.MemberID },
+                { MemberOws: body.MemberID, MemberGets: body.MemberOws },
+              ],
+            },
+            (error, result) => {
+              if (error) {
+                console.log(error);
+              } else {
+                var insTransaction = new TransactionModel({
+                  TransactionDetail: "Settled Up",
+                  MemberID: body.MemberID,
+                  Amount: body.Amount,
+                  SettleWith: body.RealID,
+                });
+                insTransaction.save((error, data) => {
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    res.writeHead(200, {
+                      "Content-Type": "text/plain",
+                    });
+                    res.end(JSON.stringify(data));
+                  }
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+    // var settleUpUser =
+    //   "Delete from OwsGetsDetail where MemberGets='" +
+    //   body.MemberName +
+    //   "' && MemberOws='" +
+    //   body.settleUpWith +
+    //   "' or MemberOws='" +
+    //   body.MemberName +
+    //   "' && MemberGets='" +
+    //   body.settleUpWith +
+    //   "'";
+    // console.log("settleup received");
+    // con.query(settleUpUser, function (err, result) {
+    //   if (err) throw err;
+    //   var deleteSettleUpTransaction =
+    //     "Delete from UserTransactionBasedOnGroup where MemberPaid='" +
+    //     body.MemberName +
+    //     "' && MemberOws='" +
+    //     body.settleUpWith +
+    //     "' or MemberOws='" +
+    //     body.MemberName +
+    //     "' && MemberPaid='" +
+    //     body.settleUpWith +
+    //     "'";
+    //   con.query(deleteSettleUpTransaction, function (err, result) {
+    //     if (err) throw err;
+    //     var addTransactionInTable =
+    //       "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount,SettleUpWith) VALUES (";
+    //     var insTransaction =
+    //       "'" +
+    //       "SettleUp" +
+    //       "','" +
+    //       `${new Date().toISOString().slice(0, 19).replace("T", " ")}` +
+    //       "','" +
+    //       body.MemberName +
+    //       "','" +
+    //       body.GroupName +
+    //       "','" +
+    //       body.Amount +
+    //       "','" +
+    //       body.RealName +
+    //       "')";
+    //     con.query(
+    //       addTransactionInTable + insTransaction,
+    //       function (err, result) {
+    //         if (err) throw err;
+    //         res.writeHead(200, {
+    //           "Content-Type": "text/plain",
+    //         });
+    //         res.end(JSON.stringify(result));
+    //       }
+    //     );
+    //   });
+    // });
   }
 }
 

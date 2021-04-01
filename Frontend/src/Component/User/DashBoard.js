@@ -23,7 +23,6 @@ class Dashboard extends Component {
     this.state = {
       isOpen: false,
       show: [],
-      Name: "",
       Amount: 0,
       anchorEl: null,
       memberWithAmountList: [],
@@ -32,6 +31,7 @@ class Dashboard extends Component {
       GroupName: "",
       RealName: "",
       error: "",
+      MemberOws: "",
     };
   }
 
@@ -39,7 +39,6 @@ class Dashboard extends Component {
     this.setState({
       error: "",
       RealName: "",
-      Name: "",
       Amount: 0,
       isOpen: true,
     });
@@ -52,12 +51,12 @@ class Dashboard extends Component {
   };
 
   alertClicked = (detail) => {
-    console.log("GroupName :" + detail);
+    console.log("GroupName Divya------------------:" + JSON.stringify(detail));
     this.setState({
-      Name: detail.MemberName,
       Amount: detail.Amount,
       GroupName: detail.GroupName,
       RealName: detail.MemberOwsName,
+      MemberOws: detail.MemberOws,
     });
     console.log(this.state.RealName);
   };
@@ -140,6 +139,7 @@ class Dashboard extends Component {
           GroupName: findName.GroupName,
           MemberOwsName: findName.MemberOwsName,
           MemberProfilePic: findName.MemberProfilePicOws,
+          MemberOws: findName.MemberOws,
         });
       });
       this.setState({
@@ -159,11 +159,11 @@ class Dashboard extends Component {
     //prevent page from refresh
     e.preventDefault();
     const data = {
-      settleUpWith: this.state.Name,
       Amount: this.state.Amount,
       MemberID: this.state.ID,
       GroupID: this.state.GroupName,
       RealID: this.state.RealName,
+      MemberOws: this.state.MemberOws,
     };
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
@@ -228,7 +228,7 @@ class Dashboard extends Component {
       sumGets = 0,
       total = 0;
     this.state.memberWithAmountList.map((detail) => {
-      console.log(JSON.stringify(detail));
+      // console.log(JSON.stringify(detail));
       if (detail.Amount < 0) {
         sumOws += detail.Amount;
       } else {
@@ -237,7 +237,7 @@ class Dashboard extends Component {
     });
     total = sumGets + sumOws;
     componentOws = this.state.memberWithAmountList.map((detail, idx) => {
-      console.log(JSON.stringify(this.state.memberWithAmountList));
+      //console.log(JSON.stringify(this.state.memberWithAmountList));
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
@@ -346,13 +346,8 @@ class Dashboard extends Component {
       }
     });
     const popover = memberOwList.map((detail, idx) => {
-      console.log("Check settle up Name :" + JSON.stringify(detail));
       return (
-        <Dropdown.Item
-          key={idx}
-          action
-          onClick={() => this.alertClicked(detail)}
-        >
+        <Dropdown.Item key={idx} onClick={() => this.alertClicked(detail)}>
           {detail.MemberOwsName}
         </Dropdown.Item>
       );

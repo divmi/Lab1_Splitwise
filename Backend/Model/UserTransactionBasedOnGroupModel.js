@@ -9,7 +9,7 @@ var userTransactionOnGroup = new Schema(
       ref: "GroupInfo",
       required: true,
     },
-    MemberPaid: {
+    MemberGets: {
       type: Schema.Types.ObjectId,
       ref: "UserRegistration",
       required: true,
