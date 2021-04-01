@@ -45,21 +45,21 @@ class transactionDetail {
     // });
   }
 
-  getWhetherUserCanbeDeleted(con, query, res) {
-    var sql =
-      "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" +
-      query.groupName +
-      "' and (MemberGets='" +
-      query.email +
-      "'OR MemberOws='" +
-      query.email +
-      "')";
+  // getWhetherUserCanbeDeleted(con, query, res) {
+  //   var sql =
+  //     "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" +
+  //     query.groupName +
+  //     "' and (MemberGets='" +
+  //     query.email +
+  //     "'OR MemberOws='" +
+  //     query.email +
+  //     "')";
 
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      res.end(JSON.stringify(result));
-    });
-  }
+  //   con.query(sql, function (err, result) {
+  //     if (err) throw err;
+  //     res.end(JSON.stringify(result));
+  //   });
+  // }
 
   getGroupSummary(ID, res) {
     console.log("GroupID :" + ID);

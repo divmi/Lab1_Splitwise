@@ -93,3 +93,9 @@ export const Load_Transaction_Per_User = () => {
     type: "Load_Transaction_Per_User",
   };
 };
+
+export const Settled_UP = () => {
+  return {
+    type: "Settled_UP",
+  };
+};

@@ -61,6 +61,7 @@ class EditGroup extends Component {
     if (typeof findGroup != "undefined") {
       findGroup.GroupMemberInfo.map((member) => {
         userData.push({
+          ID: member.ID._id,
           Name: member.ID.Name,
           Email: member.ID.Email,
         });
@@ -72,52 +73,61 @@ class EditGroup extends Component {
     }
   }
 
-  handleItemDeleted(e, i) {
+  handleItemDeleted(e, user) {
     e.preventDefault();
     var items = this.state.userData;
-    axios
-      .get(`http://${config.ipAddress}:8000/getUserCanBeDeleted`, {
-        params: {
-          email: i.Email,
-          groupName: this.props.match.params.value,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          let amountFound = false;
-          console.log("All user:" + response.data);
-          if (response.data.length > 0) {
-            response.data.map((member) => {
-              if (member.Amount !== 0) {
-                alert("Please settle up the amount before leaving group");
-                amountFound = true;
-              }
-            });
-            if (amountFound == false) {
-              items.splice(items.indexOf(i), 1);
-              this.setState({
-                userData: items,
-              });
-              this.setState({
-                itemDeleted: i,
-              });
-            }
-          } else {
-            items.splice(items.indexOf(i), 1);
-            this.setState({
-              userData: items,
-            });
-            this.setState({
-              itemDeleted: i,
-            });
-          }
-        }
-      })
-      .catch((e) => {
-        this.setState({
-          error: "Network error" + e,
-        });
+    const getMember = this.props.owsGetDetail.find(
+      (x) => x.MemberGets == user.ID || x.MemberOws == user.ID
+    );
+    if (typeof getMember != "undefined") {
+      alert("Please settle up the amount before leaving group");
+    } else {
+      items.splice(items.indexOf(user), 1);
+      this.setState({
+        userData: items,
       });
+      this.setState({
+        itemDeleted: user,
+      });
+    }
+    // axios
+    //   .get(`http://${config.ipAddress}:8000/getUserCanBeDeleted`, {
+    //     params: {
+    //       email: user.Email,
+    //       groupName: this.props.match.params.value,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       let amountFound = false;
+    //       console.log("All user:" + response.data);
+    //       if (response.data.length > 0) {
+    //         response.data.map((member) => {
+    //           if (member.Amount !== 0) {
+    //             amountFound = true;
+    //           }
+    //         });
+    //         if (amountFound == false) {
+
+    //         } else {
+
+    //         }
+    //       } else {
+    //         items.splice(items.indexOf(user), 1);
+    //         this.setState({
+    //           userData: items,
+    //         });
+    //         this.setState({
+    //           itemDeleted: user,
+    //         });
+    //       }
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     this.setState({
+    //       error: "Network error" + e,
+    //     });
+    //   });
   }
 
   componentDidMount() {
@@ -303,6 +313,7 @@ const mapStateToProps = (state) => {
   return {
     groupInfo: state.homeReducer.groupInfo,
     authFlag: state.homeReducer.authFlag,
+    owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
   };
 };
 

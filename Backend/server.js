@@ -128,7 +128,7 @@ app.get("/getCurrentUserGroup/", function (req, res) {
 
 app.post("/updateProfile", function (req, res) {
   var update = new Update.update();
-  update.updateUserProfile(con, req.body, res);
+  update.updateUserProfile(req.body, res);
 });
 
 app.post("/updateGroup", function (req, res) {
@@ -144,7 +144,7 @@ app.post("/joinedGroup", function (req, res) {
 app.post("/settleUp", function (req, res) {
   console.log("Req Body settleUp: ", req.body);
   var insertSettleUp = new insert.insert();
-  insertSettleUp.settleUp(con, req.body, res);
+  insertSettleUp.settleUp(req.body, res);
 });
 
 app.post("/insertGroupTransaction", function (req, res) {
@@ -179,11 +179,11 @@ app.get("/getUserSpecificGetOwsInfo", function (req, res) {
   tdetail.getUserSpecificGetOwsInfo(req.query.ID, res);
 });
 
-app.get("/getUserCanBeDeleted", function (req, res) {
-  console.log("Req Body getUserCanBeDeleted: ", req.query);
-  var tdetail = new transaction.transactionDetail();
-  tdetail.getWhetherUserCanbeDeleted(con, req.query, res);
-});
+// app.get("/getUserCanBeDeleted", function (req, res) {
+//   console.log("Req Body getUserCanBeDeleted: ", req.query);
+//   var tdetail = new transaction.transactionDetail();
+//   tdetail.getWhetherUserCanbeDeleted(con, req.query, res);
+// });
 
 app.get("/getGroupSummary", function (req, res) {
   var tdetail = new transaction.transactionDetail();

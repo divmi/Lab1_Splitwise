@@ -12,7 +12,10 @@ import React, { Component } from "react";
 import axios from "axios";
 import config from "../../config";
 import { connect } from "react-redux";
-import { getUserSpecificTransactionDetail } from "../../actions/dashboardAction";
+import {
+  getUserSpecificTransactionDetail,
+  settleUp,
+} from "../../actions/dashboardAction";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -49,7 +52,7 @@ class Dashboard extends Component {
   };
 
   alertClicked = (detail) => {
-    console.log("GroupName :" + detail.GroupName);
+    console.log("GroupName :" + detail);
     this.setState({
       Name: detail.MemberName,
       Amount: detail.Amount,
@@ -66,7 +69,7 @@ class Dashboard extends Component {
     });
     if (this.props.userAmountDetails.length > 0) {
       this.props.userAmountDetails.map((value) => {
-        if (value.MemberOws == this.state.ID) {
+        if (value.MemberOws._id == this.state.ID) {
           this.state.show.push({
             MemberGets: value.MemberOws._id,
             MemberOws: value.MemberGets._id,
@@ -81,7 +84,7 @@ class Dashboard extends Component {
           this.state.show.push({
             MemberGets: value.MemberGets._id,
             MemberOws: value.MemberOws._id,
-            Amount: -value.Amount,
+            Amount: value.Amount,
             GroupName: value.GroupID.GroupName,
             MemberGetsName: value.MemberGets.Name,
             MemberOwsName: value.MemberOws.Name,
@@ -114,9 +117,11 @@ class Dashboard extends Component {
     this.setState({
       memberWithAmountList: [],
     });
+    let memberWithOwsGetsDetail = [];
     const memberInfo = [
       ...new Set(this.state.show.map((memberName) => memberName.MemberOws)),
     ];
+    console.log(memberInfo);
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
         console.log(JSON.stringify(memberName));
@@ -129,18 +134,16 @@ class Dashboard extends Component {
           finalMoney += x.Amount;
         });
         const findName = this.state.show.find((x) => x.MemberOws == memberName);
-        this.setState({
-          memberWithAmountList: [
-            ...this.state.memberWithAmountList,
-            {
-              Amount: finalMoney,
-              Transaction: allTransaction,
-              GroupName: findName.GroupName,
-              MemberOwsName: findName.MemberOwsName,
-              MemberProfilePic: findName.MemberProfilePicOws,
-            },
-          ],
+        memberWithOwsGetsDetail.push({
+          Amount: finalMoney,
+          Transaction: allTransaction,
+          GroupName: findName.GroupName,
+          MemberOwsName: findName.MemberOwsName,
+          MemberProfilePic: findName.MemberProfilePicOws,
         });
+      });
+      this.setState({
+        memberWithAmountList: memberWithOwsGetsDetail,
       });
       console.log(JSON.stringify(this.state.memberWithAmountList));
     }
@@ -158,12 +161,13 @@ class Dashboard extends Component {
     const data = {
       settleUpWith: this.state.Name,
       Amount: this.state.Amount,
-      MemberName: this.state.ID,
-      GroupName: this.state.GroupName,
-      RealName: this.state.RealName,
+      MemberID: this.state.ID,
+      GroupID: this.state.GroupName,
+      RealID: this.state.RealName,
     };
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
+      this.props.settleUp(data);
       axios.defaults.withCredentials = true;
       axios
         .post(`http://${config.ipAddress}:8000/settleUp`, data)
@@ -532,6 +536,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { getUserSpecificTransactionDetail })(
-  Dashboard
-);
+export default connect(mapStateToProps, {
+  getUserSpecificTransactionDetail,
+  settleUp,
+})(Dashboard);

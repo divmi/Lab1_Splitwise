@@ -3,7 +3,7 @@ const Users = require("./Model/UserRegistrationModel");
 const GroupInfo = require("./Model/GroupInfoModel");
 
 var update = class update {
-  updateUserProfile(con, req, res) {
+  updateUserProfile(req, res) {
     const filter = { _id: req._id };
     const updateDoc = {
       $set: {

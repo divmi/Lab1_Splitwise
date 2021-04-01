@@ -28,7 +28,7 @@ class GroupNotification extends Component {
     let userNotification = [];
     if (this.props.groupInfo.length > 0) {
       this.props.groupInfo.map((group) => {
-        let member = group.GroupMemberInfo.find((x) => x.ID == ID);
+        let member = group.GroupMemberInfo.find((x) => x.ID._id == ID);
         if (typeof member != "undefined") {
           if (!member.Accepted) {
             console.log("Group added successfully");

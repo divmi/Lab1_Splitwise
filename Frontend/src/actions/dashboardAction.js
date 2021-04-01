@@ -28,3 +28,25 @@ export const getUserSpecificTransactionDetail = (ID) => (dispatch) => {
       }
     });
 };
+
+export const settleUp = (data) => (dispatch) => {
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
+  axios
+    .post(`http://${config.ipAddress}:8000/settleUp`, data)
+    .then((response) => {
+      if (response.status == 200)
+        dispatch({
+          type: action.Settled_UP,
+          payload: response.data,
+        });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        return dispatch({
+          type: action.Settled_UP,
+          payload: Object.assign(error.response.data),
+        });
+      }
+    });
+};

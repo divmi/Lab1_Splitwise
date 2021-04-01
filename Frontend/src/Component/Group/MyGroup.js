@@ -36,6 +36,11 @@ class MyGroup extends Component {
     );
     console.log("GroupSearch" + this.state.searchName);
     if (typeof findGroup != "undefined") {
+      <GroupInfo
+        name={findGroup._id}
+        groupName={findGroup.GroupName}
+        groupMember={findGroup.GroupMemberInfo}
+      />;
       this.setState({
         component: <GroupInfo name={this.state.searchName} />,
       });
@@ -91,7 +96,13 @@ class MyGroup extends Component {
 
   OpenGroupInfo(param) {
     this.setState({
-      component: <GroupInfo name={param} />,
+      component: (
+        <GroupInfo
+          name={param._id}
+          groupName={param.GroupName}
+          groupMember={param.GroupMemberInfo}
+        />
+      ),
     });
   }
 
@@ -110,7 +121,7 @@ class MyGroup extends Component {
           <tr
             key={idx}
             style={{ verticalAlign: "center" }}
-            onClick={() => this.OpenGroupInfo(name.GroupName)}
+            onClick={() => this.OpenGroupInfo(name)}
           >
             <td>
               <i className="fa fa-users"></i>

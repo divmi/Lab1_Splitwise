@@ -8,7 +8,7 @@ import {
   Container,
   Form,
 } from "react-bootstrap";
-import OwsGetAmount from "./OwsGetsInfo";
+import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import {
   getTransactionDetail,
@@ -118,7 +118,7 @@ class GroupInfo extends Component {
   OpenOwsGetsAmount(transactionUpdated) {
     this.setState({
       component: (
-        <OwsGetAmount
+        <OwsGetDetail
           name={this.props.name}
           groupMemberName={this.props.groupMember}
           updated={transactionUpdated}
