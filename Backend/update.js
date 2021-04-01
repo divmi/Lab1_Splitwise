@@ -31,7 +31,7 @@ var update = class update {
   }
 
   updateGroup(req, res) {
-    GroupInfo.findOne({ GroupName: req.prevGroupName }, (error, findGroup) => {
+    GroupInfo.findOne({ _id: req.prevGroupName }, (error, findGroup) => {
       if (error) {
         res.writeHead(500, {
           "Content-Type": "text/plain",
@@ -46,7 +46,7 @@ var update = class update {
           },
         };
         GroupInfo.updateOne(
-          { GroupName: req.prevGroupName },
+          { _id: req.prevGroupName },
           updateDoc,
           (error, success) => {
             if (error) {
@@ -68,6 +68,11 @@ var update = class update {
                     }
                   }
                 );
+              } else {
+                res.writeHead(200, {
+                  "Content-Type": "application/json",
+                });
+                res.end(JSON.stringify(success));
               }
             }
           }

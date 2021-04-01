@@ -4,6 +4,7 @@ import config from "../../config";
 import axios from "axios";
 import { editGroup } from "../../actions/home";
 import { connect } from "react-redux";
+import { resetSuccessFlag } from "../../actions/loginAction";
 
 class EditGroup extends Component {
   constructor(props) {
@@ -44,6 +45,13 @@ class EditGroup extends Component {
       groupName: e.target.value,
     });
   };
+
+  componentDidUpdate(prevState) {
+    if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
+      console.log("Flag got reset");
+      this.props.resetSuccessFlag();
+    }
+  }
 
   getMemberInfo() {
     let userData = [];
@@ -156,7 +164,7 @@ class EditGroup extends Component {
     let message = null;
     let picture = "";
     let groupMemberName = [];
-    if (this.state.authFlag) {
+    if (this.props.authFlag) {
       message = <Redirect to="/home" />;
     }
     if (this.state.userData != null && this.state.userData.length > 0) {
@@ -294,7 +302,10 @@ class EditGroup extends Component {
 const mapStateToProps = (state) => {
   return {
     groupInfo: state.homeReducer.groupInfo,
+    authFlag: state.homeReducer.authFlag,
   };
 };
 
-export default connect(mapStateToProps, { editGroup })(EditGroup);
+export default connect(mapStateToProps, { editGroup, resetSuccessFlag })(
+  EditGroup
+);

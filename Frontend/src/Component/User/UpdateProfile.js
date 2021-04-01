@@ -6,6 +6,7 @@ import { Redirect } from "react-router-dom";
 import { updateProfile, UploadPicture } from "../../actions/updateUserProfile";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { resetSuccessFlag } from "../../actions/loginAction";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -42,6 +43,12 @@ class UpdateProfile extends Component {
     });
   };
 
+  componentDidUpdate(prevState) {
+    if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
+      this.SetLocalStorage(JSON.stringify(this.state.userinfo));
+      this.props.resetSuccessFlag();
+    }
+  }
   componentDidMount() {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
@@ -68,9 +75,6 @@ class UpdateProfile extends Component {
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
       this.props.updateProfile(this.state.userinfo);
-      if (this.props.authFlag) {
-        this.SetLocalStorage(JSON.stringify(this.state.userinfo));
-      }
     }
   };
 
@@ -320,6 +324,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { updateProfile, UploadPicture })(
-  UpdateProfile
-);
+export default connect(mapStateToProps, {
+  updateProfile,
+  UploadPicture,
+  resetSuccessFlag,
+})(UpdateProfile);

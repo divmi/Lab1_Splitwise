@@ -109,6 +109,9 @@ class GroupInfo extends Component {
       console.log("came here");
       this.closeModal();
       this.props.resetSuccessFlag();
+      this.setState({
+        axiosCallInProgress: false,
+      });
     }
   }
 

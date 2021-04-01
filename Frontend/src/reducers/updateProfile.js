@@ -16,6 +16,10 @@ export default function (state = defaultState, action) {
       return {
         image: action.payload,
       };
+    case aType.Reset_Success_Flag:
+      return {
+        authFlag: false,
+      };
     default:
       return state;
   }
