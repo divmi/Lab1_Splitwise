@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const updateProfile = (userData) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios
     .post(`http://${config.ipAddress}:8000/updateProfile`, userData)
@@ -26,7 +27,8 @@ export const updateProfile = (userData) => (dispatch) => {
 };
 
 export const UploadPicture = (data) => (dispatch) => {
-  console.log(JSON.stringify(data));
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   axios
     .post(`http://${config.ipAddress}:8000/upload`, data)
     .then((response) => {

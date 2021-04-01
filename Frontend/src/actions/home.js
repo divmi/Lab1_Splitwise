@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const getUserDetails = (Email) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
   const url = `http://${config.ipAddress}:8000/getCurrentUserGroup?ID=${Email}`;
   console.log(url);
@@ -30,7 +31,8 @@ export const getUserDetails = (Email) => (dispatch) => {
 
 export const editGroup = (data) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios
     .post(`http://${config.ipAddress}:8000/updateGroup`, data)
@@ -55,6 +57,8 @@ export const GroupRequestAccepted = (name, id) => (dispatch) => {
     name: name,
     id: id,
   };
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   axios
     .post(`http://${config.ipAddress}:8000/joinedGroup`, data)
     .then((response) => {

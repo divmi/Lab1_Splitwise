@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect } from "react-router-dom";
 import {
   Button,
@@ -10,11 +9,9 @@ import {
   Col,
   FormFeedback,
 } from "reactstrap";
-import axios from "axios";
 import { isEmail } from "validator";
-import config from "../../config";
 import { connect } from "react-redux";
-import * as Action from "../../actions/actionCreators";
+import { RegisterUser } from "../../actions/actionCreators";
 
 class Register extends Component {
   constructor(props) {
@@ -47,61 +44,36 @@ class Register extends Component {
     e.preventDefault();
 
     const { userInfo } = this.state;
-    const data = {
-      name: userInfo.name,
-      email: userInfo.email,
-    };
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      //set the with credentials to true
-      axios.defaults.withCredentials = true;
-      //make a post request with the user data
-      axios
-        .post(`http://${config.ipAddress}:8000/signupUser`, userInfo)
-        .then((response) => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            this.setState({
-              loginError: "",
-              authFlag: true,
-            });
-            this.props.RegisterUser({ data }); //reducer call
-            this.SetLocalStorage(data);
-            alert("Successfully Created! Please Continue to Login");
-          } else {
-            this.setState({
-              loginError: "User is already registered",
-              authFlag: false,
-              error: {},
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            loginError: "User is already registered",
-            error: {},
-          });
-        });
+      this.props.RegisterUser(userInfo);
     } else {
       this.setState({ error });
     }
   };
 
+  componentDidUpdate(prevState) {
+    if (prevState.user != this.props.user) {
+      if (this.props.user == "User is already registered") {
+        this.setState({
+          authFlag: false,
+          formerror: {},
+          loginError: this.props.user,
+        });
+      } else {
+        this.setState({
+          authFlag: true,
+        });
+        this.SetLocalStorage(JSON.stringify(this.props.user));
+      }
+    }
+  }
+
   SetLocalStorage(userInfo) {
     if (typeof Storage !== "undefined") {
       localStorage.clear();
       try {
-        let data = {
-          Name: userInfo.name,
-          Email: userInfo.email,
-          Currency: "$",
-          Timezone: "America/Los_Angeles",
-          Language: "English",
-          ContactNo: "80XXXXXXXXX",
-          UserProfilePic: "./assets/userIcon.jpg",
-        };
-        console.log(data);
-        localStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("userData", userInfo);
       } catch (error) {
         console.log(error);
       }
@@ -121,8 +93,9 @@ class Register extends Component {
 
   render() {
     let redirectVar = null;
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
-    else redirectVar = <Redirect to="/register" />;
+    if (typeof this.props.user != "undefined" && this.state.authFlag) {
+      redirectVar = <Redirect to="/home" />;
+    } else redirectVar = <Redirect to="/register" />;
     return (
       <>
         <div className="container-fluid form-cont">
@@ -207,10 +180,10 @@ class Register extends Component {
     );
   }
 }
-function mapDispatchToProps(dispatch) {
+const mapStateToProps = (state) => {
   return {
-    RegisterUser: (data) => dispatch(Action.RegisterUser(data)),
+    user: state.login.user,
   };
-}
+};
 
-export default connect(null, mapDispatchToProps)(Register); //
+export default connect(mapStateToProps, { RegisterUser })(Register); //

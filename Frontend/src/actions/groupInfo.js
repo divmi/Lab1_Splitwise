@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const getTransactionDetail = (ID) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
   const url = `http://${config.ipAddress}:8000/getTransactionInfo?ID=${ID}`;
   console.log(url);
@@ -30,7 +31,8 @@ export const getTransactionDetail = (ID) => (dispatch) => {
 
 export const addTransactionToDatabase = (data) => (dispatch) => {
   console.log("dispatching the action addTransactionToDatabase");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios
     .post(`http://${config.ipAddress}:8000/insertGroupTransaction`, data)

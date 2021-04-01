@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const getUserSpecificTransactionDetail = (ID) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
   const url = `http://${config.ipAddress}:8000/getUserSpecificGetOwsInfo?ID=${ID}`;
   console.log(url);

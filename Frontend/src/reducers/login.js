@@ -15,6 +15,12 @@ export default function (state = defaultState, action) {
       };
     case aType.Logout_USER:
       return {};
+    case aType.REGISTER_USER:
+      return {
+        ...state,
+        user: action.payload,
+        Currency: action.payload.Currency,
+      };
     default:
       return state;
   }

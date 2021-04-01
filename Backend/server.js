@@ -5,7 +5,7 @@ const app = express();
 const port = 8000;
 const ipAddress = "localhost";
 
-const { mongoDB } = require("./config");
+const { mongoDB } = require("./Utils/config");
 const mongoose = require("mongoose");
 
 app.use(express.static("uploads"));
@@ -13,10 +13,7 @@ const multer = require("multer"); //upload image on server
 
 //require express session
 var session = require("express-session");
-var cookieParser = require("cookie-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-//use cookie parser to parse request headers
-app.use(cookieParser());
 //use session to store user data between HTTP requests
 app.use(
   session({
@@ -49,7 +46,6 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
   "file"
 );
 const insert = require("./insert");
-const login = require("./login");
 const group = require("./group");
 const Update = require("./update");
 var con = "";
@@ -98,25 +94,17 @@ app.use(function (req, res, next) {
   next();
 });
 
+const Login = require("./routes/Login");
+app.use("/login", Login);
+
 app.listen(port, () => {
   console.log("App is listening to 8000");
 });
 
-app.get("/api/UserRegistration", (req, res) => {
-  con.query(`select * from UserRegistration`, (err, rows) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(rows);
-      console.log(rows);
-    }
-  });
-});
-
-app.post("/signupUser", function (req, res) {
-  var ins = new insert.insert();
-  ins.insert_user(req.body, res);
-});
+// app.post("/signupUser", function (req, res) {
+//   var ins = new insert.insert();
+//   ins.insert_user(req.body, res);
+// });
 
 app.post("/upload", (req, res, next) => {
   upload(req, res, (err) => {
@@ -131,17 +119,6 @@ app.post("/createGroup", function (req, res) {
   console.log("Req Body : ", req.body);
   var insgrp = new insert.insert();
   insgrp.insert_Group(req.body, res);
-});
-
-app.get("/signupUser", function (req, res) {
-  console.log("Req Body : ", req.body);
-});
-
-//Route to handle Post Request Call
-app.post("/loginUser", function (req, res) {
-  console.log("Req Body : ", req.body);
-  var loginUser = new login.login();
-  loginUser.UserLogin(req.body, res);
 });
 
 app.get("/getCurrentUserGroup/", function (req, res) {
@@ -196,12 +173,6 @@ app.get("/getAllUser", function (req, res) {
   user.getAllUser(res);
 });
 
-app.get("/getOwsDetail", function (req, res) {
-  console.log("Req Body getOwsDetail: ", req.query.groupName);
-  var tdetail = new transaction.transactionDetail();
-  //tdetail.getOwsGetsDetail(con, req.query.groupName, res);
-});
-
 app.get("/getUserSpecificGetOwsInfo", function (req, res) {
   console.log("Req Body getUserSpecificGetOwsInfo: ", req.query.ID);
   var tdetail = new transaction.transactionDetail();
@@ -218,10 +189,5 @@ app.get("/getGroupSummary", function (req, res) {
   var tdetail = new transaction.transactionDetail();
   tdetail.getGroupSummary(req.query.ID, res);
 });
-
-// app.get("/getGroupMemberName", function (req, res) {
-//   var getGDetail = new insert.insert();
-//   getGDetail.getGroupMemberList(con, req.query.groupName, res);
-// });
 
 module.exports = app;

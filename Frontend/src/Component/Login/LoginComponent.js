@@ -70,10 +70,12 @@ class Login extends Component {
         this.setState({
           authFlag: false,
           formerror: {},
+          error: this.props.user,
         });
       } else {
         this.setState({
           authFlag: true,
+          error: "",
         });
         this.SetLocalStorage(JSON.stringify(this.props.user));
       }

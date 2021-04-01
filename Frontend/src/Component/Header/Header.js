@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cookie from "react-cookies";
 import { Redirect, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -26,7 +25,6 @@ class Header extends Component {
   handleClose = (e) => {
     this.setState({ anchorEl: null });
     if (e.target.id == "logout") {
-      cookie.remove("cookie", { path: "/" });
       this.RemoveDataFromLocalStorage();
       this.props.LogoutUser();
     }
@@ -43,16 +41,12 @@ class Header extends Component {
   render() {
     var registerOrLogin = null;
     let memberName = "";
-    if (cookie.load("cookie")) {
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data != null && data.token) {
       let picture = "";
-      memberName = cookie.load("cookie").Name;
-      var value = JSON.parse(localStorage.getItem("userData"));
-      if (value != null) {
-        if (value.UserProfilePic != null) picture = value.UserProfilePic;
-        else picture = "./assets/userIcon.jpg";
-        memberName = value.Name;
-      } else picture = "./assets/userIcon.jpg";
-      console.log(picture);
+      memberName = data.Name;
+      if (data.UserProfilePic != null) picture = data.UserProfilePic;
+      else picture = "./assets/userIcon.jpg";
       registerOrLogin = (
         <div className="col col-sm-4 p-1" style={{ textAlign: "center" }}>
           <Link
@@ -95,7 +89,7 @@ class Header extends Component {
       );
     }
     let redirectVar = null;
-    if (cookie.load("cookie")) {
+    if (data != null && data.token) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/landing" />;
 

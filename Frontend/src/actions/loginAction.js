@@ -6,8 +6,9 @@ export const userLogin = (loginData) => (dispatch) => {
   console.log("dispatching the action");
   axios.defaults.withCredentials = true;
   //make a post request with the user data
+  console.log(`http://${config.ipAddress}:8000/login/loginUser`);
   axios
-    .post(`http://${config.ipAddress}:8000/loginUser`, loginData)
+    .post(`http://${config.ipAddress}:8000/login/loginUser`, loginData)
     .then((response) =>
       dispatch({
         type: action.Login_USER,

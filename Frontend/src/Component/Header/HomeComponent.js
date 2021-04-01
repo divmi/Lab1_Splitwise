@@ -16,6 +16,7 @@ class Home extends Component {
       summary: null,
       groupInfo: [],
       ID: "",
+      token: "",
     };
   }
 
@@ -41,8 +42,10 @@ class Home extends Component {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         data = JSON.parse(localStorage.getItem("userData"));
+        console.log("Control reached to home page");
         this.setState({
           ID: data._id,
+          token: data._token,
         });
         this.props.getUserDetails(data._id);
       }
@@ -90,7 +93,8 @@ class Home extends Component {
   render() {
     let redirectVar = null;
     let groupName = null;
-    if (cookie.load("cookie")) redirectVar = <Redirect to="/home" />;
+    const data = JSON.parse(localStorage.getItem("userData"));
+    if (data.token) redirectVar = <Redirect to="/home" />;
     else redirectVar = <Redirect to="/login" />;
     if (this.state.groupInfo != null && this.state.groupInfo.length > 0) {
       groupName = this.state.groupInfo.map((name, idx) => {

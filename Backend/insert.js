@@ -7,53 +7,6 @@ const UserTransactionBasedOnGroup = require("./Model/UserTransactionBasedOnGroup
 const OwsGetsDetail = require("./Model/OwsGetsDetailModel");
 
 class insert {
-  async insert_user(body, res) {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      // now we set user password to hashed password
-      body.password = await bcrypt.hash(body.password, salt);
-      Users.findOne({ Email: body.email }, (error, user) => {
-        if (error) {
-          res.writeHead(500, {
-            "Content-Type": "text/plain",
-          });
-          res.end();
-        }
-        if (user) {
-          res.writeHead(400, {
-            "Content-Type": "text/plain",
-          });
-          res.end("User is already registered");
-        } else {
-          console.log("Came here");
-          var newUser = new Users({
-            Name: body.name,
-            Email: body.email,
-            Password: body.password,
-            Currency: "$",
-            Timezone: "(GMT-08:00) Pacific Time",
-            Language: "English",
-            ContactNo: "9999999999",
-            UserProfilePic: "",
-          });
-          newUser.save((error, data) => {
-            if (error) {
-              res.writeHead(500, {
-                "Content-Type": "text/plain",
-              });
-              res.end();
-            } else {
-              res.writeHead(200, { "Content-Type": "text/plain" });
-              res.end();
-            }
-          });
-        }
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   insert_Group(body, res) {
     console.log("Connected!");
     GroupInfo.findOne({ GroupName: body.groupName }, (error, groupInfo) => {

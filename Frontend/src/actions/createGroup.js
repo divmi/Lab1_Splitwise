@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const getAllUser = () => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   axios
     .get(`http://${config.ipAddress}:8000/getAllUser`)
     .then((response) => {
@@ -27,7 +28,8 @@ export const getAllUser = () => (dispatch) => {
 
 export const sendCreateGroupRequest = (groupData) => (dispatch) => {
   console.log("dispatching the action");
-  axios.defaults.withCredentials = true;
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
   axios
     .post(`http://${config.ipAddress}:8000/createGroup`, groupData)
     .then((response) => {
