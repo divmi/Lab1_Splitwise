@@ -29,6 +29,8 @@ class GroupInfo extends Component {
       component: null,
       Currency: "",
       UserId: "",
+      comments: [],
+      textComments: "",
     };
   }
 
@@ -39,6 +41,11 @@ class GroupInfo extends Component {
         transaction_description: expenseDetail.TransactionDetail,
         amount: expenseDetail.Amount,
       });
+    } else {
+      this.setState({
+        transaction_description: "",
+        amount: "",
+      });
     }
     console.log(this.state.transaction_description);
     this.setState({ isOpen: true, error: "" });
@@ -47,6 +54,12 @@ class GroupInfo extends Component {
     this.setState({ isOpen: false });
     this.props.getTransactionDetail(this.props.name);
     this.OpenOwsGetsAmount(true);
+  };
+
+  handleCommentChange = (e) => {
+    this.setState({
+      textComments: e.target.value,
+    });
   };
 
   handleTransactionChange = (e) => {
@@ -127,6 +140,19 @@ class GroupInfo extends Component {
     });
   }
 
+  addComment = (e) => {
+    e.preventDefault();
+    let comments = this.state.comments;
+    let newComment = {
+      comment: this.state.textComments,
+    };
+    comments.push(newComment);
+    this.setState({
+      comments: comments,
+      textComments: "",
+    });
+  };
+
   handleAmountChange = (e) => {
     this.setState({
       amount: e.target.value,
@@ -166,60 +192,127 @@ class GroupInfo extends Component {
 
   render() {
     let showTransaction = null;
+    let showComments = null;
     let picture = "../assets/userIcon.png";
-    console.log(this.props.transactionDetail.length);
-    if (this.props.transactionDetail.length > 0) {
-      // if (this.props.transactionDetail.GroupProfilePicture != "") {
-      //   picture = this.state.transactionDetail[0].GroupProfilePicture;
-      // }
-      showTransaction = this.props.transactionDetail.map((name, idx) => {
+    //console.log(this.props.transactionDetail.length);
+
+    if (this.state.comments.length > 0) {
+      showComments = this.state.comments.map((value, idx) => {
         return (
-          <div key={idx} className="row border-bottom">
-            <div className="col-sm-8 p-3">
-              {new Date(name.Time).toLocaleDateString("default", {
-                month: "short",
-                day: "numeric",
-              })}{" "}
-              &emsp;
+          <div key={idx} className="input-group" style={{ padding: "2px" }}>
+            <input
+              type="text"
+              className="form-control rounded"
+              value={value.comment}
+              readOnly
+            />
+            <button type="button" className="btn bg-transparent">
               <i
-                className="fa fa-shopping-cart fa-2x"
-                style={{ color: "green", marginRight: 3 }}
-              ></i>{" "}
-              <a
-                style={{ color: "black" }}
-                data-toggle="collapse"
-                href={"#" + idx}
-                aria-controls="collapseExample"
-              >
-                {name.TransactionDetail}
-              </a>
-            </div>
-            <div className="col-sm-4 p-1">
-              <p
-                style={{ color: "GrayText", textAlign: "right", fontSize: 13 }}
-              >
-                {name.MemberID.Name}
-                <br />
-                paid <br />
-                {this.state.Currency}
-                {name.Amount}
-              </p>
-            </div>
-            <div key={idx} className="collapse shadow-sm" id={idx}>
-              <p>
-                {name.TransactionDetail} <br />
-                {name.Amount} <br />
-              </p>
-              <button
-                name="btn-Edit-Expense"
-                className="orangeCode"
-                onClick={(e) => this.openModal(e, name)}
-              >
-                Edit expense
-              </button>
-            </div>
+                className="fa fa-remove"
+                style={{ color: "red", fontWeight: "normal" }}
+                aria-hidden="true"
+              ></i>
+            </button>
           </div>
         );
+      });
+    }
+
+    if (this.props.transactionDetail.length > 0) {
+      showTransaction = this.props.transactionDetail.map((name, idx) => {
+        if (name.Amount > 0) {
+          return (
+            <div key={idx} className="row border-bottom">
+              <div className="col-sm-8 p-3">
+                {new Date(name.Time).toLocaleDateString("default", {
+                  month: "short",
+                  day: "numeric",
+                })}{" "}
+                &emsp;
+                <img src="./assets/expense.png" height={40} width={40}></img>
+                <a
+                  style={{ color: "black" }}
+                  data-toggle="collapse"
+                  href={"#" + idx}
+                  aria-controls="collapseExample"
+                >
+                  {name.TransactionDetail}
+                </a>
+              </div>
+              <div className="col-sm-4 p-1">
+                <p
+                  style={{
+                    color: "GrayText",
+                    textAlign: "right",
+                    fontSize: 13,
+                  }}
+                >
+                  {name.MemberID.Name}
+                  <br />
+                  paid <br />
+                  {this.state.Currency}
+                  {name.Amount}
+                </p>
+              </div>
+              <div key={idx} className="collapse col col-sm-12" id={idx}>
+                <div className="row">
+                  <div className="col col-sm-7">
+                    <div className="row">
+                      <img
+                        src="./assets/expense.png"
+                        height={60}
+                        width={60}
+                      ></img>
+                      <p
+                        style={{ color: "GrayText", fontSize: 12, padding: 10 }}
+                      >
+                        {name.TransactionDetail} <br />
+                        {this.state.Currency}
+                        {name.Amount} <br />
+                        paid by {name.MemberID.Name}
+                        <br />
+                        {new Date(name.Time).toLocaleString("en-us", {
+                          weekday: "long",
+                        })}
+                        <br />
+                        <button
+                          name="btn-Edit-Expense"
+                          className="btn btn-edit"
+                          onClick={(e) => this.openModal(e, name)}
+                        >
+                          Edit expense
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col col-sm-4" style={{ textAlign: "left" }}>
+                    <label
+                      style={{
+                        color: "GrayText",
+                        fontSize: 12,
+                      }}
+                    >
+                      Notes and Comments
+                    </label>
+                    {showComments}
+                    <textarea
+                      name="Add comment"
+                      value={this.state.textComments}
+                      onChange={this.handleCommentChange}
+                    ></textarea>
+                    <button
+                      name="btn-AddComment"
+                      className="btn btn-edit"
+                      onClick={this.addComment}
+                    >
+                      Post
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
       });
     } else {
       if (this.state.axiosCallInProgress) {

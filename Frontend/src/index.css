@@ -131,3 +131,14 @@
 #groupTable tbody tr.selected {
   color: wheat !important;
 }
+
+.btn.btn-edit {
+  text-align: center;
+  background: #f07343;
+  font-weight: bold;
+  color: #ffffff;
+  border-color: #ffffff;
+  font-size: 10px;
+  height: 30px;
+  padding: 8px;
+}

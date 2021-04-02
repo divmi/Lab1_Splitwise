@@ -211,82 +211,37 @@ class insert {
             (error, result) => {
               if (error) {
                 console.log(error);
-              } else {
-                var insTransaction = new TransactionModel({
-                  TransactionDetail: "Settled Up",
-                  MemberID: body.MemberID,
-                  Amount: body.Amount,
-                  SettleWith: body.RealID,
+                res.writeHead(500, {
+                  "Content-Type": "text/plain",
                 });
-                insTransaction.save((error, data) => {
-                  if (error) {
-                    console.log(error);
-                  } else {
-                    res.writeHead(200, {
-                      "Content-Type": "text/plain",
-                    });
-                    res.end(JSON.stringify(data));
-                  }
-                });
+                res.end();
               }
             }
           );
+          var insTransaction = new TransactionModel({
+            TransactionDetail: "Settled Up",
+            MemberID: body.MemberID,
+            Amount: body.Amount,
+            SettleWith: body.RealID,
+            GroupID: body.GroupID,
+          });
+          insTransaction.save((error, data) => {
+            if (error) {
+              console.log(error);
+              res.writeHead(500, {
+                "Content-Type": "text/plain",
+              });
+              res.end();
+            } else {
+              res.writeHead(200, {
+                "Content-Type": "text/plain",
+              });
+              res.end(JSON.stringify(data));
+            }
+          });
         }
       }
     );
-    // var settleUpUser =
-    //   "Delete from OwsGetsDetail where MemberGets='" +
-    //   body.MemberName +
-    //   "' && MemberOws='" +
-    //   body.settleUpWith +
-    //   "' or MemberOws='" +
-    //   body.MemberName +
-    //   "' && MemberGets='" +
-    //   body.settleUpWith +
-    //   "'";
-    // console.log("settleup received");
-    // con.query(settleUpUser, function (err, result) {
-    //   if (err) throw err;
-    //   var deleteSettleUpTransaction =
-    //     "Delete from UserTransactionBasedOnGroup where MemberPaid='" +
-    //     body.MemberName +
-    //     "' && MemberOws='" +
-    //     body.settleUpWith +
-    //     "' or MemberOws='" +
-    //     body.MemberName +
-    //     "' && MemberPaid='" +
-    //     body.settleUpWith +
-    //     "'";
-    //   con.query(deleteSettleUpTransaction, function (err, result) {
-    //     if (err) throw err;
-    //     var addTransactionInTable =
-    //       "INSERT INTO TransactionDetail (TransactionDetail, Time, MemberID, GroupName, Amount,SettleUpWith) VALUES (";
-    //     var insTransaction =
-    //       "'" +
-    //       "SettleUp" +
-    //       "','" +
-    //       `${new Date().toISOString().slice(0, 19).replace("T", " ")}` +
-    //       "','" +
-    //       body.MemberName +
-    //       "','" +
-    //       body.GroupName +
-    //       "','" +
-    //       body.Amount +
-    //       "','" +
-    //       body.RealName +
-    //       "')";
-    //     con.query(
-    //       addTransactionInTable + insTransaction,
-    //       function (err, result) {
-    //         if (err) throw err;
-    //         res.writeHead(200, {
-    //           "Content-Type": "text/plain",
-    //         });
-    //         res.end(JSON.stringify(result));
-    //       }
-    //     );
-    //   });
-    // });
   }
 }
 

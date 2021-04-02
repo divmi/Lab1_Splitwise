@@ -29,6 +29,7 @@ class Dashboard extends Component {
       Currency: "",
       ID: "",
       GroupName: "",
+      GroupID: "",
       RealName: "",
       error: "",
       MemberOws: "",
@@ -54,9 +55,10 @@ class Dashboard extends Component {
     console.log("GroupName Divya------------------:" + JSON.stringify(detail));
     this.setState({
       Amount: detail.Amount,
-      GroupName: detail.GroupName,
+      GroupName: detail.GroupID,
       RealName: detail.MemberOwsName,
       MemberOws: detail.MemberOws,
+      GroupID: detail.Transaction[0].GroupID,
     });
     console.log(this.state.RealName);
   };
@@ -78,6 +80,7 @@ class Dashboard extends Component {
             MemberOwsName: value.MemberGets.Name,
             MemberProfilePicOws: value.MemberGets.UserProfilepic,
             MemberProfilePicGets: value.MemberOws.UserProfilepic,
+            GroupID: value.GroupID._id,
           });
         } else {
           this.state.show.push({
@@ -89,6 +92,7 @@ class Dashboard extends Component {
             MemberOwsName: value.MemberOws.Name,
             MemberProfilePicOws: value.MemberOws.UserProfilepic,
             MemberProfilePicGets: value.MemberGets.UserProfilepic,
+            GroupID: value.GroupID._id,
           });
         }
       });
@@ -140,6 +144,7 @@ class Dashboard extends Component {
           MemberOwsName: findName.MemberOwsName,
           MemberProfilePic: findName.MemberProfilePicOws,
           MemberOws: findName.MemberOws,
+          GroupID: findName.GroupID._id,
         });
       });
       this.setState({
@@ -161,7 +166,7 @@ class Dashboard extends Component {
     const data = {
       Amount: this.state.Amount,
       MemberID: this.state.ID,
-      GroupID: this.state.GroupName,
+      GroupID: this.state.GroupID,
       RealID: this.state.RealName,
       MemberOws: this.state.MemberOws,
     };
