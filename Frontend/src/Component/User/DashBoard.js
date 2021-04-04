@@ -360,7 +360,7 @@ class Dashboard extends Component {
     return (
       <div className="container">
         <div className="row shadow bg-light rounded">
-          <div className="col col-sm-8 border-bottom">
+          <div className="col col-sm-8 border-bottom ">
             <label className="md-1">
               <h3 style={{ marginTop: "10px", marginLeft: "20px" }}>
                 <strong>DashBoard</strong>
@@ -374,6 +374,11 @@ class Dashboard extends Component {
             <Button
               className="btn btn-Normal"
               type="button"
+              style={{
+                lineHeight: "40px",
+                width: "120px",
+                textAlign: "center",
+              }}
               onClick={this.openModal}
             >
               Settle Up

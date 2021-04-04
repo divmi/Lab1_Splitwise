@@ -1,6 +1,5 @@
 "use strict";
 const bcrypt = require("bcrypt");
-const Users = require("./Model/UserRegistrationModel");
 const GroupInfo = require("./Model/GroupInfoModel");
 const TransactionModel = require("./Model/TransactionDetailModel");
 const UserTransactionBasedOnGroup = require("./Model/UserTransactionBasedOnGroupModel");

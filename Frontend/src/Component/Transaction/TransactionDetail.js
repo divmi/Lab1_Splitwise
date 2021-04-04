@@ -153,7 +153,7 @@ class TransactionDetail extends Component {
                 Recent activity
               </label>
             </div>
-            <div className="col-col-6 offset-2">
+            <div className="col-col-6 offset-4">
               <select
                 className="form-control"
                 width={80}
@@ -182,7 +182,7 @@ class TransactionDetail extends Component {
               </select>
             </div>
           </div>
-          <div className="row shadow p-2 bg-light rounded">
+          <div className="row shadow p-1 bg-light rounded">
             <Posts posts={currentPosts} Currency={this.state.Currency} />
           </div>
           <div className="row">

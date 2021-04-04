@@ -1,5 +1,6 @@
 const GroupInfo = require("./Model/GroupInfoModel");
 const OwsGetsDetail = require("./Model/OwsGetsDetailModel");
+const TransactionModel = require("./Model/TransactionDetailModel");
 class transactionDetail {
   groupJoinRequest(body, res) {
     const query = { _id: body.name._id, "GroupMemberInfo.ID": body.id };
@@ -45,22 +46,6 @@ class transactionDetail {
     // });
   }
 
-  // getWhetherUserCanbeDeleted(con, query, res) {
-  //   var sql =
-  //     "SELECT * FROM SplitwiseDB.OwsGetsDetail where GroupName='" +
-  //     query.groupName +
-  //     "' and (MemberGets='" +
-  //     query.email +
-  //     "'OR MemberOws='" +
-  //     query.email +
-  //     "')";
-
-  //   con.query(sql, function (err, result) {
-  //     if (err) throw err;
-  //     res.end(JSON.stringify(result));
-  //   });
-  // }
-
   getGroupSummary(ID, res) {
     console.log("GroupID :" + ID);
     OwsGetsDetail.find({ GroupID: ID }, (error, result) => {
@@ -76,6 +61,33 @@ class transactionDetail {
         res.end(JSON.stringify(result));
       }
     });
+  }
+
+  insertCommentToTransactionTable(body, res) {
+    TransactionModel.update(
+      { _id: body.transactionID },
+      {
+        $push: {
+          comments: {
+            MemberCommented: body.memberCommented,
+            Comment: body.comment,
+          },
+        },
+      },
+      (error, data) => {
+        if (error) {
+          res.writeHead(500, {
+            "Content-Type": "text/plain",
+          });
+          res.end("Transaction Not Found");
+        } else {
+          res.writeHead(200, {
+            "Content-Type": "text/plain",
+          });
+          res.end(JSON.stringify(data));
+        }
+      }
+    );
   }
 }
 

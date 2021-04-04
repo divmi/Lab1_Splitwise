@@ -179,15 +179,19 @@ app.get("/getUserSpecificGetOwsInfo", function (req, res) {
   tdetail.getUserSpecificGetOwsInfo(req.query.ID, res);
 });
 
-// app.get("/getUserCanBeDeleted", function (req, res) {
-//   console.log("Req Body getUserCanBeDeleted: ", req.query);
-//   var tdetail = new transaction.transactionDetail();
-//   tdetail.getWhetherUserCanbeDeleted(con, req.query, res);
-// });
-
 app.get("/getGroupSummary", function (req, res) {
   var tdetail = new transaction.transactionDetail();
   tdetail.getGroupSummary(req.query.ID, res);
+});
+
+app.post("/addComment", function (req, res) {
+  var comment = new transaction.transactionDetail();
+  comment.insertCommentToTransactionTable(req.body, res);
+});
+
+app.post("/deleteComment", function (req, res) {
+  var insertSettleUp = new insert.insert();
+  insertSettleUp.settleUp(req.body, res);
 });
 
 module.exports = app;

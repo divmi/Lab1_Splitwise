@@ -142,3 +142,8 @@
   height: 30px;
   padding: 8px;
 }
+
+.transaction-padding {
+  padding-left: 20px;
+  padding-top: 20px;
+}

@@ -16,6 +16,16 @@ var transactionDetail = new Schema(
     },
     Amount: { type: Number, required: true },
     SettleUpWith: { type: String },
+    comments: [
+      {
+        MemberCommented: {
+          type: Schema.Types.ObjectId,
+          ref: "UserRegistration",
+          required: true,
+        },
+        Comment: { type: String },
+      },
+    ],
   },
   {
     versionKey: false,

@@ -99,3 +99,15 @@ export const Settled_UP = () => {
     type: "Settled_UP",
   };
 };
+
+export const Insert_Comments = () => {
+  return {
+    type: "Insert_Comments",
+  };
+};
+
+export const Delete_Comments = () => {
+  return {
+    type: "Delete_Comments",
+  };
+};

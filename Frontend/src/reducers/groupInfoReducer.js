@@ -2,6 +2,7 @@ import * as aType from "../actions/actionTypes";
 const defaultState = {
   transactionDetail: [],
   authFlag: false,
+  comments: [],
 };
 
 export default function (state = defaultState, action) {
@@ -19,6 +20,18 @@ export default function (state = defaultState, action) {
       };
     case aType.Insert_Group_Transaction:
       console.log("Insert_Group_Transaction : ");
+      return {
+        ...state,
+        authFlag: true,
+      };
+    case aType.Insert_Comments:
+      console.log("Insert Comment : ");
+      return {
+        ...state,
+        comments: action.payload,
+      };
+    case aType.Delete_Comments:
+      console.log("Delete Comment: ");
       return {
         ...state,
         authFlag: true,

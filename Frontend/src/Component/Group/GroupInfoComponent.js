@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import {
   getTransactionDetail,
   addTransactionToDatabase,
+  addCommentsToDatabase,
 } from "../../actions/groupInfo";
 import { resetSuccessFlag } from "../../actions/loginAction";
 import { connect } from "react-redux";
@@ -82,36 +83,6 @@ class GroupInfo extends Component {
     this.OpenOwsGetsAmount(false);
   }
 
-  // getTransactionDetail() {
-  //   this.setState({
-  //     axiosCallInProgress: true,
-  //   });
-  //   axios
-  //     .get(`http://${config.ipAddress}:8000/getTransactionInfo`, {
-  //       params: {
-  //         groupName: this.props.name,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         this.setState(() => ({
-  //           transactionDetail: response.data,
-  //           axiosCallInProgress: false,
-  //         }));
-  //       } else {
-  //         this.setState({
-  //           error: "Please enter correct credentials",
-  //           authFlag: false,
-  //         });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       this.setState({
-  //         error: "Please enter correct credentials" + e,
-  //       });
-  //     });
-  // }
-
   componentDidUpdate(prevState) {
     if (prevState.name !== this.props.name) {
       console.log(this.props.name);
@@ -140,15 +111,17 @@ class GroupInfo extends Component {
     });
   }
 
-  addComment = (e) => {
+  addComment = (e, transaction) => {
     e.preventDefault();
-    let comments = this.state.comments;
+    //let comments = this.state.comments;
     let newComment = {
       comment: this.state.textComments,
+      transactionID: transaction._id,
+      memberCommented: this.state.UserId,
     };
-    comments.push(newComment);
+    //comments.push(newComment);
+    this.props.addCommentsToDatabase(newComment);
     this.setState({
-      comments: comments,
       textComments: "",
     });
   };
@@ -229,9 +202,9 @@ class GroupInfo extends Component {
                   day: "numeric",
                 })}{" "}
                 &emsp;
-                <img src="./assets/expense.png" height={40} width={40}></img>
+                <img src="./assets/expense.png" height={30} width={20}></img>
                 <a
-                  style={{ color: "black" }}
+                  style={{ color: "black", paddingLeft: "10px" }}
                   data-toggle="collapse"
                   href={"#" + idx}
                   aria-controls="collapseExample"
@@ -239,12 +212,13 @@ class GroupInfo extends Component {
                   {name.TransactionDetail}
                 </a>
               </div>
-              <div className="col-sm-4 p-1">
+              <div className="col-sm-4">
                 <p
                   style={{
                     color: "GrayText",
                     textAlign: "right",
                     fontSize: 13,
+                    padding: "10px",
                   }}
                 >
                   {name.MemberID.Name}
@@ -255,16 +229,16 @@ class GroupInfo extends Component {
                 </p>
               </div>
               <div key={idx} className="collapse col col-sm-12" id={idx}>
-                <div className="row">
-                  <div className="col col-sm-7">
-                    <div className="row">
+                <div className="row border-top shadow bg-light">
+                  <div className="col col-sm-6 border-right">
+                    <div className="row transaction-padding">
                       <img
                         src="./assets/expense.png"
                         height={60}
-                        width={60}
+                        width={50}
                       ></img>
                       <p
-                        style={{ color: "GrayText", fontSize: 12, padding: 10 }}
+                        style={{ color: "GrayText", fontSize: 13, padding: 10 }}
                       >
                         {name.TransactionDetail} <br />
                         {this.state.Currency}
@@ -285,7 +259,10 @@ class GroupInfo extends Component {
                       </p>
                     </div>
                   </div>
-                  <div className="col col-sm-4" style={{ textAlign: "left" }}>
+                  <div
+                    className="col col-sm-4 transaction-padding"
+                    style={{ textAlign: "left" }}
+                  >
                     <label
                       style={{
                         color: "GrayText",
@@ -303,7 +280,7 @@ class GroupInfo extends Component {
                     <button
                       name="btn-AddComment"
                       className="btn btn-edit"
-                      onClick={this.addComment}
+                      onClick={(e) => this.addComment(e, name)}
                     >
                       Post
                     </button>
@@ -321,9 +298,9 @@ class GroupInfo extends Component {
         showTransaction = (
           <div>
             <img
-              src="./assets/transaction.png"
+              src="./assets/NoExpense.png"
               height={350}
-              width={300}
+              width={350}
               className="img"
             ></img>
             <h3>
@@ -336,19 +313,31 @@ class GroupInfo extends Component {
     }
 
     return (
-      <div className="container-flex p-3">
-        <div className="row">
+      <div className="container-flex">
+        <div
+          className="row border-bottom rounded bg-light"
+          style={{ paddingTop: "20px" }}
+        >
           <div className="col col-sm-4">
-            <div className="row" style={{ marginLeft: 10, marginTop: 5 }}>
+            <div
+              className="row"
+              style={{
+                marginLeft: 10,
+                marginTop: 5,
+                fontWeight: "bold",
+                fontSize: "25px",
+              }}
+            >
               <img src={picture} className="rounded-circle profileImage"></img>
-              <h4>{this.props.groupName}</h4>
+              <label style={{ paddingLeft: "10px" }}>
+                {this.props.groupName}
+              </label>
             </div>
           </div>
           <hr></hr>
-          <div className="col col-sm-2"></div>
           <div
             className="col col-sm-5"
-            style={{ textAlign: "left", marginLeft: -10, marginTop: -5 }}
+            style={{ textAlign: "right", marginTop: -5 }}
           >
             <Button
               variant="primary"
@@ -356,9 +345,7 @@ class GroupInfo extends Component {
               style={{
                 textAlign: "center",
                 fontSize: 12,
-                alignSelf: "center",
                 width: 110,
-                height: 40,
               }}
               onClick={this.openModal}
             >
@@ -459,8 +446,11 @@ class GroupInfo extends Component {
           </Modal>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded border-right">
-          <div className="col col-sm-8">{showTransaction}</div>
-          <div className="col col-sm-4">
+          <div className="col col-sm-9">{showTransaction}</div>
+          <div
+            className="col col-sm-3 border-left"
+            style={{ paddingLeft: "30px" }}
+          >
             <p style={{ fontWeight: "bold" }}>Group Summary</p>
             {this.state.component}
           </div>
@@ -481,4 +471,5 @@ export default connect(mapStateToProps, {
   getTransactionDetail,
   addTransactionToDatabase,
   resetSuccessFlag,
+  addCommentsToDatabase,
 })(GroupInfo);

@@ -48,7 +48,7 @@ class Header extends Component {
       if (data.UserProfilePic != null) picture = data.UserProfilePic;
       else picture = "./assets/userIcon.jpg";
       registerOrLogin = (
-        <div className="col col-sm-4 p-1" style={{ textAlign: "center" }}>
+        <div className="col col-sm-3 p-1" style={{ textAlign: "center" }}>
           <Link
             to="/home"
             style={{
@@ -100,7 +100,7 @@ class Header extends Component {
       >
         {redirectVar}
         <div className="row">
-          <div className="col col-sm-2"></div>
+          <div className="col col-sm-1"></div>
           <div className="col col-sm-3" style={{ textAlign: "center" }}>
             <div className="row " style={{ flexWrap: "nowrap" }}>
               <img
@@ -110,7 +110,7 @@ class Header extends Component {
               <h3 className="label-custom customMargin">Splitwise</h3>
             </div>
           </div>
-          <div className="col col-sm-3"></div>
+          <div className="col col-sm-5"></div>
           {registerOrLogin}
         </div>
         <Menu
