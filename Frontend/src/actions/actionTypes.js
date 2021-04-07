@@ -111,3 +111,9 @@ export const Delete_Comments = () => {
     type: "Delete_Comments",
   };
 };
+
+export const Get_Comments = () => {
+  return {
+    type: "Get_Comments",
+  };
+};

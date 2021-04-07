@@ -13,7 +13,6 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <div>
-            {/* App Component Has a Child Component called Main*/}
             <Main />
           </div>
         </Router>

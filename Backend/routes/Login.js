@@ -112,11 +112,11 @@ router.post("/signupUser", async (req, res) => {
 });
 
 function createToken(user) {
-  const payload = { email: user.Email };
+  const payload = { id: user._id };
   const token = jwt.sign(payload, secret, {
     expiresIn: 1008000,
   });
-  return token;
+  return "JWT " + token;
 }
 
 module.exports = router;

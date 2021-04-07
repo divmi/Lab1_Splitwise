@@ -7,16 +7,17 @@ import {
   Image,
   Container,
   Form,
+  Accordion,
 } from "react-bootstrap";
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import {
   getTransactionDetail,
   addTransactionToDatabase,
-  addCommentsToDatabase,
 } from "../../actions/groupInfo";
 import { resetSuccessFlag } from "../../actions/loginAction";
 import { connect } from "react-redux";
+import Comment from "./Comment";
 
 class GroupInfo extends Component {
   constructor(props) {
@@ -30,8 +31,7 @@ class GroupInfo extends Component {
       component: null,
       Currency: "",
       UserId: "",
-      comments: [],
-      textComments: "",
+      comment: null,
     };
   }
 
@@ -163,153 +163,42 @@ class GroupInfo extends Component {
     }
   };
 
+  OpenCommentSection = (e, user) => {
+    e.preventDefault();
+    this.setState({
+      comment: <Comment transDetail={user}></Comment>,
+    });
+  };
+
   render() {
     let showTransaction = null;
-    let showComments = null;
     let picture = "../assets/userIcon.png";
-    //console.log(this.props.transactionDetail.length);
-
-    if (this.state.comments.length > 0) {
-      showComments = this.state.comments.map((value, idx) => {
-        return (
-          <div key={idx} className="input-group" style={{ padding: "2px" }}>
-            <input
-              type="text"
-              className="form-control rounded"
-              value={value.comment}
-              readOnly
-            />
-            <button type="button" className="btn bg-transparent">
-              <i
-                className="fa fa-remove"
-                style={{ color: "red", fontWeight: "normal" }}
-                aria-hidden="true"
-              ></i>
-            </button>
-          </div>
-        );
-      });
-    }
-
+    let index = 0;
     if (this.props.transactionDetail.length > 0) {
-      showTransaction = this.props.transactionDetail.map((name, idx) => {
+      showTransaction = this.props.transactionDetail.map((name) => {
         if (name.Amount > 0) {
+          index = index + 1;
+          console.log("Index :" + index);
           return (
-            <div key={idx} className="row border-bottom">
-              <div className="col-sm-8 p-3">
-                {new Date(name.Time).toLocaleDateString("default", {
-                  month: "short",
-                  day: "numeric",
-                })}{" "}
-                &emsp;
-                <img src="./assets/expense.png" height={30} width={20}></img>
-                <a
-                  style={{ color: "black", paddingLeft: "10px" }}
-                  data-toggle="collapse"
-                  href={"#" + idx}
-                  aria-controls="collapseExample"
-                >
-                  {name.TransactionDetail}
-                </a>
-              </div>
-              <div className="col-sm-4">
-                <p
-                  style={{
-                    color: "GrayText",
-                    textAlign: "right",
-                    fontSize: 13,
-                    padding: "10px",
-                  }}
-                >
-                  {name.MemberID.Name}
-                  <br />
-                  paid <br />
-                  {this.state.Currency}
-                  {name.Amount}
-                </p>
-              </div>
-              <div key={idx} className="collapse col col-sm-12" id={idx}>
-                <div className="row border-top shadow bg-light">
-                  <div className="col col-sm-6 border-right">
-                    <div className="row transaction-padding">
-                      <img
-                        src="./assets/expense.png"
-                        height={60}
-                        width={50}
-                      ></img>
-                      <p
-                        style={{ color: "GrayText", fontSize: 13, padding: 10 }}
-                      >
-                        {name.TransactionDetail} <br />
-                        {this.state.Currency}
-                        {name.Amount} <br />
-                        paid by {name.MemberID.Name}
-                        <br />
-                        {new Date(name.Time).toLocaleString("en-us", {
-                          weekday: "long",
-                        })}
-                        <br />
-                        <button
-                          name="btn-Edit-Expense"
-                          className="btn btn-edit"
-                          onClick={(e) => this.openModal(e, name)}
-                        >
-                          Edit expense
-                        </button>
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    className="col col-sm-4 transaction-padding"
-                    style={{ textAlign: "left" }}
-                  >
-                    <label
-                      style={{
-                        color: "GrayText",
-                        fontSize: 12,
-                      }}
-                    >
-                      Notes and Comments
-                    </label>
-                    {showComments}
-                    <textarea
-                      name="Add comment"
-                      value={this.state.textComments}
-                      onChange={this.handleCommentChange}
-                    ></textarea>
-                    <button
-                      name="btn-AddComment"
-                      className="btn btn-edit"
-                      onClick={(e) => this.addComment(e, name)}
-                    >
-                      Post
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Comment key={index} transDetail={name} index={index}></Comment>
           );
         }
       });
     } else {
-      if (this.state.axiosCallInProgress) {
-        showTransaction = <p className="spinner-border text-text-muted"></p>;
-      } else
-        showTransaction = (
-          <div>
-            <img
-              src="./assets/NoExpense.png"
-              height={350}
-              width={350}
-              className="img"
-            ></img>
-            <h3>
-              You have not added any expenses yet{" "}
-              <i className="fas fa-frown"></i>
-            </h3>
-            <h5>Click on Add Expense button to start</h5>
-          </div>
-        );
+      showTransaction = (
+        <div>
+          <img
+            src="./assets/NoExpense.png"
+            height={350}
+            width={350}
+            className="img"
+          ></img>
+          <h3>
+            You have not added any expenses yet <i className="fas fa-frown"></i>
+          </h3>
+          <h5>Click on Add Expense button to start</h5>
+        </div>
+      );
     }
 
     return (
@@ -446,10 +335,12 @@ class GroupInfo extends Component {
           </Modal>
         </div>
         <div className="row shadow p-3 mb-5 bg-light rounded border-right">
-          <div className="col col-sm-9">{showTransaction}</div>
+          <div className="col col-sm-9">
+            <Accordion>{showTransaction}</Accordion>
+          </div>
           <div
             className="col col-sm-3 border-left"
-            style={{ paddingLeft: "30px" }}
+            style={{ paddingLeft: "20px" }}
           >
             <p style={{ fontWeight: "bold" }}>Group Summary</p>
             {this.state.component}
@@ -471,5 +362,4 @@ export default connect(mapStateToProps, {
   getTransactionDetail,
   addTransactionToDatabase,
   resetSuccessFlag,
-  addCommentsToDatabase,
 })(GroupInfo);

@@ -48,6 +48,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
 const insert = require("./insert");
 const group = require("./group");
 const Update = require("./update");
+const Comment = require("./Comments");
 var con = "";
 
 const transaction = require("./transactionDetail");
@@ -95,16 +96,13 @@ app.use(function (req, res, next) {
 });
 
 const Login = require("./routes/Login");
+const Group = require("./routes/Group");
 app.use("/login", Login);
+app.use("/group", Group);
 
 app.listen(port, () => {
   console.log("App is listening to 8000");
 });
-
-// app.post("/signupUser", function (req, res) {
-//   var ins = new insert.insert();
-//   ins.insert_user(req.body, res);
-// });
 
 app.post("/upload", (req, res, next) => {
   upload(req, res, (err) => {
@@ -113,12 +111,6 @@ app.post("/upload", (req, res, next) => {
     }
     res.send(req.file.filename);
   });
-});
-
-app.post("/createGroup", function (req, res) {
-  console.log("Req Body : ", req.body);
-  var insgrp = new insert.insert();
-  insgrp.insert_Group(req.body, res);
 });
 
 app.get("/getCurrentUserGroup/", function (req, res) {
@@ -185,13 +177,23 @@ app.get("/getGroupSummary", function (req, res) {
 });
 
 app.post("/addComment", function (req, res) {
-  var comment = new transaction.transactionDetail();
+  var comment = new Comment.comment();
   comment.insertCommentToTransactionTable(req.body, res);
 });
 
+app.get("/getCommentForTransaction", function (req, res) {
+  var comment = new Comment.comment();
+  comment.getCommentFromTransactionTable(req.query.transID, res);
+});
+
 app.post("/deleteComment", function (req, res) {
-  var insertSettleUp = new insert.insert();
-  insertSettleUp.settleUp(req.body, res);
+  var comment = new Comment.comment();
+  comment.deleteComment(req.body, res);
+});
+
+app.get("/deleteComment", function (req, res) {
+  var comment = new Comment.comment();
+  comment.deleteComment(req.body, res);
 });
 
 module.exports = app;

@@ -62,33 +62,6 @@ class transactionDetail {
       }
     });
   }
-
-  insertCommentToTransactionTable(body, res) {
-    TransactionModel.update(
-      { _id: body.transactionID },
-      {
-        $push: {
-          comments: {
-            MemberCommented: body.memberCommented,
-            Comment: body.comment,
-          },
-        },
-      },
-      (error, data) => {
-        if (error) {
-          res.writeHead(500, {
-            "Content-Type": "text/plain",
-          });
-          res.end("Transaction Not Found");
-        } else {
-          res.writeHead(200, {
-            "Content-Type": "text/plain",
-          });
-          res.end(JSON.stringify(data));
-        }
-      }
-    );
-  }
 }
 
 module.exports = {

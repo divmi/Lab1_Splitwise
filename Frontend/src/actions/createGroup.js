@@ -28,10 +28,12 @@ export const getAllUser = () => (dispatch) => {
 
 export const sendCreateGroupRequest = (groupData) => (dispatch) => {
   console.log("dispatching the action");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
+  console.log(`http://${config.ipAddress}:8000/group/createGroup`);
   axios
-    .post(`http://${config.ipAddress}:8000/createGroup`, groupData)
+    .post(`http://${config.ipAddress}:8000/group/createGroup`, groupData)
     .then((response) => {
       if (response.status == 200) {
         dispatch({
