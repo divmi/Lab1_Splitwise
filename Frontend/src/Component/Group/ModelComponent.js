@@ -1,16 +1,74 @@
 import React, { Component } from "react";
+import {
+  Modal,
+  Button,
+  Row,
+  Col,
+  Image,
+  Container,
+  Form,
+} from "react-bootstrap";
 
 class ModelWindow extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isOpen: true,
+      error: "",
+      transaction_description: "",
+      amount: 0,
+      Currency: "",
+    };
   }
+  componentDidMount() {
+    if (typeof Storage !== "undefined") {
+      if (localStorage.key("userData")) {
+        const localStorageData = JSON.parse(localStorage.getItem("userData"));
+        this.setState({
+          Currency: localStorageData.Currency,
+          //UserId: localStorageData._id,
+        });
+      }
+    }
+    this.setState({
+      transaction_description: this.props.transactionDetail.TransactionDetail,
+      amount: this.props.transactionDetail.Amount,
+      isOpen: this.props.isOpen,
+    });
+  }
+
+  closeModal = () => {
+    this.setState({ isOpen: false });
+  };
+
+  componentDidUpdate(prevState) {
+    if (prevState.isOpen != this.props.isOpen) {
+      console.log("isopen is getting set");
+      this.setState({
+        isOpen: this.props.isOpen,
+      });
+    }
+  }
+
+  handleTransactionChange = (e) => {
+    this.setState({
+      transaction_description: e.target.value,
+    });
+  };
+
+  handleAmountChange = (e) => {
+    this.setState({
+      amount: e.target.value,
+    });
+  };
+
   render() {
     return (
       <div>
         <Modal show={this.state.isOpen} onHide={this.closeModal}>
           <Modal.Header className="custom-header" closeButton>
             <Modal.Title style={{ marginLeft: "10px" }}>
-              Add an Expense
+              Edit Expense
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -24,7 +82,10 @@ class ModelWindow extends Component {
                 {this.state.error}
               </div>
               <Row>
-                <label>With you and : {this.props.groupName}</label>
+                <label>
+                  With you and :{" "}
+                  {this.props.transactionDetail.GroupID.GroupName}
+                </label>
               </Row>
               <hr></hr>
               <Row>
@@ -98,3 +159,4 @@ class ModelWindow extends Component {
     );
   }
 }
+export default ModelWindow;

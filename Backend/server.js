@@ -191,9 +191,9 @@ app.post("/deleteComment", function (req, res) {
   comment.deleteComment(req.body, res);
 });
 
-app.get("/deleteComment", function (req, res) {
+app.get("/editGroupTransaction", function (req, res) {
   var comment = new Comment.comment();
-  comment.deleteComment(req.body, res);
+  comment.editTransaction(req.body, res);
 });
 
 module.exports = app;

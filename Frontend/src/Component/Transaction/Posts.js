@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { DataGrid } from "@material-ui/data-grid";
 
 export class Posts extends Component {
   render() {
@@ -68,12 +69,6 @@ export class Posts extends Component {
         <table className="table">
           <tbody>{showTransaction}</tbody>
         </table>
-        {/* {posts.map((post, idx) => (
-          <div key={idx} className="alert alert-primary">
-            <h4 className="alert-heading">{post.title}</h4>
-            <p>{post.body}</p>
-          </div>
-        ))} */}
       </div>
     );
   }

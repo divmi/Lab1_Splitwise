@@ -178,7 +178,6 @@ class GroupInfo extends Component {
       showTransaction = this.props.transactionDetail.map((name) => {
         if (name.Amount > 0) {
           index = index + 1;
-          console.log("Index :" + index);
           return (
             <Comment key={index} transDetail={name} index={index}></Comment>
           );

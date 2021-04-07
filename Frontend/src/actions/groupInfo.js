@@ -52,3 +52,26 @@ export const addTransactionToDatabase = (data) => (dispatch) => {
       }
     });
 };
+
+export const editTransaction = (ID) => (dispatch) => {
+  const storageToken = localStorage.getItem("userData");
+  axios.defaults.headers.common["authorization"] = storageToken.token;
+  //make a post request with the user data
+  axios
+    .post(`http://${config.ipAddress}:8000/editGroupTransaction`, ID)
+    .then((response) => {
+      if (response.status == 200)
+        dispatch({
+          type: action.Load_GroupBased_Transaction,
+          payload: response.data,
+        });
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        return dispatch({
+          type: action.Load_GroupBased_Transaction,
+          payload: Object.assign(error.response.data),
+        });
+      }
+    });
+};

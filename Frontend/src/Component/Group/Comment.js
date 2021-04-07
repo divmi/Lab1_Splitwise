@@ -6,6 +6,7 @@ import {
   deleteCommentFromDatabase,
 } from "../../actions/comments";
 import { Card, Accordion } from "react-bootstrap";
+import ModelWindow from "./ModelComponent";
 
 class Comment extends Component {
   constructor(props) {
@@ -15,8 +16,23 @@ class Comment extends Component {
       Currency: "",
       transactionID: "",
       UserId: "",
+      component: null,
+      isOpen: false,
     };
   }
+
+  openModal = (e, expenseDetail) => {
+    e.preventDefault();
+    this.setState({
+      isOpen: true,
+      component: (
+        <ModelWindow
+          isOpen={true}
+          transactionDetail={expenseDetail}
+        ></ModelWindow>
+      ),
+    });
+  };
 
   addComment = (e) => {
     e.preventDefault();
@@ -61,7 +77,6 @@ class Comment extends Component {
       };
       this.props.deleteCommentFromDatabase(data);
     } else {
-      // Do nothing!
       console.log("Thing was not saved to the database.");
     }
   };
@@ -79,10 +94,10 @@ class Comment extends Component {
     if (this.props.comments.length > 0) {
       showComments = this.props.comments.map((value, idx) => {
         return (
-          <div key={idx} className="input-group" style={{ padding: "2px" }}>
-            <input
-              type="text"
+          <div key={idx} className="input-group" style={{ margin: "5px" }}>
+            <textarea
               className="form-control rounded"
+              width={200}
               value={value.Comment}
               readOnly
             />
@@ -93,7 +108,7 @@ class Comment extends Component {
             >
               <i
                 className="fa fa-remove"
-                style={{ color: "red", fontWeight: "normal" }}
+                style={{ color: "#6d1111", fontWeight: "normal" }}
                 aria-hidden="true"
               ></i>
             </button>
@@ -171,10 +186,7 @@ class Comment extends Component {
                   </p>
                 </div>
               </div>
-              <div
-                className="col col-sm-4 transaction-padding"
-                style={{ textAlign: "left" }}
-              >
+              <div className="col col-sm-6 input-group">
                 <label
                   style={{
                     color: "GrayText",
@@ -186,16 +198,19 @@ class Comment extends Component {
                 {showComments}
                 <textarea
                   name="Add comment"
+                  style={{ marginBottom: "5px" }}
                   value={this.state.textComments}
+                  className="form-control comment rounded"
                   onChange={this.handleCommentChange}
                 ></textarea>
                 <button
                   name="btn-AddComment"
-                  className="btn btn-edit"
+                  className="btn btn-edit border-none"
                   onClick={this.addComment}
                 >
                   Post
                 </button>
+                {this.state.component}
               </div>
             </div>
           </Card.Body>

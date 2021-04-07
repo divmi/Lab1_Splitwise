@@ -3,7 +3,6 @@ import { transactionDetail } from "../../actions/transaction";
 import { connect } from "react-redux";
 import Pagination from "./Pagination";
 import Posts from "./Posts";
-//import PropTypes from "prop-types";
 
 class TransactionDetail extends Component {
   constructor(props) {
@@ -112,6 +111,7 @@ class TransactionDetail extends Component {
       indexOfFirstPost,
       indexOfLastPost
     );
+    console.log(currentPosts);
     console.log("indexOfLastPost :" + indexOfLastPost);
     console.log("indexOfFirstPost :" + indexOfFirstPost);
 
@@ -185,6 +185,7 @@ class TransactionDetail extends Component {
           <div className="row shadow p-1 bg-light rounded">
             <Posts posts={currentPosts} Currency={this.state.Currency} />
           </div>
+
           <div className="row">
             <Pagination
               postsPerPage={postsPerPage}
