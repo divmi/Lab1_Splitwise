@@ -79,13 +79,19 @@ class TransactionDetail extends Component {
     } else {
       return (
         <div className="container-fluid">
-          <div className="row rounded">
+          <div className="row rounded bg-light">
             <div className="col-col-3">
-              <label style={{ fontWeight: "bold", fontSize: "25px" }}>
+              <label
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "25px",
+                  marginLeft: "30px",
+                }}
+              >
                 Recent activity
               </label>
             </div>
-            <div className="col-col-6 offset-8">
+            <div className="col-col-6 offset-7">
               <select
                 className="form-control"
                 width={80}

@@ -186,7 +186,7 @@ class Comment extends Component {
                   </p>
                 </div>
               </div>
-              <div className="col col-sm-6 input-group">
+              <div className="col col-sm-6">
                 <label
                   style={{
                     color: "GrayText",
@@ -200,7 +200,7 @@ class Comment extends Component {
                   name="Add comment"
                   style={{ marginBottom: "5px" }}
                   value={this.state.textComments}
-                  className="form-control comment rounded"
+                  className="form-control rounded"
                   onChange={this.handleCommentChange}
                 ></textarea>
                 <button

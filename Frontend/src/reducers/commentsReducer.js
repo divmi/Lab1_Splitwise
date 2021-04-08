@@ -10,7 +10,7 @@ export default function (state = defaultState, action) {
       console.log("Reset happened");
       return {
         ...state,
-        authFlag: false,
+        commentsFromDB: [],
       };
     case aType.Insert_Comments:
       console.log("Insert Comment : ");
@@ -26,10 +26,17 @@ export default function (state = defaultState, action) {
       };
     case aType.Get_Comments:
       console.log("Get_Comments: ");
-      return {
-        ...state,
-        commentsFromDB: action.payload[0].comments,
-      };
+      if (action.payload.length > 0) {
+        return {
+          ...state,
+          commentsFromDB: action.payload[0].comments,
+        };
+      } else {
+        return {
+          ...state,
+          commentsFromDB: [],
+        };
+      }
     default:
       return state;
   }

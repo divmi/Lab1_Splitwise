@@ -69,10 +69,7 @@ export class Posts extends Component {
         width: 520,
         renderCell: (param) => (
           <label style={{ fontWeight: "bold", textAlign: "center" }}>
-            <i
-              className="greenCode fas fa-receipt fa-2x p-2"
-              style={{ alignContent: "center" }}
-            ></i>
+            <i className="greenCode fas fa-receipt fa-3x p-2"></i>
             {param.value}
           </label>
         ),
@@ -113,7 +110,7 @@ export class Posts extends Component {
       <div className="container">
         <div
           style={{
-            height: 550,
+            height: 600,
             width: "100%",
             alignContent: "center",
             textAlign: "center",
@@ -130,6 +127,7 @@ export class Posts extends Component {
             rowCount={this.props.count}
             onPageSizeChange={this.PageSizeChange}
             onPageChange={this.PageChange}
+            headerHeight={1}
           />
         </div>
       </div>
