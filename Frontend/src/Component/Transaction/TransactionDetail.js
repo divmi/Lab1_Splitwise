@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { transactionDetail } from "../../actions/transaction";
 import { connect } from "react-redux";
-import Pagination from "./Pagination";
+//import Pagination from "./Pagination";
 import Posts from "./Posts";
 
 class TransactionDetail extends Component {
@@ -10,11 +10,8 @@ class TransactionDetail extends Component {
     this.state = {
       sortbyGroup: "",
       showTransactionBasedOnFilter: [],
-      currentPage: 1,
-      postsPerPage: 2,
       ID: "",
       Currency: "",
-      pageLoadInProgress: false,
     };
   }
 
@@ -29,10 +26,7 @@ class TransactionDetail extends Component {
         });
       }
     }
-    this.setState({
-      pageLoadInProgress: true,
-    });
-    this.props.transactionDetail(localStorageData._id);
+    this.props.transactionDetail(localStorageData._id, 0, 2);
   }
 
   componentDidUpdate(prevState) {
@@ -46,27 +40,6 @@ class TransactionDetail extends Component {
       });
     }
   }
-
-  OnSortByAscOrDesc = (e) => {
-    console.log(e.target.value);
-    if (e.target.value == "Ascending") {
-      this.setState({
-        showTransactionBasedOnFilter: this.state.showTransactionBasedOnFilter.sort(
-          function (a, b) {
-            return new Date(a.Time) - new Date(b.Time);
-          }
-        ),
-      });
-    } else if (e.target.value == "Decending") {
-      this.setState({
-        showTransactionBasedOnFilter: this.state.showTransactionBasedOnFilter.sort(
-          function (a, b) {
-            return new Date(b.Time) - new Date(a.Time);
-          }
-        ),
-      });
-    }
-  };
 
   OnGroupSelect = (e) => {
     if (this.props.transaction != null && this.props.transaction.length > 0) {
@@ -90,49 +63,8 @@ class TransactionDetail extends Component {
     console.log(e.target.value);
   };
 
-  onPageSelected = (e) => {
-    this.setState({
-      currentPage: 1,
-      postsPerPage: e.target.value,
-    });
-  };
-
   render() {
-    // let showTransaction = null;
     let showGroupName = null;
-    const {
-      currentPage,
-      postsPerPage,
-      showTransactionBasedOnFilter,
-    } = this.state;
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = showTransactionBasedOnFilter.slice(
-      indexOfFirstPost,
-      indexOfLastPost
-    );
-    console.log(currentPosts);
-    console.log("indexOfLastPost :" + indexOfLastPost);
-    console.log("indexOfFirstPost :" + indexOfFirstPost);
-
-    const paginate = (pageNum) => this.setState({ currentPage: pageNum });
-
-    const nextPage = () => {
-      if (indexOfLastPost >= showTransactionBasedOnFilter.length) {
-        this.setState({ currentPage: currentPage });
-      } else {
-        this.setState({ currentPage: currentPage + 1 });
-      }
-    };
-
-    const prevPage = () => {
-      if (indexOfFirstPost == 0) {
-        this.setState({ currentPage: currentPage });
-      } else {
-        this.setState({ currentPage: currentPage - 1 });
-      }
-    };
-
     if (this.props.groupName != null && this.props.groupName.length > 0) {
       showGroupName = this.props.groupName.map((name, idx) => {
         return (
@@ -153,7 +85,7 @@ class TransactionDetail extends Component {
                 Recent activity
               </label>
             </div>
-            <div className="col-col-6 offset-4">
+            <div className="col-col-6 offset-8">
               <select
                 className="form-control"
                 width={80}
@@ -163,36 +95,11 @@ class TransactionDetail extends Component {
                 {showGroupName}
               </select>
             </div>
-            <div className="col-col-3" style={{ marginLeft: "4px" }}>
-              <select
-                className="form-control"
-                onChange={this.OnSortByAscOrDesc}
-              >
-                <option value="">Sort by Time</option>
-                <option value="Ascending">Ascending</option>
-                <option value="Decending">Decending</option>
-              </select>
-            </div>
-            <div className="col-col-3" style={{ marginLeft: "4px" }}>
-              <select className="form-control" onChange={this.onPageSelected}>
-                <option value="">Page Size</option>
-                <option value="2">2</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-              </select>
-            </div>
           </div>
           <div className="row shadow p-1 bg-light rounded">
-            <Posts posts={currentPosts} Currency={this.state.Currency} />
-          </div>
-
-          <div className="row">
-            <Pagination
-              postsPerPage={postsPerPage}
-              totalPosts={showTransactionBasedOnFilter.length}
-              paginate={paginate}
-              nextPage={nextPage}
-              prevPage={prevPage}
+            <Posts
+              posts={this.state.showTransactionBasedOnFilter}
+              Currency={this.state.Currency}
             />
           </div>
         </div>

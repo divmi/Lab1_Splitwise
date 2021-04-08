@@ -21,6 +21,5 @@ var transactionDetail = new Schema(
     versionKey: false,
   }
 );
-
 const transModel = mongoose.model("TransactionDetail", transactionDetail);
 module.exports = transModel;

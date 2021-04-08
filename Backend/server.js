@@ -152,7 +152,7 @@ app.get("/getTransactionInfo", function (req, res) {
 
 app.get("/getTransactionFromUser", function (req, res) {
   var userDetail = new group.group();
-  userDetail.getTransactionFromUser(req.query.ID, res);
+  userDetail.getTransactionFromUser(req.query, res);
 });
 
 app.get("/getGroupNotification", function (req, res) {
