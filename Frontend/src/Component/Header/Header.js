@@ -45,8 +45,8 @@ class Header extends Component {
     if (data != null && data.token) {
       let picture = "";
       memberName = data.Name;
-      if (data.UserProfilePic != null) picture = data.UserProfilePic;
-      else picture = "./assets/userIcon.jpg";
+      if (data.UserProfilePic != "") picture = data.UserProfilePic;
+      else picture = "./assets/userIcon.png";
       registerOrLogin = (
         <div className="col col-sm-3 p-1" style={{ textAlign: "center" }}>
           <Link

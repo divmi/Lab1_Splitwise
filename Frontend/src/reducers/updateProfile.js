@@ -5,7 +5,6 @@ const defaultState = {
 };
 
 export default function (state = defaultState, action) {
-  console.log("payload received: " + action.payload);
   switch (action.type) {
     case aType.Update_Profile:
       return {

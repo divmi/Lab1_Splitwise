@@ -78,8 +78,8 @@ class Dashboard extends Component {
             GroupName: value.GroupID.GroupName,
             MemberGetsName: value.MemberOws.Name,
             MemberOwsName: value.MemberGets.Name,
-            MemberProfilePicOws: value.MemberGets.UserProfilepic,
-            MemberProfilePicGets: value.MemberOws.UserProfilepic,
+            MemberProfilePicOws: value.MemberGets.UserProfilePic,
+            MemberProfilePicGets: value.MemberOws.UserProfilePic,
             GroupID: value.GroupID._id,
           });
         } else {
@@ -90,8 +90,8 @@ class Dashboard extends Component {
             GroupName: value.GroupID.GroupName,
             MemberGetsName: value.MemberGets.Name,
             MemberOwsName: value.MemberOws.Name,
-            MemberProfilePicOws: value.MemberOws.UserProfilepic,
-            MemberProfilePicGets: value.MemberGets.UserProfilepic,
+            MemberProfilePicOws: value.MemberOws.UserProfilePic,
+            MemberProfilePicGets: value.MemberGets.UserProfilePic,
             GroupID: value.GroupID._id,
           });
         }
@@ -99,12 +99,9 @@ class Dashboard extends Component {
       console.log(JSON.stringify(this.state.show));
       this.calculateMemberSpecificTable();
       this.state.show.map((detail) => {
-        console.log(detail.Amount);
         if (detail.Amount > 0) {
-          console.log(sumGets);
           sumGets += detail.Amount;
         } else {
-          console.log(sumOws);
           sumOws += detail.Amount;
         }
         this.setState({
@@ -124,15 +121,12 @@ class Dashboard extends Component {
     const memberInfo = [
       ...new Set(this.state.show.map((memberName) => memberName.MemberOws)),
     ];
-    console.log(memberInfo);
     if (memberInfo.length > 0) {
       memberInfo.map((memberName) => {
-        console.log(JSON.stringify(memberName));
         let finalMoney = 0;
         const allTransaction = this.state.show.filter(
           (x) => x.MemberOws == memberName
         );
-        console.log(JSON.stringify(allTransaction));
         allTransaction.map((x) => {
           finalMoney += x.Amount;
         });
@@ -150,7 +144,6 @@ class Dashboard extends Component {
       this.setState({
         memberWithAmountList: memberWithOwsGetsDetail,
       });
-      console.log(JSON.stringify(this.state.memberWithAmountList));
     }
   }
 
@@ -205,7 +198,6 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log("Control received in component did mount");
     let localStorageData = {};
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
@@ -251,7 +243,7 @@ class Dashboard extends Component {
               <img
                 className="rounded-circle"
                 src={
-                  detail.MemberProfilePic == null
+                  detail.MemberProfilePic == ""
                     ? "./assets/userIcon.png"
                     : detail.MemberProfilePic
                 }
@@ -305,7 +297,7 @@ class Dashboard extends Component {
               <img
                 className="rounded-circle"
                 src={
-                  detail.MemberProfilePic == null
+                  detail.MemberProfilePic == ""
                     ? "./assets/userIcon.png"
                     : detail.MemberProfilePic
                 }
