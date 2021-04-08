@@ -12,10 +12,6 @@ export default function (state = defaultState, action) {
         ...state,
         authFlag: action.payload,
       };
-    case aType.Upload_Image:
-      return {
-        image: action.payload,
-      };
     case aType.Reset_Success_Flag:
       return {
         authFlag: false,

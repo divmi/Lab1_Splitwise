@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv/config");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 const app = express();
@@ -8,8 +9,20 @@ const ipAddress = "localhost";
 const { mongoDB } = require("./Utils/config");
 const mongoose = require("mongoose");
 
-app.use(express.static("uploads"));
+//app.use(express.static("uploads"));
 const multer = require("multer"); //upload image on server
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
+
+AWS.config.update({
+  accessKeyId: process.env.AWSAccessKeyId,
+  secretAccessKey: process.env.AWSSecretKey,
+});
+
+const s3 = new AWS.S3();
+// const s3 = new AWS.S3({
+
+// });
 
 //require express session
 var session = require("express-session");
@@ -25,26 +38,38 @@ app.use(
   })
 );
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.originalname);
-  },
-});
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: "splitwiseimage",
+    key: function (req, file, cb) {
+      console.log(file);
+      cb(null, Date.now() + file.originalname); //use Date.now() for unique file keys
+    },
+  }),
+}).single("file");
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
+// const storage = multer.memoryStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, ".");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
-  "file"
-);
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype == "image/jpeg" || file.mimetype == "image/png") {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
+
+// const upload = multer({ storage: storage, fileFilter: fileFilter }).single(
+//   "file"
+// );
 const insert = require("./insert");
 const group = require("./group");
 const Update = require("./update");
@@ -105,11 +130,12 @@ app.listen(port, () => {
 });
 
 app.post("/upload", (req, res, next) => {
-  upload(req, res, (err) => {
-    if (err) {
-      res.sendStatus(500);
+  upload(req, res, (error) => {
+    if (error) {
+      res.status(500).send(error);
+    } else {
+      res.status(200).send(req.file.location);
     }
-    res.send(req.file.filename);
   });
 });
 

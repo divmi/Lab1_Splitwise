@@ -137,9 +137,9 @@ class EditGroup extends Component {
         (x) => x._id == this.props.match.params.value
       );
       if (typeof findName != "undefined") {
-        const name = findName.GroupName;
         this.setState({
-          groupName: name,
+          groupName: findName.GroupName,
+          groupPhoto: findName.GroupProfilePicture,
         });
       }
       this.getMemberInfo();
@@ -162,7 +162,7 @@ class EditGroup extends Component {
       .then((response) => {
         console.log(response);
         this.setState({
-          groupPhoto: `http://${config.ipAddress}:8000/` + response.data,
+          groupPhoto: response.data,
         });
         console.log(this.state.groupPhoto);
       })
@@ -178,10 +178,10 @@ class EditGroup extends Component {
       message = <Redirect to="/home" />;
     }
     if (this.state.userData != null && this.state.userData.length > 0) {
-      // if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
-      // else if (this.state.userData[0].GroupProfilePicture == "")
-      //   picture = "../assets/userIcon.jpg";
-      // else picture = this.state.userData[0].GroupProfilePicture;
+      if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
+      else if (this.state.userData[0].GroupProfilePicture == "")
+        picture = "../assets/userIcon.jpg";
+      else picture = this.state.userData[0].GroupProfilePicture;
 
       groupMemberName = this.state.userData.map((val, idx) => {
         console.log(val);

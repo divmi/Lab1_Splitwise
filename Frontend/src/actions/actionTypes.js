@@ -46,12 +46,6 @@ export const Load_Group_Member_Name = () => {
   };
 };
 
-export const Upload_Image = () => {
-  return {
-    type: "Upload_Image",
-  };
-};
-
 export const Load_AllUser = () => {
   return {
     type: "Load_AllUser",

@@ -125,7 +125,7 @@ class Comment extends Component {
             this.getCommentFromDatabase(e, this.props.transDetail._id)
           }
         >
-          <div className="row">
+          <div className="row" style={{ padding: 0 }}>
             <div className="col-sm-8">
               {new Date(this.props.transDetail.Time).toLocaleDateString(
                 "default",
