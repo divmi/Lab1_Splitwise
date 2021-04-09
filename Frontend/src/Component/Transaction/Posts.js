@@ -78,15 +78,15 @@ export class Posts extends Component {
     ];
     if (posts != null && posts.length > 0) {
       posts.map((name, idx) => {
-        if (name.TransactionDetail == "SettleUp") {
+        if (name.TransactionDetail == "Settled Up") {
           transaction.push({
             id: idx,
             Date: new Date(name.Time).toLocaleString("en-us", {
               weekday: "long",
             }),
             Detail:
-              name.MemberID.Name + "is settled Up with" + name.SettleUpWith,
-            Amount: this.props.Currency + name.Amount,
+              name.MemberID.Name + " is settled Up with " + name.SettleUpWith,
+            Amount: this.props.Currency + name.Amount.toFixed(2),
           });
         } else {
           transaction.push({
@@ -100,7 +100,7 @@ export class Posts extends Component {
               name.TransactionDetail +
               " in " +
               name.GroupID.GroupName,
-            Amount: this.props.Currency + name.Amount,
+            Amount: this.props.Currency + name.Amount.toFixed(2),
           });
         }
       });

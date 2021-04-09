@@ -36,10 +36,7 @@ export const settleUp = (data) => (dispatch) => {
     .post(`http://${config.ipAddress}:8000/settleUp`, data)
     .then((response) => {
       if (response.status == 200)
-        dispatch({
-          type: action.Settled_UP,
-          payload: response.data,
-        });
+        dispatch(getUserSpecificTransactionDetail(data.MemberID));
     })
     .catch((error) => {
       if (error.response && error.response.data) {

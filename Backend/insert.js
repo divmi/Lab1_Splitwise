@@ -222,7 +222,7 @@ class insert {
             TransactionDetail: "Settled Up",
             MemberID: body.MemberID,
             Amount: body.Amount,
-            SettleWith: body.RealID,
+            SettleUpWith: body.RealID,
             GroupID: body.GroupID,
           });
           insTransaction.save((error, data) => {

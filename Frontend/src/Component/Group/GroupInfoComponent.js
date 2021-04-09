@@ -187,7 +187,7 @@ class GroupInfo extends Component {
       showTransaction = (
         <div>
           <img
-            src="./assets/NoExpense.png"
+            src="./assets/NoExpenseFound.png"
             height={350}
             width={350}
             className="img"

@@ -9,8 +9,6 @@ import {
   Form,
 } from "react-bootstrap";
 import React, { Component } from "react";
-import axios from "axios";
-import config from "../../config";
 import { connect } from "react-redux";
 import {
   getUserSpecificTransactionDetail,
@@ -166,34 +164,7 @@ class Dashboard extends Component {
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
       this.props.settleUp(data);
-      axios.defaults.withCredentials = true;
-      axios
-        .post(`http://${config.ipAddress}:8000/settleUp`, data)
-        .then((response) => {
-          console.log("Status Code : ", response.status);
-          if (response.status === 200) {
-            this.closeModal();
-            this.setState({
-              show: [],
-            });
-            this.props.getUserSpecificTransactionDetail(this.state.ID);
-          } else {
-            this.setState({
-              loginError:
-                "<p style={{color: red}}>User is already registered</p>",
-              authFlag: false,
-            });
-          }
-        })
-        .catch(() => {
-          this.setState({
-            loginError: "User is already registered",
-          });
-        });
-    } else {
-      this.setState({
-        error: error,
-      });
+      this.closeModal();
     }
   };
 
@@ -499,7 +470,11 @@ class Dashboard extends Component {
                       }}
                       type="number"
                       step="0.1"
-                      value={this.state.Amount == 0 ? "" : -this.state.Amount}
+                      value={
+                        this.state.Amount == 0
+                          ? ""
+                          : -this.state.Amount.toFixed(2)
+                      }
                       placeholder={this.state.Currency + "0.00"}
                       readOnly
                       required
