@@ -30,19 +30,14 @@ class comment {
   }
 
   getCommentFromTransactionTable(trans_ID, res) {
-    Comment.find({ Trans_ID: trans_ID }, (error, result) => {
-      if (error) {
-        res.writeHead(500, {
-          "Content-Type": "text/plain",
-        });
-        res.end("Transaction Not Found");
-      } else {
+    Comment.find({ Trans_ID: trans_ID })
+      .populate("comments.MemberCommented", ["Name"])
+      .then((result) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",
         });
         res.end(JSON.stringify(result));
-      }
-    });
+      });
   }
 
   deleteComment(body, res) {

@@ -252,8 +252,9 @@ class Dashboard extends Component {
               ></img>
             </div>
             <div className="col">
-              <p style={{ fontSize: "14px" }}>
-                {detail.MemberOwsName} <br />
+              <p style={{ fontSize: "15px" }}>
+                <strong>{detail.MemberOwsName} </strong>
+                <br />
                 you ows {this.state.Currency}
                 {detail.Amount.toFixed(2)} <br />
                 {detail.Transaction.map((value, idy) => {
@@ -306,8 +307,8 @@ class Dashboard extends Component {
               ></img>
             </div>
             <div className="col">
-              <p style={{ fontSize: "14px" }}>
-                {detail.MemberOwsName}
+              <p style={{ fontSize: "15px" }}>
+                <strong>{detail.MemberOwsName}</strong>
                 <br /> owes you {this.state.Currency}
                 {detail.Amount.toFixed(2)} <br />
                 {detail.Transaction.map((value, idy) => {

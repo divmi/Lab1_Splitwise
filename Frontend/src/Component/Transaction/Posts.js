@@ -110,7 +110,7 @@ export class Posts extends Component {
       <div className="container">
         <div
           style={{
-            height: 600,
+            height: 500,
             width: "100%",
             alignContent: "center",
             textAlign: "center",

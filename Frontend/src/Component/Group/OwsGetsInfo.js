@@ -29,9 +29,8 @@ class OwsGetDetail extends Component {
     if (prevState.name !== this.props.name) {
       this.props.getGroupSummary(this.props.name);
     } else if (prevState.owsGetDetail !== this.props.owsGetDetail) {
-      console.log("got called from here");
       this.calculateMemberSpecificTable();
-    } else if (prevState.updated !== this.props.updated) {
+    } else if (prevState.transactionDetail !== this.props.transactionDetail) {
       this.props.getGroupSummary(this.props.name);
     }
   }
@@ -135,6 +134,7 @@ class OwsGetDetail extends Component {
 const mapStateToProps = (state) => {
   return {
     owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
+    transactionDetail: state.groupInfo.transactionDetail,
   };
 };
 

@@ -8,6 +8,7 @@ var Comment = new Schema(
       required: true,
       ref: "TransactionDetail",
     },
+    Time: { type: Date, default: Date.now },
     comments: [
       {
         MemberCommented: {

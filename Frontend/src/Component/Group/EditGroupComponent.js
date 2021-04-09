@@ -179,10 +179,8 @@ class EditGroup extends Component {
     }
     if (this.state.userData != null && this.state.userData.length > 0) {
       if (this.state.groupPhoto != "") picture = this.state.groupPhoto;
-      else if (this.state.userData[0].GroupProfilePicture == "")
-        picture = "../assets/userIcon.jpg";
-      else picture = this.state.userData[0].GroupProfilePicture;
-
+      else picture = "../assets/userIcon.jpg";
+      console.log(picture);
       groupMemberName = this.state.userData.map((val, idx) => {
         console.log(val);
         return (

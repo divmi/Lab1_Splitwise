@@ -90,7 +90,7 @@ class GroupInfo extends Component {
       this.OpenOwsGetsAmount(false);
     }
     if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
-      console.log("came here");
+      console.log("close Modal got called from update function");
       this.closeModal();
       this.props.resetSuccessFlag();
       this.setState({

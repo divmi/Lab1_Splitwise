@@ -65,6 +65,9 @@ class MyGroup extends Component {
         this.setState({
           ID: data._id,
         });
+        if (this.props.groupInfo.length == 0) {
+          this.props.getUserDetails(data._id);
+        }
         this.GetGroupInfo(data._id);
       }
     }
@@ -134,9 +137,8 @@ class MyGroup extends Component {
     return (
       <div className="container fluid">
         {redirectVar}
-        <div className="row">
-          <div className="setHeight col col-sm-1"></div>
-          <div className="setHeight col col-sm-2 shadow-sm p-3 mb-3 bg-light rounded">
+        <div className="row" style={{ marginLeft: "-50px" }}>
+          <div className="setHeight col col-sm-2 p-2 shadow-sm border-right rounded no-float">
             <div
               id="dashboard-div"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
@@ -151,7 +153,7 @@ class MyGroup extends Component {
               </button>
               <hr />
               <div className="input-group">
-                <div className="form-outline" style={{ width: "140px" }}>
+                <div className="form" style={{ width: "140px" }}>
                   <input
                     type="search"
                     data-testid="search-input-box"
@@ -180,7 +182,10 @@ class MyGroup extends Component {
               </table>
             </div>
           </div>
-          <div className="setHeight col col-sm-9 shadow-sm p-3 mb-5 bg-light rounded">
+          <div
+            className="setHeight col col-sm-9 shadow-sm p-2 rounded"
+            style={{ marginLeft: "20px" }}
+          >
             {this.state.component}
           </div>
         </div>

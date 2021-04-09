@@ -174,13 +174,14 @@ class insert {
           OwsGetsDetail.deleteMany({ GroupID: groupID }, (err, result) => {
             if (err) {
               reject(error);
-            }
-          });
-          OwsGetsDetail.insertMany(transactionlist, (error, result) => {
-            if (error) {
-              reject(error);
             } else {
-              resolve(result);
+              OwsGetsDetail.insertMany(transactionlist, (error, result) => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve(result);
+                }
+              });
             }
           });
         }

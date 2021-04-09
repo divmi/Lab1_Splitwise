@@ -59,7 +59,7 @@ class Comment extends Component {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
-        console.log("Component got mounted");
+        console.log("Component got mounted comments");
         this.setState({
           Currency: localStorageData.Currency,
           UserId: localStorageData._id,
@@ -95,14 +95,19 @@ class Comment extends Component {
       showComments = this.props.comments.map((value, idx) => {
         return (
           <div key={idx} className="input-group" style={{ margin: "5px" }}>
-            <textarea
+            <p style={{ fontSize: "13px" }}>
+              <strong>{value.MemberCommented.Name}</strong> <br />
+              {value.Comment}
+            </p>
+            {/* <textarea
+              style={{ fontSize: "12px" }}
               className="form-control rounded"
-              width={200}
-              value={value.Comment}
+              width={150}
+              value=
               readOnly
-            />
+            /> */}
             <button
-              type="button"
+              type="button border-none"
               className="btn bg-transparent"
               onClick={(e) => this.deleteComment(e, value)}
             >
