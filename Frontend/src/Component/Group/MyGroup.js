@@ -36,13 +36,14 @@ class MyGroup extends Component {
     );
     console.log("GroupSearch" + this.state.searchName);
     if (typeof findGroup != "undefined") {
-      <GroupInfo
-        name={findGroup._id}
-        groupName={findGroup.GroupName}
-        groupMember={findGroup.GroupMemberInfo}
-      />;
       this.setState({
-        component: <GroupInfo name={this.state.searchName} />,
+        component: (
+          <GroupInfo
+            name={findGroup._id}
+            groupName={findGroup.GroupName}
+            groupMember={findGroup.GroupMemberInfo}
+          />
+        ),
       });
     } else {
       this.setState({
