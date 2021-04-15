@@ -16,13 +16,10 @@ const AWS = require("aws-sdk");
 
 AWS.config.update({
   accessKeyId: process.env.AWSAccessKeyId,
-  secretAccessKey: process.env.AWSSecretKey,
+  secretAccessKey: process.env.AWSSecretKey
 });
 
 const s3 = new AWS.S3();
-// const s3 = new AWS.S3({
-
-// });
 
 //require express session
 var session = require("express-session");
@@ -34,7 +31,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     duration: 60 * 60 * 1000, // Overall duration of Session : 30 minutes : 1800 seconds
-    activeDuration: 5 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000
   })
 );
 
@@ -46,8 +43,8 @@ const upload = multer({
     key: function (req, file, cb) {
       console.log(file);
       cb(null, Date.now() + file.originalname); //use Date.now() for unique file keys
-    },
-  }),
+    }
+  })
 }).single("file");
 
 // const storage = multer.memoryStorage({
@@ -74,7 +71,6 @@ const insert = require("./insert");
 const group = require("./group");
 const Update = require("./update");
 const Comment = require("./Comments");
-var con = "";
 
 const transaction = require("./transactionDetail");
 
@@ -84,7 +80,7 @@ var options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   poolSize: 500,
-  bufferMaxEntries: 0,
+  bufferMaxEntries: 0
 };
 
 mongoose.connect(mongoDB, options, (err, res) => {
@@ -100,7 +96,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 app.use(
   cors({
     origin: `http://${ipAddress}:3000`,
-    credentials: true,
+    credentials: true
   })
 );
 app.use(bodyParser.json());
@@ -130,7 +126,7 @@ app.listen(port, () => {
 });
 
 app.post("/upload", (req, res, next) => {
-  upload(req, res, (error) => {
+  upload(req, res, error => {
     if (error) {
       res.status(500).send(error);
     } else {
