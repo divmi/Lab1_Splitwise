@@ -1,6 +1,6 @@
 const GroupInfo = require("../Model/GroupInfoModel");
 
-function handle_request(body, callback) {
+function handle_request(ID, callback) {
   GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } })
     .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
     .then(grp => {

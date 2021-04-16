@@ -23,7 +23,7 @@ router.post("/updateProfile", checkAuth, function (req, res) {
 router.get("/getUserSpecificGetOwsInfo", checkAuth, function (req, res) {
   kafka.make_request(
     "getUserSpecificGetOwsInfo",
-    eq.query.ID,
+    req.query.ID,
     function (err, results) {
       if (err) {
         res.status(500).end("Error Occured");

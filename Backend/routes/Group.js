@@ -63,7 +63,7 @@ router.get("/getGroupSummary", checkAuth, function (req, res) {
   });
 });
 
-router.get("/getCurrentUserGroup", checkAuth, function (req, res) {
+router.get("/getCurrentUserGroup/", checkAuth, function (req, res) {
   kafka.make_request(
     "getCurrentUserGroup",
     req.query.ID,

@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const transactionDetail = (ID, page, size) => dispatch => {
   console.log("dispatching the action");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
   const url = `http://${config.ipAddress}:8000/transaction/getTransactionFromUser?ID=${ID}&page=${page}&size=${size}`;

@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const updateProfile = userData => dispatch => {
   console.log("dispatching the action");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios

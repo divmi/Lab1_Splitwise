@@ -4,12 +4,11 @@ const OwsGetsDetail = require("../Model/OwsGetsDetailModel");
 
 async function handle_request(body, callback) {
   console.log("Inside book kafka backend");
-  console.log(body._id);
   try {
-    const result = await insert_Promise(body, res);
-    const data = await FindGroupMemberList(body, res, result);
+    const result = await insert_Promise(body);
+    const data = await FindGroupMemberList(body, result);
     console.log("member inserted successfully");
-    const success = await getOwsGetsDetail(body.groupID, res, data);
+    const success = await getOwsGetsDetail(body.groupID, data);
     if (success) {
       callback(null, success);
     }
@@ -18,7 +17,7 @@ async function handle_request(body, callback) {
   }
 }
 
-function FindGroupMemberList(body, res, trans_ID) {
+function FindGroupMemberList(body, trans_ID) {
   return new Promise((resolve, reject) => {
     let memberlist = [];
     let transactionList = [];
@@ -57,7 +56,7 @@ function FindGroupMemberList(body, res, trans_ID) {
   });
 }
 
-function insert_Promise(body, res) {
+async function insert_Promise(body) {
   return new Promise((resolve, reject) => {
     var insTransaction = new TransactionModel({
       TransactionDetail: body.transactionDetail,
@@ -76,7 +75,7 @@ function insert_Promise(body, res) {
   });
 }
 
-function getOwsGetsDetail(groupID, res, memberInfo) {
+async function getOwsGetsDetail(groupID, memberInfo) {
   return new Promise((resolve, reject) => {
     let transactionlist = [];
     UserTransactionBasedOnGroup.find({ GroupID: groupID }).then(result => {

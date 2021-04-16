@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const getTransactionDetail = ID => dispatch => {
   console.log("dispatching the action");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
   const url = `http://${config.ipAddress}:8000/transaction/getTransactionInfo?ID=${ID}`;
@@ -31,7 +32,8 @@ export const getTransactionDetail = ID => dispatch => {
 
 export const addTransactionToDatabase = data => dispatch => {
   console.log("dispatching the action addTransactionToDatabase");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios

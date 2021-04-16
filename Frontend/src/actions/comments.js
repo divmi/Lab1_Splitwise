@@ -4,7 +4,8 @@ import axios from "axios";
 
 export const addCommentsToDatabase = data => dispatch => {
   console.log("dispatching the action addCommentsToDatabase");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios
@@ -25,7 +26,8 @@ export const addCommentsToDatabase = data => dispatch => {
 
 export const deleteCommentFromDatabase = data => dispatch => {
   console.log("dispatching the action addCommentsToDatabase");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a post request with the user data
   axios
@@ -46,7 +48,8 @@ export const deleteCommentFromDatabase = data => dispatch => {
 
 export const getCommentFromDatabase = transID => dispatch => {
   console.log("dispatching the action");
-  const storageToken = localStorage.getItem("userData");
+  const storageToken = JSON.parse(localStorage.getItem("userData"));
+  console.log(storageToken.token);
   axios.defaults.headers.common["authorization"] = storageToken.token;
   axios
     .get(

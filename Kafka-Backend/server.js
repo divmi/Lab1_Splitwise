@@ -6,6 +6,18 @@ var updateGroup = require("../Kafka-Backend/services/updateGroup");
 var joinGroup = require("../Kafka-Backend/services/joinGroup");
 var updateProfile = require("../Kafka-Backend/services/updateProfile");
 
+var addComment = require("../Kafka-Backend/services/addComment");
+var deleteComment = require("../Kafka-Backend/services/deleteComment");
+var getCommentForTransaction = require("../Kafka-Backend/services/getCommentForTransaction");
+var getCurrentUserGroup = require("../Kafka-Backend/services/getCurrentUserGroup");
+var getGroupNotification = require("../Kafka-Backend/services/getGroupNotification");
+var getGroupSummary = require("../Kafka-Backend/services/getGroupSummary");
+var getTransactionFromUser = require("../Kafka-Backend/services/getTransactionFromUser");
+var getTransactionInfo = require("../Kafka-Backend/services/getTransactionInfo");
+var getUserSpecificGetOwsInfo = require("../Kafka-Backend/services/getUserSpecificGetOwsInfo");
+var insertGroupTransaction = require("../Kafka-Backend/services/insertGroupTransaction");
+var settleUp = require("../Kafka-Backend/services/settleUp");
+
 function handleTopicRequest(topic_name, fname) {
   //var topic_name = 'root_topic';
   var consumer = connection.getConsumer(topic_name);
@@ -43,3 +55,15 @@ handleTopicRequest("createGroup", createGroup);
 handleTopicRequest("updateGroup", updateGroup);
 handleTopicRequest("joinGroup", joinGroup);
 handleTopicRequest("updateProfile", updateProfile);
+
+handleTopicRequest("addComment", addComment);
+handleTopicRequest("deleteComment", deleteComment);
+handleTopicRequest("getCommentForTransaction", getCommentForTransaction);
+handleTopicRequest("getCurrentUserGroup", getCurrentUserGroup);
+handleTopicRequest("getGroupNotification", getGroupNotification);
+handleTopicRequest("getGroupSummary", getGroupSummary);
+handleTopicRequest("getTransactionFromUser", getTransactionFromUser);
+handleTopicRequest("getTransactionInfo", getTransactionInfo);
+handleTopicRequest("getUserSpecificGetOwsInfo", getUserSpecificGetOwsInfo);
+handleTopicRequest("insertGroupTransaction", insertGroupTransaction);
+handleTopicRequest("settleUp", settleUp);

@@ -1,6 +1,6 @@
 const TransactionDetail = require("../Model/TransactionDetailModel");
 
-function handle_request(query, callback) {
+async function handle_request(query, callback) {
   console.log("Inside book kafka backend");
   let { page, size, ID } = query;
   let skip = 0;
@@ -17,13 +17,13 @@ function handle_request(query, callback) {
     .sort({ Time: "desc" })
     .limit(limit)
     .skip(skip)
-    .then((transaction) => {
+    .then(transaction => {
       const data = {
         transactionCount: count,
-        transaction: transaction,
+        transaction: transaction
       };
-    //   res.end(JSON.stringify(data));
-      callback(null,data);
+      //   res.end(JSON.stringify(data));
+      callback(null, data);
     });
   console.log("Connected!");
 }

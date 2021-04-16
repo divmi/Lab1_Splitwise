@@ -2,7 +2,6 @@ const TransactionDetail = require("../Model/TransactionDetailModel");
 
 function handle_request(ID, callback) {
   console.log("Inside book kafka backend");
-  console.log(body._id);
   TransactionDetail.find({ GroupID: ID })
     .populate("GroupID", ["GroupName"])
     .populate("MemberID", ["Name"])

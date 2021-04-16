@@ -2,7 +2,6 @@ const Users = require("../Model/UserRegistrationModel");
 
 function handle_request(req, callback) {
   console.log("Update Group Request Handled");
-  console.log(req._id);
   const filter = { _id: req._id };
   const updateDoc = {
     $set: {

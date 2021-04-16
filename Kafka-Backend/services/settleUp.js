@@ -1,8 +1,9 @@
 const OwsGetsDetail = require("../Model/OwsGetsDetailModel");
+const UserTransactionBasedOnGroup = require("../Model/UserTransactionBasedOnGroupModel");
+const TransactionModel = require("../Model/TransactionDetailModel");
 
-function handle_request(req, callback) {
+function handle_request(body, callback) {
   console.log("Update Group Request Handled");
-  console.log(req.user_id);
   OwsGetsDetail.deleteMany(
     {
       $or: [

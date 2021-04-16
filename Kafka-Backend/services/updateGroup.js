@@ -2,7 +2,6 @@ const GroupInfo = require("../Model/GroupInfoModel");
 
 function handle_request(req, callback) {
   console.log("Update Group Request Handled");
-  console.log(req.user_id);
   GroupInfo.findOne({ _id: req.prevGroupName }, (error, findGroup) => {
     if (error) {
       callback(error, "Error");

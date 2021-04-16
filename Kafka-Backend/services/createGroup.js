@@ -2,7 +2,6 @@ const GroupInfo = require("../Model/GroupInfoModel");
 
 function handle_request(msg, callback) {
   console.log("Inside book kafka backend");
-  console.log(msg.user_id);
   GroupInfo.findOne({ GroupName: msg.groupName }, (error, groupInfo) => {
     if (error) {
       callback(error, "Error");

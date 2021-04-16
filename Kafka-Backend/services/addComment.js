@@ -2,7 +2,6 @@ const Comment = require("../Model/Comment");
 
 function handle_request(body, callback) {
   console.log("Inside book kafka backend");
-  console.log(body._id);
   Comment.updateOne(
     { Trans_ID: body.transactionID },
     {

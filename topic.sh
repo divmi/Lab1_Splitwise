@@ -2,3 +2,14 @@ kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partit
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic createGroup
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic joinGroup
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic updateProfile
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic addComment
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic deleteComment
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getCommentForTransaction
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getCurrentUserGroup
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getGroupNotification
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getGroupSummary
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getTransactionFromUser
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getTransactionInfo
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getUserSpecificGetOwsInfo
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic insertGroupTransaction
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic settleUp
