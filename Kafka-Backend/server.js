@@ -2,6 +2,9 @@ var connection = new require("./kafka/Connection");
 const Database = require("./config");
 
 var createGroup = require("../Kafka-Backend/services/createGroup");
+var updateGroup = require("../Kafka-Backend/services/updateGroup");
+var joinGroup = require("../Kafka-Backend/services/joinGroup");
+var updateProfile = require("../Kafka-Backend/services/updateProfile");
 
 function handleTopicRequest(topic_name, fname) {
   //var topic_name = 'root_topic';
@@ -37,3 +40,6 @@ function handleTopicRequest(topic_name, fname) {
 //first argument is topic name
 //second argument is a function that will handle this topic request
 handleTopicRequest("createGroup", createGroup);
+handleTopicRequest("updateGroup", updateGroup);
+handleTopicRequest("joinGroup", joinGroup);
+handleTopicRequest("updateProfile", updateProfile);

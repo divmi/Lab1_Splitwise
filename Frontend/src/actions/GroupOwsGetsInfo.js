@@ -2,29 +2,29 @@ import * as action from "./actionTypes";
 import config from "../config";
 import axios from "axios";
 
-export const getGroupSummary = (ID) => (dispatch) => {
+export const getGroupSummary = ID => dispatch => {
   console.log("dispatching the action");
   const storageToken = localStorage.getItem("userData");
   axios.defaults.headers.common["authorization"] = storageToken.token;
   //make a get request with the user data
-  const url = `http://${config.ipAddress}:8000/getGroupSummary?ID=${ID}`;
+  const url = `http://${config.ipAddress}:8000/group/getGroupSummary?ID=${ID}`;
   console.log(url);
   axios
     .get(url)
-    .then((response) => {
+    .then(response => {
       if (response.status == 200) {
         console.log("Got data :" + response.data);
         dispatch({
           type: action.Load_OwsGets_Detail,
-          payload: response.data,
+          payload: response.data
         });
       }
     })
-    .catch((error) => {
+    .catch(error => {
       if (error.response && error.response.data) {
         return dispatch({
           type: action.Load_OwsGets_Detail,
-          payload: Object.assign(error.response.data),
+          payload: Object.assign(error.response.data)
         });
       }
     });
