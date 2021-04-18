@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {
   addCommentsToDatabase,
   getCommentFromDatabase,
-  deleteCommentFromDatabase,
+  deleteCommentFromDatabase
 } from "../../actions/comments";
 import { Card, Accordion } from "react-bootstrap";
 import ModelWindow from "./ModelComponent";
@@ -17,7 +17,7 @@ class Comment extends Component {
       transactionID: "",
       UserId: "",
       component: null,
-      isOpen: false,
+      isOpen: false
     };
   }
 
@@ -30,28 +30,28 @@ class Comment extends Component {
           isOpen={true}
           transactionDetail={expenseDetail}
         ></ModelWindow>
-      ),
+      )
     });
   };
 
-  addComment = (e) => {
+  addComment = e => {
     e.preventDefault();
     //let comments = this.state.comments;
     let newComment = {
       comment: this.state.textComments,
       transactionID: this.props.transDetail._id,
-      memberCommented: this.state.UserId,
+      memberCommented: this.state.UserId
     };
     //comments.push(newComment);
     this.props.addCommentsToDatabase(newComment);
     this.setState({
-      textComments: "",
+      textComments: ""
     });
   };
 
-  handleCommentChange = (e) => {
+  handleCommentChange = e => {
     this.setState({
-      textComments: e.target.value,
+      textComments: e.target.value
     });
   };
 
@@ -62,7 +62,7 @@ class Comment extends Component {
         console.log("Component got mounted comments");
         this.setState({
           Currency: localStorageData.Currency,
-          UserId: localStorageData._id,
+          UserId: localStorageData._id
         });
       }
     }
@@ -73,7 +73,7 @@ class Comment extends Component {
     if (confirm("Are you sure you want to delete this comment?")) {
       const data = {
         transactionID: this.state.transactionID,
-        commentID: id._id,
+        commentID: id._id
       };
       this.props.deleteCommentFromDatabase(data);
     } else {
@@ -85,7 +85,7 @@ class Comment extends Component {
     e.preventDefault();
     this.props.getCommentFromDatabase(id);
     this.setState({
-      transactionID: this.props.transDetail._id,
+      transactionID: this.props.transDetail._id
     });
   };
 
@@ -96,143 +96,143 @@ class Comment extends Component {
         return (
           <div key={idx} className="input-group" style={{ margin: "5px" }}>
             <p style={{ fontSize: "13px" }}>
-              <strong>{value.MemberCommented.Name}</strong> <br />
+              <strong>{value.MemberCommented.Name}</strong>
+              <button
+                type="button border-none"
+                className="btn bg-transparent"
+                onClick={e => this.deleteComment(e, value)}
+              >
+                <i
+                  className="fa fa-remove"
+                  style={{ color: "#6d1111", fontWeight: "normal" }}
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <br />
               {value.Comment}
             </p>
-            {/* <textarea
-              style={{ fontSize: "12px" }}
-              className="form-control rounded"
-              width={150}
-              value=
-              readOnly
-            /> */}
-            <button
-              type="button border-none"
-              className="btn bg-transparent"
-              onClick={(e) => this.deleteComment(e, value)}
-            >
-              <i
-                className="fa fa-remove"
-                style={{ color: "#6d1111", fontWeight: "normal" }}
-                aria-hidden="true"
-              ></i>
-            </button>
           </div>
         );
       });
     }
     return (
-      <Card key={this.props.index}>
-        <Accordion.Toggle
-          as={Card.Header}
-          eventKey={this.props.index}
-          onClick={(e) =>
-            this.getCommentFromDatabase(e, this.props.transDetail._id)
-          }
-        >
-          <div className="row" style={{ padding: 0 }}>
-            <div className="col-sm-8">
-              {new Date(this.props.transDetail.Time).toLocaleDateString(
-                "default",
-                {
-                  month: "short",
-                  day: "numeric",
-                }
-              )}{" "}
-              &emsp;
-              <img src="./assets/expense.png" height={30} width={20}></img>
-              <label style={{ paddingLeft: "10px" }}>
-                {this.props.transDetail.TransactionDetail}
-              </label>
-            </div>
-            <div className="col-sm-4">
-              <p
-                style={{
-                  color: "GrayText",
-                  textAlign: "right",
-                  fontSize: 13,
-                }}
-              >
-                {this.props.transDetail.MemberID.Name}
-                <br />
-                paid <br />
-                {this.state.Currency}
-                {this.props.transDetail.Amount}
-              </p>
-            </div>
-          </div>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={this.props.index}>
-          <Card.Body>
-            <div className="row border-top shadow bg-light">
-              <div className="col col-sm-6 border-right">
-                <div className="row transaction-padding">
-                  <img src="./assets/expense.png" height={60} width={50}></img>
-                  <p style={{ color: "GrayText", fontSize: 13, padding: 10 }}>
-                    {this.props.transDetail.TransactionDetail} <br />
-                    {this.state.Currency}
-                    {this.props.transDetail.Amount} <br />
-                    paid by {this.props.transDetail.MemberID.Name}
-                    <br />
-                    {new Date(this.props.transDetail.Time).toLocaleString(
-                      "en-us",
-                      {
-                        weekday: "long",
-                      }
-                    )}
-                    <br />
-                    <button
-                      name="btn-Edit-Expense"
-                      className="btn btn-edit"
-                      onClick={(e) => this.openModal(e, this.props.transDetail)}
-                    >
-                      Edit expense
-                    </button>
-                  </p>
-                </div>
+      <span className="block-example border-bottom border-dark">
+        <Card key={this.props.index}>
+          <Accordion.Toggle
+            as={Card.Header}
+            eventKey={this.props.index}
+            onClick={e =>
+              this.getCommentFromDatabase(e, this.props.transDetail._id)
+            }
+          >
+            <div className="row" style={{ padding: 0 }}>
+              <div className="col-sm-8">
+                {new Date(this.props.transDetail.Time).toLocaleDateString(
+                  "default",
+                  {
+                    month: "short",
+                    day: "numeric"
+                  }
+                )}{" "}
+                &emsp;
+                <img src="./assets/expense.png" height={30} width={20}></img>
+                <label style={{ paddingLeft: "10px" }}>
+                  {this.props.transDetail.TransactionDetail}
+                </label>
               </div>
-              <div className="col col-sm-6">
-                <label
+              <div className="col-sm-4">
+                <p
                   style={{
                     color: "GrayText",
-                    fontSize: 12,
+                    textAlign: "right",
+                    fontSize: 13
                   }}
                 >
-                  Notes and Comments
-                </label>
-                {showComments}
-                <textarea
-                  name="Add comment"
-                  style={{ marginBottom: "5px" }}
-                  value={this.state.textComments}
-                  className="form-control rounded"
-                  onChange={this.handleCommentChange}
-                ></textarea>
-                <button
-                  name="btn-AddComment"
-                  className="btn btn-edit border-none"
-                  onClick={this.addComment}
-                >
-                  Post
-                </button>
-                {this.state.component}
+                  {this.props.transDetail.MemberID.Name}
+                  <br />
+                  paid <br />
+                  {this.state.Currency}
+                  {this.props.transDetail.Amount}
+                </p>
               </div>
             </div>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={this.props.index}>
+            <Card.Body>
+              <div className="row border-top shadow bg-light">
+                <div className="col col-sm-6 border-right">
+                  <div className="row transaction-padding">
+                    <img
+                      src="./assets/expense.png"
+                      height={60}
+                      width={50}
+                    ></img>
+                    <p style={{ color: "GrayText", fontSize: 13, padding: 10 }}>
+                      {this.props.transDetail.TransactionDetail} <br />
+                      {this.state.Currency}
+                      {this.props.transDetail.Amount} <br />
+                      paid by {this.props.transDetail.MemberID.Name}
+                      <br />
+                      {new Date(this.props.transDetail.Time).toLocaleString(
+                        "en-us",
+                        {
+                          weekday: "long"
+                        }
+                      )}
+                      <br />
+                      <button
+                        name="btn-Edit-Expense"
+                        className="btn btn-edit"
+                        onClick={e => this.openModal(e, this.props.transDetail)}
+                      >
+                        Edit expense
+                      </button>
+                    </p>
+                  </div>
+                </div>
+                <div className="col col-sm-6">
+                  <label
+                    style={{
+                      color: "GrayText",
+                      fontSize: 12
+                    }}
+                  >
+                    Notes and Comments
+                  </label>
+                  {showComments}
+                  <textarea
+                    name="Add comment"
+                    style={{ marginBottom: "5px" }}
+                    value={this.state.textComments}
+                    className="form-control rounded"
+                    onChange={this.handleCommentChange}
+                  ></textarea>
+                  <button
+                    name="btn-AddComment"
+                    className="btn btn-edit border-none"
+                    onClick={this.addComment}
+                  >
+                    Post
+                  </button>
+                  {this.state.component}
+                </div>
+              </div>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </span>
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    comments: state.comments.commentsFromDB,
+    comments: state.comments.commentsFromDB
   };
 };
 
 export default connect(mapStateToProps, {
   addCommentsToDatabase,
   getCommentFromDatabase,
-  deleteCommentFromDatabase,
+  deleteCommentFromDatabase
 })(Comment);

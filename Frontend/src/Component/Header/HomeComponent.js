@@ -15,23 +15,25 @@ class Home extends Component {
       summary: null,
       groupInfo: [],
       ID: "",
-      token: "",
+      token: ""
     };
   }
 
   componentDidUpdate(prevState) {
     if (prevState.groupInfo != this.props.groupInfo) {
       let groupInfo = [];
-      this.props.groupInfo.map((info) => {
-        const member = info.GroupMemberInfo.find(
-          (x) => x.ID._id == this.state.ID
-        );
-        if (typeof member != "undefined" && member.Accepted) {
-          groupInfo.push(info);
-        }
-      });
+      if (this.props.groupInfo.length > 0) {
+        this.props.groupInfo.map(info => {
+          const member = info.GroupMemberInfo.find(
+            x => x.ID._id == this.state.ID
+          );
+          if (typeof member != "undefined" && member.Accepted) {
+            groupInfo.push(info);
+          }
+        });
+      }
       this.setState({
-        groupInfo: groupInfo,
+        groupInfo: groupInfo
       });
     }
   }
@@ -44,14 +46,14 @@ class Home extends Component {
         console.log("Control reached to home page");
         this.setState({
           ID: data._id,
-          token: data._token,
+          token: data._token
         });
         this.props.getUserDetails(data._id);
       }
       if (this.state.component == null) {
         if (typeof data != "undefined") {
           this.setState({
-            component: <Dashboard email={data._id} />,
+            component: <Dashboard email={data._id} />
           });
         }
       }
@@ -60,7 +62,7 @@ class Home extends Component {
 
   OpenDashBoard = () => {
     this.setState({
-      component: <Dashboard />,
+      component: <Dashboard />
     });
   };
 
@@ -79,13 +81,13 @@ class Home extends Component {
           groupName={groupName}
           groupMember={groupMemberName}
         />
-      ),
+      )
     });
   }
 
   OpenRecentActivity = () => {
     this.setState({
-      component: <TransactionDetail />,
+      component: <TransactionDetail />
     });
   };
 
@@ -154,9 +156,9 @@ class Home extends Component {
     );
   }
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    groupInfo: state.homeReducer.groupInfo,
+    groupInfo: state.homeReducer.groupInfo
   };
 };
 

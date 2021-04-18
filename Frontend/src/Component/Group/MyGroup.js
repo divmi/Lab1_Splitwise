@@ -14,25 +14,25 @@ class MyGroup extends Component {
       groupInfo: [],
       error: "",
       searchName: "",
-      ID: "",
+      ID: ""
     };
   }
 
   GroupAccepted() {
     this.setState({
-      groupInfo: this.getUserDetails(),
+      groupInfo: this.getUserDetails()
     });
   }
-  handleSearchTextbox = (e) => {
+  handleSearchTextbox = e => {
     this.setState({
       searchName: e.target.value,
-      error: "",
+      error: ""
     });
   };
 
   handleSearchButton = () => {
     const findGroup = this.state.groupInfo.find(
-      (x) => x.GroupName == this.state.searchName
+      x => x.GroupName == this.state.searchName
     );
     console.log("GroupSearch" + this.state.searchName);
     if (typeof findGroup != "undefined") {
@@ -43,18 +43,18 @@ class MyGroup extends Component {
             groupName={findGroup.GroupName}
             groupMember={findGroup.GroupMemberInfo}
           />
-        ),
+        )
       });
     } else {
       this.setState({
-        error: "GroupName not found",
+        error: "GroupName not found"
       });
     }
   };
 
   OpenGroupNotifications = () => {
     this.setState({
-      component: <GroupNotification click={this.GroupAccepted.bind(this)} />,
+      component: <GroupNotification click={this.GroupAccepted.bind(this)} />
     });
   };
 
@@ -64,7 +64,7 @@ class MyGroup extends Component {
       if (localStorage.key("userData")) {
         data = JSON.parse(localStorage.getItem("userData"));
         this.setState({
-          ID: data._id,
+          ID: data._id
         });
         if (this.props.groupInfo.length == 0) {
           this.props.getUserDetails(data._id);
@@ -74,21 +74,21 @@ class MyGroup extends Component {
     }
     if (this.state.component == null) {
       this.setState({
-        component: <GroupNotification click={this.GroupAccepted.bind(this)} />,
+        component: <GroupNotification click={this.GroupAccepted.bind(this)} />
       });
     }
   }
 
   GetGroupInfo(ID) {
     let groupInfo = [];
-    this.props.groupInfo.map((info) => {
-      const member = info.GroupMemberInfo.find((x) => x.ID._id == ID);
+    this.props.groupInfo.map(info => {
+      const member = info.GroupMemberInfo.find(x => x.ID._id == ID);
       if (typeof member != "undefined" && member.Accepted) {
         groupInfo.push(info);
       }
     });
     this.setState({
-      groupInfo: groupInfo,
+      groupInfo: groupInfo
     });
   }
 
@@ -106,7 +106,7 @@ class MyGroup extends Component {
           groupName={param.GroupName}
           groupMember={param.GroupMemberInfo}
         />
-      ),
+      )
     });
   }
 
@@ -136,10 +136,11 @@ class MyGroup extends Component {
       });
     }
     return (
-      <div className="container fluid">
+      <div className="container-flex">
         {redirectVar}
-        <div className="row" style={{ marginLeft: "-50px" }}>
-          <div className="setHeight col col-sm-2 p-2 shadow-sm border-right rounded no-float">
+        <div className="row row-flex">
+          <div className="setHeight col col-sm-1"></div>
+          <div className="setHeight col-md-2point5 p-2 shadow-sm border-right rounded no-float">
             <div
               id="dashboard-div"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}
@@ -184,7 +185,7 @@ class MyGroup extends Component {
             </div>
           </div>
           <div
-            className="setHeight col col-sm-9 shadow-sm p-2 rounded"
+            className="setHeight col col-sm-8 shadow-sm p-3 mb-5 border-right rounded no-float"
             style={{ marginLeft: "20px" }}
           >
             {this.state.component}
@@ -194,9 +195,9 @@ class MyGroup extends Component {
     );
   }
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    groupInfo: state.homeReducer.groupInfo,
+    groupInfo: state.homeReducer.groupInfo
   };
 };
 

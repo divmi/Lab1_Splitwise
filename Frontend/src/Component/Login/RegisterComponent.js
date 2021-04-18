@@ -7,7 +7,7 @@ import {
   Label,
   Input,
   Col,
-  FormFeedback,
+  FormFeedback
 } from "reactstrap";
 import { isEmail } from "validator";
 import { connect } from "react-redux";
@@ -21,25 +21,25 @@ class Register extends Component {
         userInfo: {
           name: "",
           email: "",
-          password: "",
+          password: ""
         },
         error: {},
         loginError: "",
-        auth: true,
+        auth: true
       };
     }
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       userInfo: {
         ...this.state.userInfo,
-        [e.target.name]: e.target.value,
-      },
+        [e.target.name]: e.target.value
+      }
     });
   };
 
-  submitForm = (e) => {
+  submitForm = e => {
     //prevent page from refresh
     e.preventDefault();
 
@@ -54,15 +54,16 @@ class Register extends Component {
 
   componentDidUpdate(prevState) {
     if (prevState.user != this.props.user) {
-      if (this.props.user == "User is already registered") {
+      console.log(this.props.user);
+      if (this.props.user == "Registered") {
         this.setState({
           authFlag: false,
           formerror: {},
-          loginError: this.props.user,
+          loginError: "User is already registered"
         });
       } else {
         this.setState({
-          authFlag: true,
+          authFlag: true
         });
         this.SetLocalStorage(JSON.stringify(this.props.user));
       }
@@ -71,6 +72,7 @@ class Register extends Component {
 
   SetLocalStorage(userInfo) {
     if (typeof Storage !== "undefined") {
+      console.log("Set local storage here");
       localStorage.clear();
       try {
         localStorage.setItem("userData", userInfo);
@@ -94,6 +96,7 @@ class Register extends Component {
   render() {
     let redirectVar = null;
     if (typeof this.props.user != "undefined" && this.state.authFlag) {
+      console.log("Control goes to home page from here");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/register" />;
     return (
@@ -180,9 +183,9 @@ class Register extends Component {
     );
   }
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    user: state.login.user,
+    user: state.login.user
   };
 };
 

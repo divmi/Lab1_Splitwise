@@ -13,3 +13,5 @@ kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partit
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic getUserSpecificGetOwsInfo
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic insertGroupTransaction
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic settleUp
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic loginUser
+kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic signupUser
