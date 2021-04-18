@@ -6,13 +6,13 @@ import {
   Image,
   Modal,
   Container,
-  Form,
+  Form
 } from "react-bootstrap";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   getUserSpecificTransactionDetail,
-  settleUp,
+  settleUp
 } from "../../actions/dashboardAction";
 
 class Dashboard extends Component {
@@ -30,7 +30,7 @@ class Dashboard extends Component {
       GroupID: "",
       RealName: "",
       error: "",
-      MemberOws: "",
+      MemberOws: ""
     };
   }
 
@@ -39,24 +39,24 @@ class Dashboard extends Component {
       error: "",
       RealName: "",
       Amount: 0,
-      isOpen: true,
+      isOpen: true
     });
   closeModal = () => {
     this.setState({ isOpen: false });
   };
 
-  handleClick = (event) => {
+  handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  alertClicked = (detail) => {
+  alertClicked = detail => {
     console.log("GroupName Divya------------------:" + JSON.stringify(detail));
     this.setState({
       Amount: detail.Amount,
       GroupName: detail.GroupID,
       RealName: detail.MemberOwsName,
       MemberOws: detail.MemberOws,
-      GroupID: detail.Transaction[0].GroupID,
+      GroupID: detail.Transaction[0].GroupID
     });
     console.log(this.state.RealName);
   };
@@ -64,10 +64,10 @@ class Dashboard extends Component {
     let sumOws = 0;
     let sumGets = 0;
     this.setState({
-      show: [],
+      show: []
     });
     if (this.props.userAmountDetails.length > 0) {
-      this.props.userAmountDetails.map((value) => {
+      this.props.userAmountDetails.map(value => {
         if (value.MemberOws._id == this.state.ID) {
           this.state.show.push({
             MemberGets: value.MemberOws._id,
@@ -78,7 +78,7 @@ class Dashboard extends Component {
             MemberOwsName: value.MemberGets.Name,
             MemberProfilePicOws: value.MemberGets.UserProfilePic,
             MemberProfilePicGets: value.MemberOws.UserProfilePic,
-            GroupID: value.GroupID._id,
+            GroupID: value.GroupID._id
           });
         } else {
           this.state.show.push({
@@ -90,13 +90,13 @@ class Dashboard extends Component {
             MemberOwsName: value.MemberOws.Name,
             MemberProfilePicOws: value.MemberOws.UserProfilePic,
             MemberProfilePicGets: value.MemberGets.UserProfilePic,
-            GroupID: value.GroupID._id,
+            GroupID: value.GroupID._id
           });
         }
       });
       console.log(JSON.stringify(this.state.show));
       this.calculateMemberSpecificTable();
-      this.state.show.map((detail) => {
+      this.state.show.map(detail => {
         if (detail.Amount > 0) {
           sumGets += detail.Amount;
         } else {
@@ -105,7 +105,7 @@ class Dashboard extends Component {
         this.setState({
           ows: sumOws,
           gets: sumGets,
-          total: sumGets + sumOws,
+          total: sumGets + sumOws
         });
       });
     }
@@ -113,22 +113,22 @@ class Dashboard extends Component {
 
   calculateMemberSpecificTable() {
     this.setState({
-      memberWithAmountList: [],
+      memberWithAmountList: []
     });
     let memberWithOwsGetsDetail = [];
     const memberInfo = [
-      ...new Set(this.state.show.map((memberName) => memberName.MemberOws)),
+      ...new Set(this.state.show.map(memberName => memberName.MemberOws))
     ];
     if (memberInfo.length > 0) {
-      memberInfo.map((memberName) => {
+      memberInfo.map(memberName => {
         let finalMoney = 0;
         const allTransaction = this.state.show.filter(
-          (x) => x.MemberOws == memberName
+          x => x.MemberOws == memberName
         );
-        allTransaction.map((x) => {
+        allTransaction.map(x => {
           finalMoney += x.Amount;
         });
-        const findName = this.state.show.find((x) => x.MemberOws == memberName);
+        const findName = this.state.show.find(x => x.MemberOws == memberName);
         memberWithOwsGetsDetail.push({
           Amount: finalMoney,
           Transaction: allTransaction,
@@ -136,11 +136,11 @@ class Dashboard extends Component {
           MemberOwsName: findName.MemberOwsName,
           MemberProfilePic: findName.MemberProfilePicOws,
           MemberOws: findName.MemberOws,
-          GroupID: findName.GroupID._id,
+          GroupID: findName.GroupID._id
         });
       });
       this.setState({
-        memberWithAmountList: memberWithOwsGetsDetail,
+        memberWithAmountList: memberWithOwsGetsDetail
       });
     }
   }
@@ -151,7 +151,7 @@ class Dashboard extends Component {
     return error;
   };
 
-  handleSettleUp = (e) => {
+  handleSettleUp = e => {
     //prevent page from refresh
     e.preventDefault();
     const data = {
@@ -159,7 +159,7 @@ class Dashboard extends Component {
       MemberID: this.state.ID,
       GroupID: this.state.GroupID,
       RealID: this.state.RealName,
-      MemberOws: this.state.MemberOws,
+      MemberOws: this.state.MemberOws
     };
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
@@ -175,7 +175,7 @@ class Dashboard extends Component {
         localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
-          ID: localStorageData._id,
+          ID: localStorageData._id
         });
       }
     }
@@ -195,7 +195,7 @@ class Dashboard extends Component {
     let sumOws = 0,
       sumGets = 0,
       total = 0;
-    this.state.memberWithAmountList.map((detail) => {
+    this.state.memberWithAmountList.map(detail => {
       // console.log(JSON.stringify(detail));
       if (detail.Amount < 0) {
         sumOws += detail.Amount;
@@ -231,18 +231,18 @@ class Dashboard extends Component {
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
-                      <label className="dashBoardLabel" key={idy}>
+                      <p className="dashBoardLabel" key={idy}>
                         o: you owe{" "}
                         <strong className="orangeCode">
                           {this.state.Currency}
                           {-value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </label>
+                      </p>
                     );
                   } else if (value.Amount > 0) {
                     return (
-                      <label key={idy} className="dashBoardLabel">
+                      <p key={idy} className="dashBoardLabel">
                         o: owes you{" "}
                         <strong className="greenCode">
                           {" "}
@@ -250,7 +250,7 @@ class Dashboard extends Component {
                           {value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </label>
+                      </p>
                     );
                   }
                 })}
@@ -285,18 +285,18 @@ class Dashboard extends Component {
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
-                      <label className="dashBoardLabel" key={idy}>
+                      <p className="dashBoardLabel" key={idy}>
                         o: you owe{" "}
                         <strong className="orangeCode">
                           {this.state.Currency}
                           {-value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </label>
+                      </p>
                     );
                   } else if (value.Amount > 0) {
                     return (
-                      <label key={idy} className="dashBoardLabel">
+                      <p key={idy} className="dashBoardLabel">
                         o: owes you{" "}
                         <strong className="greenCode">
                           {" "}
@@ -304,7 +304,7 @@ class Dashboard extends Component {
                           {value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </label>
+                      </p>
                     );
                   }
                 })}
@@ -341,7 +341,7 @@ class Dashboard extends Component {
               style={{
                 lineHeight: "40px",
                 width: "120px",
-                textAlign: "center",
+                textAlign: "center"
               }}
               onClick={this.openModal}
             >
@@ -452,7 +452,7 @@ class Dashboard extends Component {
                     <Form.Control
                       style={{
                         borderStyle: "dotted",
-                        borderRadius: 1,
+                        borderRadius: 1
                       }}
                       type="text"
                       value={this.state.RealName}
@@ -466,7 +466,7 @@ class Dashboard extends Component {
                       style={{
                         borderStyle: "dotted",
                         borderRadius: 1,
-                        textDecoration: "none",
+                        textDecoration: "none"
                       }}
                       type="number"
                       step="0.1"
@@ -503,13 +503,13 @@ class Dashboard extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    userAmountDetails: state.homeReducer.userAmountDetails,
+    userAmountDetails: state.homeReducer.userAmountDetails
   };
 };
 
 export default connect(mapStateToProps, {
   getUserSpecificTransactionDetail,
-  settleUp,
+  settleUp
 })(Dashboard);
