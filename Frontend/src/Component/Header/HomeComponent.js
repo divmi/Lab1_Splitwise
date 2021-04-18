@@ -66,20 +66,25 @@ class Home extends Component {
     });
   };
 
-  OpenGroupInfo(param, groupName, groupMemberName) {
+  OpenGroupInfo(param) {
     this.setState({
       component: (
         <GroupInfo
-          name={param}
-          groupName={groupName}
-          groupMember={groupMemberName}
+          name={param._id}
+          groupName={param.GroupName}
+          groupMember={param.GroupMemberInfo}
+          groupPhoto={
+            param.GroupProfilePicture == ""
+              ? "../assets/userIcon.png"
+              : param.GroupProfilePicture
+          }
         />
       ),
       summary: (
         <OwsGetDetail
-          name={param}
-          groupName={groupName}
-          groupMember={groupMemberName}
+          name={param._id}
+          groupName={param.GroupName}
+          groupMember={param.GroupMemberInfo}
         />
       )
     });
@@ -103,9 +108,7 @@ class Home extends Component {
           <tr
             key={idx}
             style={{ verticalAlign: "center" }}
-            onClick={() =>
-              this.OpenGroupInfo(name._id, name.GroupName, name.GroupMemberInfo)
-            }
+            onClick={() => this.OpenGroupInfo(name)}
           >
             <td>
               <i className="fa fa-users"></i>

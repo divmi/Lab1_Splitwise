@@ -7,13 +7,13 @@ import {
   Image,
   Container,
   Form,
-  Accordion,
+  Accordion
 } from "react-bootstrap";
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import {
   getTransactionDetail,
-  addTransactionToDatabase,
+  addTransactionToDatabase
 } from "../../actions/groupInfo";
 import { resetSuccessFlag } from "../../actions/loginAction";
 import { connect } from "react-redux";
@@ -31,7 +31,7 @@ class GroupInfo extends Component {
       component: null,
       Currency: "",
       UserId: "",
-      comment: null,
+      comment: null
     };
   }
 
@@ -40,12 +40,12 @@ class GroupInfo extends Component {
     if (e.target.name == "btn-Edit-Expense") {
       this.setState({
         transaction_description: expenseDetail.TransactionDetail,
-        amount: expenseDetail.Amount,
+        amount: expenseDetail.Amount
       });
     } else {
       this.setState({
         transaction_description: "",
-        amount: "",
+        amount: ""
       });
     }
     console.log(this.state.transaction_description);
@@ -57,15 +57,15 @@ class GroupInfo extends Component {
     this.OpenOwsGetsAmount(true);
   };
 
-  handleCommentChange = (e) => {
+  handleCommentChange = e => {
     this.setState({
-      textComments: e.target.value,
+      textComments: e.target.value
     });
   };
 
-  handleTransactionChange = (e) => {
+  handleTransactionChange = e => {
     this.setState({
-      transaction_description: e.target.value,
+      transaction_description: e.target.value
     });
   };
 
@@ -75,7 +75,7 @@ class GroupInfo extends Component {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
-          UserId: localStorageData._id,
+          UserId: localStorageData._id
         });
       }
     }
@@ -94,7 +94,7 @@ class GroupInfo extends Component {
       this.closeModal();
       this.props.resetSuccessFlag();
       this.setState({
-        axiosCallInProgress: false,
+        axiosCallInProgress: false
       });
     }
   }
@@ -107,7 +107,7 @@ class GroupInfo extends Component {
           groupMemberName={this.props.groupMember}
           updated={transactionUpdated}
         />
-      ),
+      )
     });
   }
 
@@ -117,18 +117,18 @@ class GroupInfo extends Component {
     let newComment = {
       comment: this.state.textComments,
       transactionID: transaction._id,
-      memberCommented: this.state.UserId,
+      memberCommented: this.state.UserId
     };
     //comments.push(newComment);
     this.props.addCommentsToDatabase(newComment);
     this.setState({
-      textComments: "",
+      textComments: ""
     });
   };
 
-  handleAmountChange = (e) => {
+  handleAmountChange = e => {
     this.setState({
-      amount: e.target.value,
+      amount: e.target.value
     });
   };
 
@@ -140,14 +140,14 @@ class GroupInfo extends Component {
     return error;
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     const data = {
       transactionDetail: this.state.transaction_description,
       amount: this.state.amount,
       groupID: this.props.name,
       groupMember: this.props.groupMember,
-      memberID: this.state.UserId,
+      memberID: this.state.UserId
     };
 
     const error = this.validateForm();
@@ -158,7 +158,7 @@ class GroupInfo extends Component {
         error: error,
         authFlag: false,
         transaction_description: "",
-        amount: 0,
+        amount: 0
       });
     }
   };
@@ -166,16 +166,15 @@ class GroupInfo extends Component {
   OpenCommentSection = (e, user) => {
     e.preventDefault();
     this.setState({
-      comment: <Comment transDetail={user}></Comment>,
+      comment: <Comment transDetail={user}></Comment>
     });
   };
 
   render() {
     let showTransaction = null;
-    let picture = "../assets/userIcon.png";
     let index = 0;
     if (this.props.transactionDetail.length > 0) {
-      showTransaction = this.props.transactionDetail.map((name) => {
+      showTransaction = this.props.transactionDetail.map(name => {
         if (name.Amount > 0) {
           index = index + 1;
           return (
@@ -213,10 +212,13 @@ class GroupInfo extends Component {
                 marginLeft: 10,
                 marginTop: 5,
                 fontWeight: "bold",
-                fontSize: "25px",
+                fontSize: "25px"
               }}
             >
-              <img src={picture} className="rounded-circle profileImage"></img>
+              <img
+                src={this.props.groupPhoto}
+                className="rounded-circle profileImage"
+              ></img>
               <label style={{ paddingLeft: "10px" }}>
                 {this.props.groupName}
               </label>
@@ -233,7 +235,7 @@ class GroupInfo extends Component {
               style={{
                 textAlign: "center",
                 fontSize: 12,
-                width: 110,
+                width: 110
               }}
               onClick={this.openModal}
             >
@@ -280,7 +282,7 @@ class GroupInfo extends Component {
                         style={{
                           borderStyle: "dotted",
                           borderRadius: 1,
-                          textDecoration: "none",
+                          textDecoration: "none"
                         }}
                         type="text"
                         value={this.state.transaction_description}
@@ -295,7 +297,7 @@ class GroupInfo extends Component {
                         style={{
                           borderStyle: "dotted",
                           borderRadius: 1,
-                          textDecoration: "none",
+                          textDecoration: "none"
                         }}
                         name="amount"
                         id="amount"
@@ -333,9 +335,9 @@ class GroupInfo extends Component {
             </Modal.Footer>
           </Modal>
         </div>
-        <div className="row shadow p-3 mb-5 bg-light rounded border-right">
+        <div className="row shadow p-2 bg-light rounded border-right">
           <div className="col col-sm-9">
-            <Accordion>{showTransaction}</Accordion>
+            <Accordion defaultActiveKey="1">{showTransaction}</Accordion>
           </div>
           <div
             className="col col-sm-3 border-left"
@@ -350,15 +352,15 @@ class GroupInfo extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     transactionDetail: state.groupInfo.transactionDetail,
-    authFlag: state.groupInfo.authFlag,
+    authFlag: state.groupInfo.authFlag
   };
 };
 
 export default connect(mapStateToProps, {
   getTransactionDetail,
   addTransactionToDatabase,
-  resetSuccessFlag,
+  resetSuccessFlag
 })(GroupInfo);

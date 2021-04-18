@@ -68,6 +68,13 @@ class Comment extends Component {
     }
   }
 
+  componentDidUpdate(prevState) {
+    if (prevState.transDetail != this.props.transDetail) {
+      console.log("Transaction ID Change detected");
+      this.props.getCommentFromDatabase(this.props.transDetail._id);
+    }
+  }
+
   deleteComment = (e, id) => {
     e.preventDefault();
     if (confirm("Are you sure you want to delete this comment?")) {
@@ -119,13 +126,14 @@ class Comment extends Component {
       <span className="block-example border-bottom border-dark">
         <Card key={this.props.index}>
           <Accordion.Toggle
+            key={this.props.index}
             as={Card.Header}
             eventKey={this.props.index}
             onClick={e =>
               this.getCommentFromDatabase(e, this.props.transDetail._id)
             }
           >
-            <div className="row" style={{ padding: 0 }}>
+            <div className="row" style={{ margin: "0px" }}>
               <div className="col-sm-8">
                 {new Date(this.props.transDetail.Time).toLocaleDateString(
                   "default",
@@ -158,7 +166,7 @@ class Comment extends Component {
             </div>
           </Accordion.Toggle>
           <Accordion.Collapse eventKey={this.props.index}>
-            <Card.Body>
+            <Card.Body style={{ paddingTop: "0px", margin: "0px" }}>
               <div className="row border-top shadow bg-light">
                 <div className="col col-sm-6 border-right">
                   <div className="row transaction-padding">

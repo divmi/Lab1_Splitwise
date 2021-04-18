@@ -42,6 +42,11 @@ class MyGroup extends Component {
             name={findGroup._id}
             groupName={findGroup.GroupName}
             groupMember={findGroup.GroupMemberInfo}
+            groupPhoto={
+              findGroup.GroupProfilePicture == ""
+                ? "../assets/userIcon.png"
+                : findGroup.GroupProfilePicture
+            }
           />
         )
       });
@@ -105,6 +110,11 @@ class MyGroup extends Component {
           name={param._id}
           groupName={param.GroupName}
           groupMember={param.GroupMemberInfo}
+          groupPhoto={
+            param.GroupProfilePicture == ""
+              ? "../assets/userIcon.png"
+              : param.GroupProfilePicture
+          }
         />
       )
     });
