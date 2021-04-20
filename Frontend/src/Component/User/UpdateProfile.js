@@ -83,7 +83,9 @@ class UpdateProfile extends Component {
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
       let data = this.state.userinfo;
-      data.UserProfilePic = this.state.UserProfilePic;
+      if (this.state.UserProfilePic != "")
+        data.UserProfilePic = this.state.UserProfilePic;
+      console.log(JSON.stringify(data));
       this.props.updateProfile(data);
     }
   };

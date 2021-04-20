@@ -10,6 +10,7 @@ function handle_request(req, callback) {
       Currency: req.Currency,
       Timezone: req.Timezone,
       Language: req.Language,
+      Email: req.Email,
       UserProfilePic: req.UserProfilePic
     }
   };
