@@ -68,13 +68,6 @@ class Comment extends Component {
     }
   }
 
-  componentDidUpdate(prevState) {
-    if (prevState.transDetail != this.props.transDetail) {
-      console.log("Transaction ID Change detected");
-      this.props.getCommentFromDatabase(this.props.transDetail._id);
-    }
-  }
-
   deleteComment = (e, id) => {
     e.preventDefault();
     if (confirm("Are you sure you want to delete this comment?")) {
@@ -98,29 +91,37 @@ class Comment extends Component {
 
   render() {
     let showComments = null;
-    if (this.props.comments.length > 0) {
-      showComments = this.props.comments.map((value, idx) => {
-        return (
-          <div key={idx} className="input-group" style={{ margin: "5px" }}>
-            <p style={{ fontSize: "13px" }}>
-              <strong>{value.MemberCommented.Name}</strong>
-              <button
-                type="button border-none"
-                className="btn bg-transparent"
-                onClick={e => this.deleteComment(e, value)}
+    if (this.props.commentsFromDB != null) {
+      if (this.props.commentsFromDB.Trans_ID == this.props.transDetail._id) {
+        showComments = this.props.commentsFromDB.comments.map((value, idx) => {
+          return (
+            <div key={idx} className="input-group" style={{ margin: "5px" }}>
+              <p
+                style={{
+                  fontSize: "13px",
+                  margin: "1px",
+                  padding: "1px"
+                }}
               >
-                <i
-                  className="fa fa-remove"
-                  style={{ color: "#6d1111", fontWeight: "normal" }}
-                  aria-hidden="true"
-                ></i>
-              </button>
-              <br />
-              {value.Comment}
-            </p>
-          </div>
-        );
-      });
+                <strong>{value.MemberCommented.Name}</strong>
+                <button
+                  type="button border-none"
+                  className="btn bg-transparent"
+                  onClick={e => this.deleteComment(e, value)}
+                >
+                  <i
+                    className="fa fa-remove"
+                    style={{ color: "#6d1111", fontWeight: "normal" }}
+                    aria-hidden="true"
+                  ></i>
+                </button>
+                <br />
+                {value.Comment}
+              </p>
+            </div>
+          );
+        });
+      }
     }
     return (
       <span className="block-example border-bottom border-dark">
@@ -235,7 +236,7 @@ class Comment extends Component {
 
 const mapStateToProps = state => {
   return {
-    comments: state.comments.commentsFromDB
+    commentsFromDB: state.comments.commentsFromDB
   };
 };
 

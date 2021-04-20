@@ -23,7 +23,7 @@ export default function (state = defaultState, action) {
       if (action.payload.length > 0) {
         return {
           ...state,
-          commentsFromDB: action.payload[0].comments
+          commentsFromDB: action.payload[0]
         };
       } else {
         return {
