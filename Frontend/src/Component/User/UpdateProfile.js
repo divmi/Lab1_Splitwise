@@ -21,13 +21,13 @@ class UpdateProfile extends Component {
         Name: "",
         Timezone: "",
         Email: "",
-        UserProfilePic: "",
+        UserProfilePic: ""
       },
-      error: {},
+      error: "",
       loginError: "",
       auth: false,
       dropdownOpen: true,
-      UserProfilePic: "",
+      UserProfilePic: ""
     };
     this.toggle = this.toggle.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -37,12 +37,17 @@ class UpdateProfile extends Component {
     this.setState({ absolute: !this.state.absolute });
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
+    if (e.target.name == "ContactNo") {
+      if (e.target.value > 9999999999) {
+        return;
+      }
+    }
     this.setState({
       userinfo: {
         ...this.state.userinfo,
-        [e.target.name]: e.target.value,
-      },
+        [e.target.name]: e.target.value
+      }
     });
   };
 
@@ -59,7 +64,7 @@ class UpdateProfile extends Component {
           userinfo: Object.assign(
             this.state.userinfo,
             JSON.parse(localStorage.getItem("userData"))
-          ),
+          )
         });
       }
     }
@@ -72,7 +77,7 @@ class UpdateProfile extends Component {
     }
   }
 
-  submitForm = (e) => {
+  submitForm = e => {
     //prevent page from refresh
     e.preventDefault();
     const error = this.validateForm();
@@ -89,26 +94,26 @@ class UpdateProfile extends Component {
   };
 
   toggle() {
-    this.setState((prevState) => ({
-      dropdownOpen: !prevState.dropdownOpen,
+    this.setState(prevState => ({
+      dropdownOpen: !prevState.dropdownOpen
     }));
   }
 
-  handleFileUpload = (event) => {
+  handleFileUpload = event => {
     event.preventDefault();
     let data = new FormData();
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
       .post(`http://${config.ipAddress}:8000/upload`, data)
-      .then((response) => {
+      .then(response => {
         console.log(response);
         this.setState({
-          UserProfilePic: response.data,
+          UserProfilePic: response.data
         });
         console.log(this.state.UserProfilePic);
       })
-      .catch((error) => console.log("error " + error));
+      .catch(error => console.log("error " + error));
   };
 
   render() {
@@ -150,7 +155,7 @@ class UpdateProfile extends Component {
                   style={{
                     marginLeft: "-10px",
                     width: 250,
-                    textAlign: "left",
+                    textAlign: "left"
                   }}
                   type="file"
                   name="image"
@@ -184,26 +189,26 @@ class UpdateProfile extends Component {
                           placeholder="Email"
                           value={this.state.userinfo.Email}
                           onChange={this.handleChange}
-                          readOnly
-                        ></Input>
+                        />
                       </FormGroup>
 
                       <FormGroup>
                         <Label htmlFor="contactNo">Your Phone number</Label>
                         <Input
-                          type="text"
+                          type="number"
                           id="ContactNo"
                           name="ContactNo"
                           minLength="10"
                           maxLength="10"
-                          min="0"
+                          onKeyDown={evt =>
+                            (evt.key === "e" || evt.key === "-") &&
+                            evt.preventDefault()
+                          }
+                          min="9999999999"
+                          max="9999999999"
                           placeholder="Contact Number"
                           onChange={this.handleChange}
-                          value={
-                            this.state.userinfo.ContactNo == null
-                              ? ""
-                              : this.state.userinfo.ContactNo
-                          }
+                          value={this.state.userinfo.ContactNo}
                         ></Input>
                       </FormGroup>
                     </div>
@@ -331,16 +336,16 @@ class UpdateProfile extends Component {
 }
 
 UpdateProfile.propTypes = {
-  updateProfile: PropTypes.func.isRequired,
+  updateProfile: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    authFlag: state.updateProfile.authFlag,
+    authFlag: state.updateProfile.authFlag
   };
 };
 
 export default connect(mapStateToProps, {
   updateProfile,
-  resetSuccessFlag,
+  resetSuccessFlag
 })(UpdateProfile);

@@ -1,39 +1,45 @@
 import React, { Component } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { connect } from "react-redux";
+import { getAllUser } from "../../actions/createGroup";
 
 class NewUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       Name: "",
-      Email: "",
+      Email: ""
     };
+    this.onNameChange = this.onNameChange.bind(this);
   }
 
-  onNameChange = (e) => {
-    console.log(e.target.textContent);
-    var value = this.props.tableData.find(
-      (x) => x.Name == e.target.textContent
-    );
+  onNameChange = e => {
+    if (e.target.value != null && e.target.value.length > 1) {
+      const data = { Name: e.target.value, Email: "" };
+      this.props.getAllUser(data);
+    }
+
+    var value = this.props.tableData.find(x => x.Name == e.target.textContent);
     if (value) {
       this.setState({
         Email: value.Email,
-        Name: e.target.textContent,
+        Name: e.target.textContent
       });
       this.props.change(e);
     }
   };
 
-  onEmailChange = (e) => {
-    console.log(e.target.textContent);
-    var value = this.props.tableData.find(
-      (x) => x.Email == e.target.textContent
-    );
+  onEmailChange = e => {
+    if (e.target.value.length > 1) {
+      const data = { Name: "", Email: e.target.value };
+      this.props.getAllUser(data);
+    }
+    var value = this.props.tableData.find(x => x.Email == e.target.textContent);
     if (value) {
       this.setState({
         Name: value.Name,
-        Email: e.target.value,
+        Email: e.target.value
       });
       this.props.emailChange(e);
     }
@@ -69,7 +75,7 @@ class NewUser extends Component {
           <td>
             <button
               className="btn"
-              onClick={(e) => this.props.delete(e, this.props.val)}
+              onClick={e => this.props.delete(e, this.props.val)}
             >
               <i className="fa fa-remove" aria-hidden="true"></i>
             </button>
@@ -86,17 +92,16 @@ class NewUser extends Component {
               name="Name"
               autoHighlight={true}
               options={this.props.tableData}
-              onChange={(e) => this.onNameChange(e)}
-              onKeyDown={this.onKeyDownNameChange}
-              getOptionLabel={(option) => option.Name}
+              getOptionLabel={option => option.Name}
+              onChange={this.onNameChange}
               style={{ width: 200 }}
-              renderInput={(params) => (
+              renderInput={params => (
                 <TextField
                   {...params}
                   name="Name"
+                  onChange={this.onNameChange}
                   variant="outlined"
                   size="small"
-                  onChange={(e) => this.onNameChange(e)}
                 />
               )}
             />
@@ -108,16 +113,16 @@ class NewUser extends Component {
               name="Email"
               autoHighlight={true}
               options={this.props.tableData}
-              getOptionLabel={(option) => option.Email}
-              onChange={(e) => this.onEmailChange(e)}
+              getOptionLabel={option => option.Email}
+              onChange={this.onEmailChange}
               style={{ width: 200 }}
-              renderInput={(params) => (
+              renderInput={params => (
                 <TextField
                   {...params}
                   name="Email"
                   variant="outlined"
                   size="small"
-                  onChange={(e) => this.onEmailChange(e)}
+                  onChange={this.onEmailChange}
                 />
               )}
             />
@@ -125,7 +130,7 @@ class NewUser extends Component {
           <td>
             <button
               className="btn"
-              onClick={(e) => this.props.delete(e, this.props.val)}
+              onClick={e => this.props.delete(e, this.props.val)}
             >
               <i className="fa fa-remove" aria-hidden="true"></i>
             </button>
@@ -135,4 +140,12 @@ class NewUser extends Component {
     }
   }
 }
-export default NewUser;
+const mapStateToProps = state => {
+  return {
+    allUser: state.createGroup.allUser
+  };
+};
+
+export default connect(mapStateToProps, {
+  getAllUser
+})(NewUser);

@@ -4,7 +4,7 @@ import NewUser from "./NewUser";
 import axios from "axios";
 import config from "../../config";
 import { connect } from "react-redux";
-import { getAllUser, sendCreateGroupRequest } from "../../actions/createGroup";
+import { sendCreateGroupRequest } from "../../actions/createGroup";
 import { resetSuccessFlag } from "../../actions/loginAction";
 
 class CreateGroup extends Component {
@@ -19,14 +19,14 @@ class CreateGroup extends Component {
       Email: "",
       ID: "",
       UserProfilePic: "",
-      success: "",
+      success: ""
     };
   }
-  OnNameChange = (e) => {
+  OnNameChange = e => {
     if (e.target.textContent != "") {
       let userDataBackup = [...this.state.userData];
       let found = this.props.allUser.find(
-        (element) => element.Name == e.target.textContent
+        element => element.Name == e.target.textContent
       );
       if (found) {
         let item = {
@@ -34,22 +34,22 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
-          Accepted: 0,
+          Accepted: 0
         };
         userDataBackup[userDataBackup.length - 1] = item;
         this.setState({
-          userData: userDataBackup,
+          userData: userDataBackup
         });
         console.log(JSON.stringify(this.state.userData));
       }
     }
   };
 
-  onEmailChange = (e) => {
+  onEmailChange = e => {
     if (e.target.textContent != "") {
       let userData = [...this.state.userData];
       let found = this.props.allUser.find(
-        (element) => element.Email == e.target.textContent
+        element => element.Email == e.target.textContent
       );
       if (found) {
         let item = {
@@ -57,11 +57,11 @@ class CreateGroup extends Component {
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
-          Accepted: 0,
+          Accepted: 0
         };
         userData[userData.length - 1] = item;
         this.setState({
-          userData,
+          userData
         });
       }
       console.log(JSON.stringify(this.state.userData));
@@ -69,16 +69,16 @@ class CreateGroup extends Component {
   };
 
   addNewRow = () => {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       i: prevState.i + 1,
       userData: [
         ...prevState.userData,
-        { ID: "", Name: "", Email: "", Accepted: 0 },
-      ],
+        { ID: "", Name: "", Email: "", Accepted: 0 }
+      ]
     }));
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     let error = this.validateForm();
     if (Object.keys(error).length == 0) {
@@ -86,14 +86,14 @@ class CreateGroup extends Component {
     } else {
       this.setState({
         error: error,
-        success: false,
+        success: false
       });
     }
   };
 
-  groupNameEventHandler = (e) => {
+  groupNameEventHandler = e => {
     this.setState({
-      groupName: e.target.value,
+      groupName: e.target.value
     });
   };
 
@@ -103,12 +103,12 @@ class CreateGroup extends Component {
     items.splice(items.indexOf(i), 1);
     this.setState({
       userData: items,
-      error: "",
+      error: ""
     });
   }
 
   componentDidMount() {
-    this.props.getAllUser();
+    //this.props.getAllUser();
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         var data = JSON.parse(localStorage.getItem("userData"));
@@ -116,10 +116,10 @@ class CreateGroup extends Component {
           ID: data._id,
           Name: data.Name,
           Email: data.Email,
-          Accepted: 1,
+          Accepted: 1
         };
         this.setState({
-          userData: [user],
+          userData: [user]
         });
       }
     }
@@ -127,21 +127,20 @@ class CreateGroup extends Component {
 
   componentDidUpdate(prevState) {
     if (prevState.authFlag != this.props.authFlag) {
-      if (!this.props.authFlag) {
-        this.setState({
-          error: "Group Name is already registered",
-        });
-      } else {
-        this.props.resetSuccessFlag();
-        this.setState({
-          success: true,
-        });
-      }
+      this.props.resetSuccessFlag();
+      this.setState({
+        success: true
+      });
+    }
+    if (prevState.createGroupError != this.props.createGroupError) {
+      this.setState({
+        error: this.props.createGroupError
+      });
     }
   }
 
   hasDuplicates(array) {
-    const uniqueValues = new Set(array.map((v) => v.Email));
+    const uniqueValues = new Set(array.map(v => v.Email));
     if (uniqueValues.size < array.length) {
       return true;
     }
@@ -159,20 +158,20 @@ class CreateGroup extends Component {
     return error;
   };
 
-  handleFileUpload = (event) => {
+  handleFileUpload = event => {
     event.preventDefault();
     let data = new FormData();
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
       .post(`http://${config.ipAddress}:8000/upload`, data)
-      .then((response) => {
+      .then(response => {
         console.log(response);
         this.setState({
-          groupPhoto: `http://${config.ipAddress}:8000/` + response.data,
+          groupPhoto: `http://${config.ipAddress}:8000/` + response.data
         });
       })
-      .catch((error) => console.log("error " + error));
+      .catch(error => console.log("error " + error));
   };
 
   render() {
@@ -205,7 +204,7 @@ class CreateGroup extends Component {
       redirectVar = <Redirect to="/login" />;
     }
     return (
-      <div className="container-fluid">
+      <div className="container-flex">
         {message}
         {redirectVar}
         <div className="row rounded" style={{ alignContent: "center" }}>
@@ -217,7 +216,7 @@ class CreateGroup extends Component {
               style={{
                 marginLeft: "-20px",
                 width: 230,
-                textAlign: "left",
+                textAlign: "left"
               }}
               type="file"
               name="image"
@@ -225,7 +224,7 @@ class CreateGroup extends Component {
             />
           </div>
           <div className="col-sm-8">
-            <div className="content" style={{ width: "90%" }}>
+            <div className="content">
               <p
                 className="help-block alert"
                 style={{ color: "red", marginLeft: "60px" }}
@@ -233,13 +232,15 @@ class CreateGroup extends Component {
                 {this.state.error}
               </p>
               <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
-                <h3 style={{ textAlign: "left", marginLeft: "70px" }}>
-                  Start a Group Name
-                </h3>
                 <div className="row">
                   <div className="col-sm-1"></div>
                   <div className="col-sm-8">
                     <div className="card">
+                      <div className="card-header">
+                        <h3 style={{ textAlign: "center" }}>
+                          Start a Group Name
+                        </h3>
+                      </div>
                       <div className="card-body">
                         <div className="row">
                           <div className="col-sm-12">
@@ -292,7 +293,6 @@ class CreateGroup extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-sm-1"></div>
                 </div>
               </form>
             </div>
@@ -303,15 +303,15 @@ class CreateGroup extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     allUser: state.createGroup.allUser,
     authFlag: state.createGroup.authFlag,
+    createGroupError: state.createGroup.createGroupError
   };
 };
 
 export default connect(mapStateToProps, {
-  getAllUser,
   sendCreateGroupRequest,
-  resetSuccessFlag,
+  resetSuccessFlag
 })(CreateGroup);

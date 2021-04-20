@@ -127,16 +127,18 @@ class GroupInfo extends Component {
   };
 
   handleAmountChange = e => {
-    this.setState({
-      amount: e.target.value
-    });
+    if (e.target.value > 99999999) {
+      return;
+    }
+    this.setState({ amount: e.target.value });
   };
 
   validateForm = () => {
     let error = "";
     if (this.state.transaction_description === "")
       error = "Please fill transaction Detail";
-    else if (this.state.amount === 0) error = "Please fill the amount";
+    else if (this.state.amount === "") error = "Please fill the amount";
+    else if (this.state.amount === 0) error = "Amount should be greater than 0";
     return error;
   };
 
@@ -301,6 +303,10 @@ class GroupInfo extends Component {
                         }}
                         name="amount"
                         id="amount"
+                        onKeyDown={evt =>
+                          (evt.key === "e" || evt.key === "-") &&
+                          evt.preventDefault()
+                        }
                         type="number"
                         step="0.1"
                         min="0"

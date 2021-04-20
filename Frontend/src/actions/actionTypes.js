@@ -117,3 +117,9 @@ export const ClearComments = () => {
     type: "Get_Comments"
   };
 };
+
+export const Error = () => {
+  return {
+    type: "Error"
+  };
+};

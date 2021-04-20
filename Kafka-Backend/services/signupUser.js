@@ -8,40 +8,31 @@ async function handle_request(body, callback) {
     const salt = await bcrypt.genSalt(10);
     // now we set user password to hashed password
     body.password = await bcrypt.hash(body.password, salt);
-    Users.findOne({ Email: body.email }, (error, user) => {
+    console.log("Registering New User");
+    const newUser = {
+      Name: body.name,
+      Email: body.email,
+      Password: body.password,
+      Currency: "$",
+      Timezone: "(GMT-08:00) Pacific Time",
+      Language: "English",
+      ContactNo: "9999999999",
+      UserProfilePic: ""
+    };
+    new Users(newUser).save((error, data) => {
       if (error) {
-        callback(error, "Error");
-      }
-      if (user) {
-        callback(error, "Registered");
+        callback(error, null);
       } else {
-        console.log("Registering New User");
-        const newUser = {
-          Name: body.name,
-          Email: body.email,
-          Password: body.password,
-          Currency: "$",
-          Timezone: "(GMT-08:00) Pacific Time",
-          Language: "English",
-          ContactNo: "9999999999",
-          UserProfilePic: ""
-        };
-        new Users(newUser).save((error, data) => {
-          if (error) {
-            callback(error, "Error");
-          } else {
-            newUser._id = data._id;
-            const token = createToken(newUser);
-            newUser.token = token;
-            newUser.Password = "";
-            console.log(newUser);
-            callback(null, newUser);
-          }
-        });
+        newUser._id = data._id;
+        const token = createToken(newUser);
+        newUser.token = token;
+        newUser.Password = "";
+        console.log(newUser);
+        callback(null, newUser);
       }
     });
   } catch (err) {
-    callback(err, "Error");
+    callback(err, null);
     console.log(err);
   }
 }

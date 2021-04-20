@@ -6,7 +6,7 @@ var createGroup = require("../Kafka-Backend/services/createGroup");
 var updateGroup = require("../Kafka-Backend/services/updateGroup");
 var joinGroup = require("../Kafka-Backend/services/joinGroup");
 var updateProfile = require("../Kafka-Backend/services/updateProfile");
-
+var getAllUser = require("../Kafka-Backend/services/getAllUser");
 var addComment = require("../Kafka-Backend/services/addComment");
 var deleteComment = require("../Kafka-Backend/services/deleteComment");
 var getCommentForTransaction = require("../Kafka-Backend/services/getCommentForTransaction");
@@ -36,7 +36,8 @@ function handleTopicRequest(topic_name, fname) {
           topic: data.replyTo,
           messages: JSON.stringify({
             correlationId: data.correlationId,
-            data: res
+            data: res,
+            error: err
           }),
           partition: 0
         }
@@ -58,6 +59,7 @@ handleTopicRequest("createGroup", createGroup);
 handleTopicRequest("updateGroup", updateGroup);
 handleTopicRequest("joinGroup", joinGroup);
 handleTopicRequest("updateProfile", updateProfile);
+handleTopicRequest("getAllUser", getAllUser);
 
 handleTopicRequest("addComment", addComment);
 handleTopicRequest("deleteComment", deleteComment);

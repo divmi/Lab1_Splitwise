@@ -20,6 +20,18 @@ router.post("/updateProfile", checkAuth, function (req, res) {
   });
 });
 
+router.post("/getAllUser", checkAuth, function (req, res) {
+  console.log(req.body);
+  kafka.make_request("getAllUser", req.body, function (err, results) {
+    if (err) {
+      res.status(500).end("Error Occured");
+    } else {
+      var JSONStr = JSON.stringify(results);
+      res.status(200).end(JSONStr);
+    }
+  });
+});
+
 router.get("/getUserSpecificGetOwsInfo", checkAuth, function (req, res) {
   kafka.make_request(
     "getUserSpecificGetOwsInfo",
