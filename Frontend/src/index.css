@@ -101,7 +101,7 @@
 }
 
 .setHeight {
-  height: 90vh;
+  height: 100vh;
 }
 
 .greenCode {
@@ -126,8 +126,8 @@
   width: 30px;
   height: 30px;
 }
-.col-md-2point5 {
-  width: 12%;
+.col-md-1point5 {
+  width: 5%;
 }
 #groupTable tbody tr.selected {
   color: wheat !important;

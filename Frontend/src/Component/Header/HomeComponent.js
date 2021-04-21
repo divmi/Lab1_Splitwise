@@ -123,7 +123,7 @@ class Home extends Component {
         {redirectVar}
         <div className="row row-flex">
           <div className="setHeight col col-sm-1"></div>
-          <div className="setHeight col-md-2point5 p-2 shadow-sm border-right rounded no-float">
+          <div className="setHeight col col-sm-2 p-2 shadow-sm border-right rounded no-float">
             <div
               id="dashboard-div no-float"
               style={{ padding: 0, margin: 0, textAlign: "left", fontSize: 13 }}

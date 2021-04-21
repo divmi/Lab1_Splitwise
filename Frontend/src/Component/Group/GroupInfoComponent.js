@@ -6,8 +6,7 @@ import {
   Col,
   Image,
   Container,
-  Form,
-  Accordion
+  Form
 } from "react-bootstrap";
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
@@ -31,7 +30,7 @@ class GroupInfo extends Component {
       component: null,
       Currency: "",
       UserId: "",
-      comment: null
+      axiosCallInProgress: false
     };
   }
 
@@ -57,12 +56,6 @@ class GroupInfo extends Component {
     this.OpenOwsGetsAmount(true);
   };
 
-  handleCommentChange = e => {
-    this.setState({
-      textComments: e.target.value
-    });
-  };
-
   handleTransactionChange = e => {
     this.setState({
       transaction_description: e.target.value
@@ -79,6 +72,9 @@ class GroupInfo extends Component {
         });
       }
     }
+    this.setState({
+      axiosCallInProgress: true
+    });
     this.props.getTransactionDetail(this.props.name);
     this.OpenOwsGetsAmount(false);
   }
@@ -88,14 +84,14 @@ class GroupInfo extends Component {
       console.log(this.props.name);
       this.props.getTransactionDetail(this.props.name);
       this.OpenOwsGetsAmount(false);
+      this.setState({
+        axiosCallInProgress: false
+      });
     }
     if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
       console.log("close Modal got called from update function");
       this.closeModal();
       this.props.resetSuccessFlag();
-      this.setState({
-        axiosCallInProgress: false
-      });
     }
   }
 
@@ -110,21 +106,6 @@ class GroupInfo extends Component {
       )
     });
   }
-
-  addComment = (e, transaction) => {
-    e.preventDefault();
-    //let comments = this.state.comments;
-    let newComment = {
-      comment: this.state.textComments,
-      transactionID: transaction._id,
-      memberCommented: this.state.UserId
-    };
-    //comments.push(newComment);
-    this.props.addCommentsToDatabase(newComment);
-    this.setState({
-      textComments: ""
-    });
-  };
 
   handleAmountChange = e => {
     if (e.target.value > 99999999) {
@@ -163,13 +144,6 @@ class GroupInfo extends Component {
         amount: 0
       });
     }
-  };
-
-  OpenCommentSection = (e, user) => {
-    e.preventDefault();
-    this.setState({
-      comment: <Comment transDetail={user}></Comment>
-    });
   };
 
   render() {
@@ -342,9 +316,7 @@ class GroupInfo extends Component {
           </Modal>
         </div>
         <div className="row shadow p-2 bg-light rounded border-right">
-          <div className="col col-sm-9">
-            <Accordion defaultActiveKey="1">{showTransaction}</Accordion>
-          </div>
+          <div className="col col-sm-9">{showTransaction}</div>
           <div
             className="col col-sm-3 border-left"
             style={{ paddingLeft: "20px" }}
