@@ -19,52 +19,56 @@ class CreateGroup extends Component {
       Email: "",
       ID: "",
       UserProfilePic: "",
-      success: ""
+      success: "",
+      newGroupMembers: []
     };
   }
   OnNameChange = e => {
     if (e.target.textContent != "") {
-      let userDataBackup = [...this.state.userData];
+      let newGroupMembersBackup = [...this.state.newGroupMembers];
       let found = this.props.allUser.find(
         element => element.Name == e.target.textContent
       );
       if (found) {
         let item = {
-          ...userDataBackup[userDataBackup.length - 1],
+          ...newGroupMembersBackup[newGroupMembersBackup.length],
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
           Accepted: 0
         };
-        userDataBackup[userDataBackup.length - 1] = item;
+        newGroupMembersBackup[newGroupMembersBackup.length] = item;
+        let items = this.state.userData;
+        items.splice(0, 1);
         this.setState({
-          userData: userDataBackup
+          newGroupMembers: newGroupMembersBackup,
+          userData: items
         });
-        console.log(JSON.stringify(this.state.userData));
+        console.log(JSON.stringify(this.state.newGroupMembers));
       }
     }
   };
 
   onEmailChange = e => {
     if (e.target.textContent != "") {
-      let userData = [...this.state.userData];
+      let newGroupMembersBackup = [...this.state.newGroupMembers];
       let found = this.props.allUser.find(
         element => element.Email == e.target.textContent
       );
       if (found) {
         let item = {
-          ...userData[userData.length - 1],
+          ...newGroupMembersBackup[newGroupMembersBackup.length],
           ID: found._id,
           Name: found.Name,
           Email: found.Email,
           Accepted: 0
         };
-        userData[userData.length - 1] = item;
+        newGroupMembersBackup[newGroupMembersBackup.length] = item;
         this.setState({
-          userData
+          newGroupMembers: newGroupMembersBackup
         });
       }
-      console.log(JSON.stringify(this.state.userData));
+      console.log(JSON.stringify(this.state.newGroupMembers));
     }
   };
 
@@ -97,18 +101,25 @@ class CreateGroup extends Component {
     });
   };
 
-  handleItemDeleted(e, i) {
+  handleItemDeleted(e, i, newMemberdelete) {
     e.preventDefault();
-    var items = this.state.userData;
+    let items = [];
+    if (newMemberdelete) items = this.state.newGroupMembers;
+    else items = this.state.userData;
     items.splice(items.indexOf(i), 1);
-    this.setState({
-      userData: items,
-      error: ""
-    });
+    if (newMemberdelete)
+      this.setState({
+        newGroupMembers: items,
+        error: ""
+      });
+    else
+      this.setState({
+        userData: items,
+        error: ""
+      });
   }
 
   componentDidMount() {
-    //this.props.getAllUser();
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
         var data = JSON.parse(localStorage.getItem("userData"));
@@ -119,7 +130,7 @@ class CreateGroup extends Component {
           Accepted: 1
         };
         this.setState({
-          userData: [user]
+          newGroupMembers: [user]
         });
       }
     }
@@ -186,6 +197,43 @@ class CreateGroup extends Component {
     if (this.state.success) {
       message = <Redirect to="/home" />;
     }
+    let newuser = this.state.newGroupMembers.map((val, idx) => {
+      return (
+        <tr key={idx}>
+          <td>
+            <input
+              type="text"
+              name="Name"
+              value={val.Name}
+              data-id="0"
+              id="Name"
+              className="form-control "
+              onChange={() => {}}
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              data-testid="id-input-box"
+              name="email"
+              id="email"
+              data-id="0"
+              value={val.Email}
+              className="form-control "
+              onChange={() => {}}
+            />
+          </td>
+          <td>
+            <button
+              className="btn"
+              onClick={e => this.handleItemDeleted(e, val, true)}
+            >
+              <i className="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+      );
+    });
     let x = this.state.userData.map((val, idx) => {
       return (
         <NewUser
@@ -262,7 +310,10 @@ class CreateGroup extends Component {
                           Add Your Group Member
                         </div>
                         <table className="table">
-                          <tbody>{x}</tbody>
+                          <tbody>
+                            {newuser}
+                            {x}
+                          </tbody>
                           <tfoot>
                             <tr>
                               <td>
