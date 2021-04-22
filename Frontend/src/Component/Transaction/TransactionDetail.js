@@ -12,6 +12,7 @@ class TransactionDetail extends Component {
       showTransactionBasedOnFilter: [],
       ID: "",
       Currency: "",
+      sorted: 0
     };
   }
 
@@ -22,7 +23,7 @@ class TransactionDetail extends Component {
         localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
           Currency: localStorageData.Currency,
-          ID: localStorageData._id,
+          ID: localStorageData._id
         });
       }
     }
@@ -33,34 +34,59 @@ class TransactionDetail extends Component {
     if (prevState.transaction != this.props.transaction) {
       console.log("Componnet did update");
       this.setState({
-        showTransactionBasedOnFilter: this.props.transaction,
+        showTransactionBasedOnFilter: this.props.transaction
       });
       this.setState({
-        pageLoadInProgress: false,
+        pageLoadInProgress: false
       });
     }
   }
 
-  OnGroupSelect = (e) => {
+  OnGroupSelect = e => {
     if (this.props.transaction != null && this.props.transaction.length > 0) {
       if (e.target.value != "") {
         const filterTransOnGroup = this.props.transaction.filter(
-          (x) => x.GroupID.GroupName == e.target.value
+          x => x.GroupID.GroupName == e.target.value
         );
         this.setState({
-          showTransactionBasedOnFilter: filterTransOnGroup,
+          showTransactionBasedOnFilter: filterTransOnGroup
         });
       } else {
         this.setState({
-          showTransactionBasedOnFilter: this.props.transaction,
+          showTransactionBasedOnFilter: this.props.transaction
         });
       }
     } else {
       this.setState({
-        showTransactionBasedOnFilter: this.props.transaction,
+        showTransactionBasedOnFilter: this.props.transaction
       });
     }
     console.log(e.target.value);
+  };
+
+  OnSortByAscOrDesc = e => {
+    if (e.target.value == "Ascending") {
+      const sort = this.props.transaction.sort((a, b) => {
+        return new Date(a.Time) - new Date(b.Time);
+      });
+      this.setState({
+        sorted: 1,
+        showTransactionBasedOnFilter: sort
+      });
+    } else if (e.target.value == "Decending") {
+      const sort = this.props.transaction.sort((a, b) => {
+        return new Date(b.Time) - new Date(a.Time);
+      });
+      this.setState({
+        showTransactionBasedOnFilter: sort,
+        sorted: 2
+      });
+    } else {
+      this.setState({
+        showTransactionBasedOnFilter: this.props.transaction,
+        sorted: 3
+      });
+    }
   };
 
   render() {
@@ -85,13 +111,13 @@ class TransactionDetail extends Component {
                 style={{
                   fontWeight: "bold",
                   fontSize: "25px",
-                  marginLeft: "30px",
+                  marginLeft: "30px"
                 }}
               >
                 Recent activity
               </label>
             </div>
-            <div className="col-col-6 offset-7">
+            <div className="col-col-6 offset-6">
               <select
                 className="form-control"
                 width={80}
@@ -101,11 +127,22 @@ class TransactionDetail extends Component {
                 {showGroupName}
               </select>
             </div>
+            <div className="col-col-3" style={{ marginLeft: "5px" }}>
+              <select
+                className="form-control"
+                onChange={this.OnSortByAscOrDesc}
+              >
+                <option value="">Sort by Time</option>
+                <option value="Ascending">Ascending</option>
+                <option value="Decending">Decending</option>
+              </select>
+            </div>
           </div>
           <div className="row shadow p-1 bg-light rounded">
             <Posts
               posts={this.state.showTransactionBasedOnFilter}
               Currency={this.state.Currency}
+              sorted={this.state.sorted}
             />
           </div>
         </div>
@@ -114,11 +151,11 @@ class TransactionDetail extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     transaction: state.transaction.transaction,
     groupName: state.transaction.groupName,
-    Currency: state.login.Currency,
+    Currency: state.login.Currency
   };
 };
 

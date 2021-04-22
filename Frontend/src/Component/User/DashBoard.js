@@ -205,7 +205,6 @@ class Dashboard extends Component {
     });
     total = sumGets + sumOws;
     componentOws = this.state.memberWithAmountList.map((detail, idx) => {
-      //console.log(JSON.stringify(this.state.memberWithAmountList));
       if (detail.Amount < 0) {
         memberOwList.push(detail);
         return (
@@ -231,18 +230,18 @@ class Dashboard extends Component {
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
-                      <p className="dashBoardLabel" key={idy}>
+                      <label className="dashBoardLabel" key={idy}>
                         o: you owe{" "}
                         <strong className="orangeCode">
                           {this.state.Currency}
                           {-value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </p>
+                      </label>
                     );
                   } else if (value.Amount > 0) {
                     return (
-                      <p key={idy} className="dashBoardLabel">
+                      <label key={idy} className="dashBoardLabel">
                         o: owes you{" "}
                         <strong className="greenCode">
                           {" "}
@@ -250,7 +249,7 @@ class Dashboard extends Component {
                           {value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </p>
+                      </label>
                     );
                   }
                 })}
@@ -285,18 +284,18 @@ class Dashboard extends Component {
                 {detail.Transaction.map((value, idy) => {
                   if (value.Amount < 0) {
                     return (
-                      <p className="dashBoardLabel" key={idy}>
+                      <label className="dashBoardLabel" key={idy}>
                         o: you owe{" "}
                         <strong className="orangeCode">
                           {this.state.Currency}
                           {-value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </p>
+                      </label>
                     );
                   } else if (value.Amount > 0) {
                     return (
-                      <p key={idy} className="dashBoardLabel">
+                      <label key={idy} className="dashBoardLabel">
                         o: owes you{" "}
                         <strong className="greenCode">
                           {" "}
@@ -304,7 +303,7 @@ class Dashboard extends Component {
                           {value.Amount.toFixed(2)}
                         </strong>{" "}
                         for {value.GroupName}
-                      </p>
+                      </label>
                     );
                   }
                 })}

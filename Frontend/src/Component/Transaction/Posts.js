@@ -9,7 +9,7 @@ export class Posts extends Component {
     this.state = {
       transactionData: [],
       ID: "",
-      page: 0,
+      page: 0
     };
   }
   componentDidMount() {
@@ -18,63 +18,64 @@ export class Posts extends Component {
       if (localStorage.key("userData")) {
         localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
-          ID: localStorageData._id,
+          ID: localStorageData._id
         });
       }
     }
   }
 
-  PageSizeChange = (e) => {
+  PageSizeChange = e => {
     console.log(e);
     this.setState({
-      page: 0,
+      page: 0
     });
     this.props.transactionDetail(this.state.ID, 0, e.pageSize);
   };
 
-  PageChange = (e) => {
+  PageChange = e => {
     console.log(e.page);
     this.setState({
-      page: e.page,
+      page: e.page
     });
     this.props.transactionDetail(this.state.ID, e.page, e.pageSize);
   };
 
   render() {
     const { posts } = this.props;
+    console.log(posts);
     // let showTransaction = null;
     let transaction = [];
     const columns = [
       {
         field: "id",
         width: 5,
-        renderCell: (param) => (
+        renderCell: param => (
           <label style={{ visibility: "hidden" }}>{param.value}</label>
-        ),
+        )
       },
       {
         field: "Date",
         headerName: "Date",
         type: "date",
         width: 150,
-        renderCell: (param) => (
+        renderCell: param => (
           <label style={{ color: "Gray", fontWeight: "bold" }}>
             {param.value}
           </label>
-        ),
+        )
       },
       {
         field: "Detail",
         headerName: "Transaction Detail",
         width: 520,
-        renderCell: (param) => (
+        renderCell: param => (
           <label style={{ fontWeight: "bold", textAlign: "center" }}>
             <i className="greenCode fas fa-receipt fa-3x p-2"></i>
             {param.value}
           </label>
-        ),
+        )
       },
-      { field: "Amount", headerName: "", width: 150 },
+      { field: "Amount", headerName: "", width: 150 }
     ];
     if (posts != null && posts.length > 0) {
       posts.map((name, idx) => {
@@ -82,17 +83,17 @@ export class Posts extends Component {
           transaction.push({
             id: idx,
             Date: new Date(name.Time).toLocaleString("en-us", {
-              weekday: "long",
+              weekday: "long"
             }),
             Detail:
               name.MemberID.Name + " is settled Up with " + name.SettleUpWith,
-            Amount: this.props.Currency + name.Amount.toFixed(2),
+            Amount: this.props.Currency + name.Amount.toFixed(2)
           });
         } else {
           transaction.push({
             id: idx,
             Date: new Date(name.Time).toLocaleString("en-us", {
-              weekday: "long",
+              weekday: "long"
             }),
             Detail:
               name.MemberID.Name +
@@ -100,7 +101,7 @@ export class Posts extends Component {
               name.TransactionDetail +
               " in " +
               name.GroupID.GroupName,
-            Amount: this.props.Currency + name.Amount.toFixed(2),
+            Amount: this.props.Currency + name.Amount.toFixed(2)
           });
         }
       });
@@ -113,7 +114,7 @@ export class Posts extends Component {
             height: 500,
             width: "100%",
             alignContent: "center",
-            textAlign: "center",
+            textAlign: "center"
           }}
         >
           <DataGrid
@@ -134,9 +135,9 @@ export class Posts extends Component {
     );
   }
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    count: state.transaction.count,
+    count: state.transaction.count
   };
 };
 
