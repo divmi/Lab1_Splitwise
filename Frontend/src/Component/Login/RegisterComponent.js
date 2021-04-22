@@ -90,6 +90,9 @@ class Register extends Component {
     if (userInfo.email === "") error.email = "Email should not be blank";
     if (userInfo.password === "")
       error.password = "Password should not be blank";
+    this.setState({
+      error
+    });
     return error;
   };
 
@@ -130,6 +133,7 @@ class Register extends Component {
                       placeholder="First Name"
                       invalid={this.state.error.name ? true : false}
                       onChange={this.handleChange}
+                      onBlur={this.validateForm}
                     ></Input>
                     <FormFeedback>{this.state.error.name}</FormFeedback>
                   </FormGroup>
@@ -145,6 +149,7 @@ class Register extends Component {
                       placeholder="Email"
                       onChange={this.handleChange}
                       invalid={this.state.error.email ? true : false}
+                      onBlur={this.validateForm}
                     ></Input>
                     <FormFeedback>{this.state.error.email}</FormFeedback>
                   </FormGroup>
@@ -160,6 +165,7 @@ class Register extends Component {
                       placeholder="Password"
                       onChange={this.handleChange}
                       invalid={this.state.error.password ? true : false}
+                      onBlur={this.validateForm}
                     ></Input>
                     <FormFeedback>{this.state.error.password}</FormFeedback>
                   </FormGroup>

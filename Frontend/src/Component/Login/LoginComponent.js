@@ -8,7 +8,7 @@ import {
   Label,
   Input,
   Col,
-  FormFeedback,
+  FormFeedback
 } from "reactstrap";
 import { connect } from "react-redux";
 import { userLogin } from "../../actions/loginAction";
@@ -21,6 +21,8 @@ class Login extends Component {
         error: "",
         formerror: "",
         authFlag: "",
+        email: "",
+        password: ""
       };
     }
   }
@@ -33,27 +35,28 @@ class Login extends Component {
     if (userInfo.email === "") error.email = "Email should not be blank";
     if (userInfo.password === "")
       error.password = "Password should not be blank";
+    this.setState({ formerror: error });
     return error;
   };
 
-  emailEventHandler = (e) => {
+  emailEventHandler = e => {
     this.setState({
-      email: e.target.value,
+      email: e.target.value
     });
   };
 
-  passEventHandler = (e) => {
+  passEventHandler = e => {
     this.setState({
-      password: e.target.value,
+      password: e.target.value
     });
   };
   ///LoginUser'
-  submitForm = (e) => {
+  submitForm = e => {
     //prevent page from refresh
     e.preventDefault();
     const data = {
       email: this.state.email,
-      password: this.state.password,
+      password: this.state.password
     };
     const formerror = this.validateForm();
     if (Object.keys(formerror).length == 0) {
@@ -70,12 +73,12 @@ class Login extends Component {
         this.setState({
           authFlag: false,
           formerror: {},
-          error: this.props.user,
+          error: this.props.user
         });
       } else {
         this.setState({
           authFlag: true,
-          error: "",
+          error: ""
         });
         this.SetLocalStorage(JSON.stringify(this.props.user));
       }
@@ -126,6 +129,7 @@ class Login extends Component {
                     name="email"
                     placeholder="Email"
                     onChange={this.emailEventHandler}
+                    onBlur={this.validateForm}
                     invalid={this.state.formerror.email ? true : false}
                   ></Input>
                   <FormFeedback>{this.state.formerror.email}</FormFeedback>
@@ -139,6 +143,7 @@ class Login extends Component {
                     name="password"
                     placeholder="Password"
                     onChange={this.passEventHandler}
+                    onBlur={this.validateForm}
                     invalid={this.state.formerror.password ? true : false}
                   ></Input>
                   <FormFeedback>{this.state.formerror.password}</FormFeedback>
@@ -165,9 +170,9 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    user: state.login.user,
+    user: state.login.user
   };
 };
 
