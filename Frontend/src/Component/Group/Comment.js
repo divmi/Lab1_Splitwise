@@ -97,7 +97,11 @@ class Comment extends Component {
       if (this.props.commentsFromDB.Trans_ID == this.props.transDetail._id) {
         showComments = this.props.commentsFromDB.comments.map((value, idx) => {
           return (
-            <div key={idx} className="input-group" style={{ margin: "5px" }}>
+            <div
+              key={idx}
+              className="input-group"
+              style={{ marginLeft: "5px" }}
+            >
               <p
                 style={{
                   fontSize: "13px",
@@ -106,6 +110,11 @@ class Comment extends Component {
                 }}
               >
                 <strong>{value.MemberCommented.Name}</strong>
+                <label style={{ margin: "5px", color: "Gray" }}>
+                  {new Date(value.Time).toLocaleString("en-us", {
+                    weekday: "long"
+                  })}
+                </label>
                 <button
                   type="button border-none"
                   className="btn bg-transparent"
@@ -126,75 +135,72 @@ class Comment extends Component {
       }
     }
     return (
-      <Accordion key={this.props.transDetail._id}>
-        <span className="block-example border-bottom border-dark">
-          <Card key={this.props.transDetail._id}>
-            <Accordion.Toggle
-              key={this.props.transDetail._id}
-              as={Card.Header}
-              eventKey={this.props.transDetail._id}
-              onClick={e =>
-                this.getCommentFromDatabase(e, this.props.transDetail._id)
-              }
-            >
-              <div className="row" style={{ margin: "0px" }}>
-                <div className="col-sm-8">
-                  {new Date(this.props.transDetail.Time).toLocaleDateString(
-                    "default",
-                    {
-                      month: "short",
-                      day: "numeric"
-                    }
-                  )}{" "}
-                  &emsp;
-                  <img src="./assets/expense.png" height={30} width={20}></img>
-                  <label style={{ paddingLeft: "10px" }}>
-                    {this.props.transDetail.TransactionDetail}
-                  </label>
-                </div>
-                <div className="col-sm-4">
-                  <p
-                    style={{
-                      color: "GrayText",
-                      textAlign: "right",
-                      fontSize: 13
-                    }}
-                  >
-                    {this.props.transDetail.MemberID.Name}
-                    <br />
-                    paid <br />
-                    {this.state.Currency}
-                    {this.props.transDetail.Amount}
-                  </p>
-                </div>
+      <span className="block-example border-bottom border-dark">
+        <Card key={this.props.transDetail._id}>
+          <Accordion.Toggle
+            key={this.props.transDetail._id}
+            as={Card.Header}
+            eventKey={this.props.transDetail._id}
+            onClick={e =>
+              this.getCommentFromDatabase(e, this.props.transDetail._id)
+            }
+          >
+            <div className="row" style={{ margin: "0px" }}>
+              <div className="col-sm-8">
+                {new Date(this.props.transDetail.Time).toLocaleDateString(
+                  "default",
+                  {
+                    month: "short",
+                    day: "numeric"
+                  }
+                )}{" "}
+                &emsp;
+                <img src="./assets/expense.png" height={30} width={20}></img>
+                <label style={{ paddingLeft: "10px" }}>
+                  {this.props.transDetail.TransactionDetail}
+                </label>
               </div>
-            </Accordion.Toggle>
-            <Accordion.Collapse eventKey={this.props.transDetail._id}>
-              <Card.Body style={{ paddingTop: "0px", margin: "0px" }}>
-                <div className="row border-top shadow bg-light">
-                  <div className="col col-sm-6 border-right">
-                    <div className="row transaction-padding">
-                      <img
-                        src="./assets/expense.png"
-                        height={60}
-                        width={50}
-                      ></img>
-                      <p
-                        style={{ color: "GrayText", fontSize: 13, padding: 10 }}
-                      >
-                        {this.props.transDetail.TransactionDetail} <br />
-                        {this.state.Currency}
-                        {this.props.transDetail.Amount} <br />
-                        paid by {this.props.transDetail.MemberID.Name}
-                        <br />
-                        {new Date(this.props.transDetail.Time).toLocaleString(
-                          "en-us",
-                          {
-                            weekday: "long"
-                          }
-                        )}
-                        <br />
-                        <button
+              <div className="col-sm-4">
+                <p
+                  style={{
+                    color: "GrayText",
+                    textAlign: "right",
+                    fontSize: 13
+                  }}
+                >
+                  {this.props.transDetail.MemberID.Name}
+                  <br />
+                  paid <br />
+                  {this.state.Currency}
+                  {this.props.transDetail.Amount}
+                </p>
+              </div>
+            </div>
+          </Accordion.Toggle>
+          <Accordion.Collapse eventKey={this.props.transDetail._id}>
+            <Card.Body style={{ paddingTop: "0px", margin: "0px" }}>
+              <div className="row border-top shadow bg-light">
+                <div className="col col-sm-6 border-right">
+                  <div className="row transaction-padding">
+                    <img
+                      src="./assets/expense.png"
+                      height={60}
+                      width={50}
+                    ></img>
+                    <p style={{ color: "GrayText", fontSize: 13, padding: 10 }}>
+                      {this.props.transDetail.TransactionDetail} <br />
+                      {this.state.Currency}
+                      {this.props.transDetail.Amount} <br />
+                      paid by {this.props.transDetail.MemberID.Name}
+                      <br />
+                      {new Date(this.props.transDetail.Time).toLocaleString(
+                        "en-us",
+                        {
+                          weekday: "long"
+                        }
+                      )}
+                      <br />
+                      {/* <button
                           name="btn-Edit-Expense"
                           className="btn btn-edit"
                           onClick={e =>
@@ -202,42 +208,42 @@ class Comment extends Component {
                           }
                         >
                           Edit expense
-                        </button>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col col-sm-6">
-                    <label
-                      style={{
-                        color: "GrayText",
-                        fontSize: 12
-                      }}
-                    >
-                      Notes and Comments
-                    </label>
-                    {showComments}
-                    <textarea
-                      name="Add comment"
-                      style={{ marginBottom: "5px" }}
-                      value={this.state.textComments}
-                      className="form-control rounded"
-                      onChange={this.handleCommentChange}
-                    ></textarea>
-                    <button
-                      name="btn-AddComment"
-                      className="btn btn-edit border-none"
-                      onClick={this.addComment}
-                    >
-                      Post
-                    </button>
-                    {this.state.component}
+                        </button> */}
+                    </p>
                   </div>
                 </div>
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </span>
-      </Accordion>
+                <div className="col col-sm-6">
+                  <label
+                    style={{
+                      color: "GrayText",
+                      fontSize: 12
+                    }}
+                  >
+                    Notes and Comments
+                  </label>
+                  {showComments}
+                  <textarea
+                    name="Add comment"
+                    style={{ marginBottom: "5px" }}
+                    value={this.state.textComments}
+                    className="form-control rounded"
+                    onChange={this.handleCommentChange}
+                  ></textarea>
+                  <button
+                    name="btn-AddComment"
+                    className="btn btn-edit border-none"
+                    onClick={this.addComment}
+                  >
+                    Post
+                  </button>
+                  {this.state.component}
+                </div>
+              </div>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </span>
+      // </Accordion>
     );
   }
 }

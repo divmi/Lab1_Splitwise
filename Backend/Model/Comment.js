@@ -6,22 +6,22 @@ var Comment = new Schema(
     Trans_ID: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "TransactionDetail",
+      ref: "TransactionDetail"
     },
-    Time: { type: Date, default: Date.now },
     comments: [
       {
         MemberCommented: {
           type: Schema.Types.ObjectId,
           ref: "UserRegistration",
-          required: true,
+          required: true
         },
         Comment: { type: String },
-      },
-    ],
+        Time: { type: Date, default: Date.now }
+      }
+    ]
   },
   {
-    versionKey: false,
+    versionKey: false
   }
 );
 

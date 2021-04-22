@@ -6,7 +6,8 @@ import {
   Col,
   Image,
   Container,
-  Form
+  Form,
+  Accordion
 } from "react-bootstrap";
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
@@ -316,7 +317,9 @@ class GroupInfo extends Component {
           </Modal>
         </div>
         <div className="row shadow p-2 bg-light rounded border-right">
-          <div className="col col-sm-9">{showTransaction}</div>
+          <div className="col col-sm-9">
+            <Accordion>{showTransaction}</Accordion>
+          </div>
           <div
             className="col col-sm-3 border-left"
             style={{ paddingLeft: "20px" }}
