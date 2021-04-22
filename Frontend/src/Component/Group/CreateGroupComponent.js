@@ -160,11 +160,11 @@ class CreateGroup extends Component {
   validateForm = () => {
     let error = "";
     if (this.state.groupName === "") error = "Group Name should not be blank";
-    else if (this.state.userData.length == 0)
+    else if (this.state.newGroupMembers.length == 0)
       error = "Group length should be greater than one";
-    else if (this.state.userData.length >= 9)
+    else if (this.state.newGroupMembers.length >= 9)
       error = "Group length should be less than ten";
-    else if (this.hasDuplicates(this.state.userData))
+    else if (this.hasDuplicates(this.state.newGroupMembers))
       error = "Duplicate Member exist. Please add unique members";
     return error;
   };
@@ -252,7 +252,7 @@ class CreateGroup extends Component {
       redirectVar = <Redirect to="/login" />;
     }
     return (
-      <div className="container-flex">
+      <div className="container-fluid">
         {message}
         {redirectVar}
         <div className="row rounded" style={{ alignContent: "center" }}>

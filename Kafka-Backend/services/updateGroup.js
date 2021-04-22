@@ -22,8 +22,13 @@ function handle_request(req, callback) {
           }
           if (success) {
             if (Object.keys(req.itemDeleted).length !== 0) {
-              GroupInfo.deleteOne(
-                { GroupName: req.prevGroupName },
+              GroupInfo.updateOne(
+                { _id: req.prevGroupName },
+                {
+                  $pull: {
+                    GroupMemberInfo: { ID: req.itemDeleted.ID }
+                  }
+                },
                 (error, success) => {
                   if (success) {
                     callback(null, success);

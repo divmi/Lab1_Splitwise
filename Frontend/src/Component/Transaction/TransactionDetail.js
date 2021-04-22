@@ -117,7 +117,7 @@ class TransactionDetail extends Component {
                 Recent activity
               </label>
             </div>
-            <div className="col-col-6 offset-6">
+            <div className="col-col-6 offset-5">
               <select
                 className="form-control"
                 width={80}
@@ -132,7 +132,7 @@ class TransactionDetail extends Component {
                 className="form-control"
                 onChange={this.OnSortByAscOrDesc}
               >
-                <option value="">Sort by Time</option>
+                <option value="Decending">Sort by Time</option>
                 <option value="Ascending">Ascending</option>
                 <option value="Decending">Decending</option>
               </select>

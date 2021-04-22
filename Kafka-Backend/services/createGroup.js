@@ -3,7 +3,7 @@ const GroupInfo = require("../Model/GroupInfoModel");
 function handle_request(msg, callback) {
   console.log("Inside book kafka backend");
   var memberList = [];
-  msg.userData.map(user => {
+  msg.newGroupMembers.map(user => {
     memberList.push({
       ID: user.ID,
       Accepted: user.Accepted
