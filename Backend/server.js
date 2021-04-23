@@ -6,7 +6,12 @@ const app = express();
 const port = 8000;
 const ipAddress = "54.193.33.223";
 
-const { mongoDB } = require("./Utils/config");
+const {
+  mongoDB,
+  AWSAccessKeyId,
+  AWSSecretKey,
+  AWS_BUCKET_NAME
+} = require("./Utils/config");
 const mongoose = require("mongoose");
 
 //app.use(express.static("uploads"));
@@ -15,8 +20,8 @@ const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
 
 AWS.config.update({
-  accessKeyId: process.env.AWSAccessKeyId,
-  secretAccessKey: process.env.AWSSecretKey
+  accessKeyId: AWSAccessKeyId,
+  secretAccessKey: AWSSecretKey
 });
 
 const s3 = new AWS.S3();
