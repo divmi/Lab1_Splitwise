@@ -1,7 +1,7 @@
 "use strict";
 const express = require("express");
 const router = express.Router();
-const { checkAuth } = require("../utils/passport");
+const { checkAuth } = require("../Utils/passport");
 var kafka = require("./../kafka/client");
 
 // app.post("/updateProfile", function (req, res) {
