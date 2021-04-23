@@ -4,7 +4,7 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 const app = express();
 const port = 8000;
-const ipAddress = "13.52.79.64";
+const ipAddress = "54.193.33.223";
 
 const { mongoDB } = require("./Utils/config");
 const mongoose = require("mongoose");
