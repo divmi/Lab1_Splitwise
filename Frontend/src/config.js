@@ -1,1 +1,1 @@
-exports.ipAddress = "13.52.79.64";
+exports.ipAddress = "54.193.130.156";
