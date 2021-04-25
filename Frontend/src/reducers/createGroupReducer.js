@@ -25,6 +25,8 @@ export default function (state = defaultState, action) {
         ...state,
         authFlag: false
       };
+    case aType.Logout_USER:
+      return {};
     case aType.Error:
       console.log("Reset happened");
       return {

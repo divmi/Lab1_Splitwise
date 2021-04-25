@@ -16,11 +16,11 @@ class EditGroup extends Component {
       groupPhoto: "",
       auth: false,
       userData: [],
-      itemDeleted: {},
+      itemDeleted: {}
     };
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     //prevent page from refresh
     e.preventDefault();
     let error = this.validateForm();
@@ -28,21 +28,21 @@ class EditGroup extends Component {
       prevGroupName: this.props.match.params.value,
       newGroupName: this.state.groupName,
       groupPhoto: this.state.groupPhoto,
-      itemDeleted: this.state.itemDeleted,
+      itemDeleted: this.state.itemDeleted
     };
     if (Object.keys(error).length == 0) {
       this.props.editGroup(data);
     } else {
       this.setState({
         error: error,
-        authFlag: false,
+        authFlag: false
       });
     }
   };
 
-  groupNameEventHandler = (e) => {
+  groupNameEventHandler = e => {
     this.setState({
-      groupName: e.target.value,
+      groupName: e.target.value
     });
   };
 
@@ -56,40 +56,53 @@ class EditGroup extends Component {
   getMemberInfo() {
     let userData = [];
     let findGroup = this.props.groupInfo.find(
-      (x) => x._id == this.props.match.params.value
+      x => x._id == this.props.match.params.value
     );
     if (typeof findGroup != "undefined") {
-      findGroup.GroupMemberInfo.map((member) => {
+      findGroup.GroupMemberInfo.map(member => {
         userData.push({
           ID: member.ID._id,
           Name: member.ID.Name,
-          Email: member.ID.Email,
+          Email: member.ID.Email
         });
       });
       this.setState({
-        userData: userData,
+        userData: userData
       });
       console.log(JSON.stringify(this.state.userData));
     }
   }
 
+  spliceData(user) {
+    var items = this.state.userData;
+    items.splice(items.indexOf(user), 1);
+    this.setState({
+      userData: items
+    });
+    this.setState({
+      itemDeleted: user
+    });
+  }
+
   handleItemDeleted(e, user) {
     e.preventDefault();
-    var items = this.state.userData;
-    const getMember = this.props.owsGetDetail.find(
-      (x) => x.MemberGets == user.ID || x.MemberOws == user.ID
+    let amountFound = false;
+    const getMember = this.props.owsGetDetail.filter(
+      x => x.MemberGets == user.ID || x.MemberOws == user.ID
     );
-    if (typeof getMember != "undefined") {
-      alert("Please settle up the amount before leaving group");
-    } else {
-      items.splice(items.indexOf(user), 1);
-      this.setState({
-        userData: items,
-      });
-      this.setState({
-        itemDeleted: user,
+    if (getMember.length > 0) {
+      getMember.map(member => {
+        if (member.Amount !== 0) {
+          amountFound = true;
+        }
       });
     }
+    if (amountFound) {
+      alert("Please settle up the amount before leaving group");
+    } else {
+      this.spliceData(user);
+    }
+    //}
     // axios
     //   .get(`http://${config.ipAddress}:8000/getUserCanBeDeleted`, {
     //     params: {
@@ -134,12 +147,12 @@ class EditGroup extends Component {
     console.log(this.props.match.params.value);
     if (this.props.match.params.value != "") {
       const findName = this.props.groupInfo.find(
-        (x) => x._id == this.props.match.params.value
+        x => x._id == this.props.match.params.value
       );
       if (typeof findName != "undefined") {
         this.setState({
           groupName: findName.GroupName,
-          groupPhoto: findName.GroupProfilePicture,
+          groupPhoto: findName.GroupProfilePicture
         });
       }
       this.getMemberInfo();
@@ -152,21 +165,21 @@ class EditGroup extends Component {
     return error;
   };
 
-  handleFileUpload = (event) => {
+  handleFileUpload = event => {
     event.preventDefault();
     let data = new FormData();
     console.log(event.target.files[0]);
     data.append("file", event.target.files[0]);
     axios
       .post(`http://${config.ipAddress}:8000/upload`, data)
-      .then((response) => {
+      .then(response => {
         console.log(response);
         this.setState({
-          groupPhoto: response.data,
+          groupPhoto: response.data
         });
         console.log(this.state.groupPhoto);
       })
-      .catch((error) => console.log("error " + error));
+      .catch(error => console.log("error " + error));
   };
 
   render() {
@@ -210,7 +223,7 @@ class EditGroup extends Component {
             <td>
               <button
                 className="btn"
-                onClick={(e) => this.handleItemDeleted(e, val)}
+                onClick={e => this.handleItemDeleted(e, val)}
               >
                 <i className="fa fa-remove" aria-hidden="true"></i>
               </button>
@@ -238,7 +251,7 @@ class EditGroup extends Component {
               style={{
                 marginLeft: "-20px",
                 width: 230,
-                textAlign: "left",
+                textAlign: "left"
               }}
               type="file"
               name="image"
@@ -307,11 +320,11 @@ class EditGroup extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     groupInfo: state.homeReducer.groupInfo,
     authFlag: state.homeReducer.authFlag,
-    owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
+    owsGetDetail: state.groupOwsGetsDetail.owsGetDetail
   };
 };
 

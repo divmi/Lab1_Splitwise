@@ -1,7 +1,7 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
   authFlag: false,
-  image: "",
+  image: ""
 };
 
 export default function (state = defaultState, action) {
@@ -9,12 +9,14 @@ export default function (state = defaultState, action) {
     case aType.Update_Profile:
       return {
         ...state,
-        authFlag: action.payload,
+        authFlag: action.payload
       };
     case aType.Reset_Success_Flag:
       return {
-        authFlag: false,
+        authFlag: false
       };
+    case aType.Logout_USER:
+      return {};
     default:
       return state;
   }

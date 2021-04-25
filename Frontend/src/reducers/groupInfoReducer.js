@@ -23,6 +23,8 @@ export default function (state = defaultState, action) {
         ...state,
         authFlag: true
       };
+    case aType.Logout_USER:
+      return {};
     default:
       return state;
   }

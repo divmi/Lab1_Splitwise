@@ -1,1 +1,1 @@
-exports.ipAddress = "54.193.130.156";
+exports.ipAddress = "localhost";

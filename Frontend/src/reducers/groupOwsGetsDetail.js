@@ -1,6 +1,6 @@
 import * as aType from "../actions/actionTypes";
 const defaultState = {
-  owsGetDetail: [],
+  owsGetDetail: []
 };
 
 export default function (state = defaultState, action) {
@@ -8,8 +8,10 @@ export default function (state = defaultState, action) {
     case aType.Load_OwsGets_Detail:
       return {
         ...state,
-        owsGetDetail: action.payload,
+        owsGetDetail: action.payload
       };
+    case aType.Logout_USER:
+      return {};
     default:
       return state;
   }

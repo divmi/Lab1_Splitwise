@@ -92,10 +92,28 @@ class Comment extends Component {
 
   render() {
     let showComments = null;
+    let deleteComment = null;
     //let currentactiveKey = "";
     if (this.props.commentsFromDB != null) {
       if (this.props.commentsFromDB.Trans_ID == this.props.transDetail._id) {
         showComments = this.props.commentsFromDB.comments.map((value, idx) => {
+          if (value.MemberCommented._id == this.state.UserId) {
+            deleteComment = (
+              <button
+                type="button border-none"
+                className="btn bg-transparent"
+                onClick={e => this.deleteComment(e, value)}
+              >
+                <i
+                  className="fa fa-remove"
+                  style={{ color: "#6d1111", fontWeight: "normal" }}
+                  aria-hidden="true"
+                ></i>
+              </button>
+            );
+          } else {
+            deleteComment = "";
+          }
           return (
             <div
               key={idx}
@@ -115,17 +133,7 @@ class Comment extends Component {
                     weekday: "long"
                   })}
                 </label>
-                <button
-                  type="button border-none"
-                  className="btn bg-transparent"
-                  onClick={e => this.deleteComment(e, value)}
-                >
-                  <i
-                    className="fa fa-remove"
-                    style={{ color: "#6d1111", fontWeight: "normal" }}
-                    aria-hidden="true"
-                  ></i>
-                </button>
+                {deleteComment}
                 <br />
                 {value.Comment}
               </p>

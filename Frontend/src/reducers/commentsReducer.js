@@ -31,6 +31,8 @@ export default function (state = defaultState, action) {
           commentsFromDB: []
         };
       }
+    case aType.Logout_USER:
+      return {};
     default:
       return state;
   }
