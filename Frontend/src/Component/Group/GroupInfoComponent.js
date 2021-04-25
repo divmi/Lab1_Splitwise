@@ -150,7 +150,10 @@ class GroupInfo extends Component {
   render() {
     let showTransaction = null;
     let index = 0;
-    if (this.props.transactionDetail.length > 0) {
+    if (
+      this.props.transactionDetail != null &&
+      this.props.transactionDetail.length > 0
+    ) {
       showTransaction = this.props.transactionDetail.map(name => {
         if (name.Amount > 0) {
           index = index + 1;
