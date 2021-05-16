@@ -1,9 +1,11 @@
 const express = require("express");
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./schema");
 require("dotenv/config");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 const app = express();
-const port = 8000;
+const port = 3001;
 const ipAddress = "localhost";
 
 const {
@@ -131,6 +133,14 @@ app.use("/group", Group);
 app.use("/user", User);
 app.use("/comment", Comment);
 app.use("/transaction", Transaction);
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true
+  })
+);
 
 app.listen(port, () => {
   console.log("App is listening to 8000");
