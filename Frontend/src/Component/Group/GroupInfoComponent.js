@@ -12,7 +12,7 @@ import {
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import Comment from "./Comment";
-import { getGroupInfo } from "../../query/query";
+import { getGroupTransactionInfo } from "../../query/query";
 import { graphql } from "react-apollo";
 import { flowRight as compose } from "lodash";
 class GroupInfo extends Component {
@@ -72,17 +72,22 @@ class GroupInfo extends Component {
     this.setState({
       axiosCallInProgress: true
     });
-    this.props.getTransactionDetail(this.props.name);
-    this.OpenOwsGetsAmount(false);
+    // this.props.getTransactionDetail(this.props.name);
+    // this.OpenOwsGetsAmount(false);
   }
 
   componentDidUpdate(prevState) {
-    if (prevState.name !== this.props.name) {
-      console.log(this.props.name);
-      this.props.getTransactionDetail(this.props.name);
-      this.OpenOwsGetsAmount(false);
+    // if (prevState.name !== this.props.name) {
+    //   this.props.getTransactionDetail(this.props.name);
+    //   this.OpenOwsGetsAmount(false);
+    //   this.setState({
+    //     axiosCallInProgress: false
+    //   });
+    // }
+    if (prevState.data !== this.props.data) {
+      console.log(this.props.data);
       this.setState({
-        axiosCallInProgress: false
+        transactionDetail: this.props.data.groupDetailInfo
       });
     }
     if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
@@ -147,10 +152,10 @@ class GroupInfo extends Component {
     let showTransaction = null;
     let index = 0;
     if (
-      this.props.transactionDetail != null &&
-      this.props.transactionDetail.length > 0
+      this.state.transactionDetail != null &&
+      this.state.transactionDetail.length > 0
     ) {
-      showTransaction = this.props.transactionDetail.map(name => {
+      showTransaction = this.state.transactionDetail.map(name => {
         if (name.Amount > 0) {
           index = index + 1;
           return (
@@ -331,9 +336,8 @@ class GroupInfo extends Component {
     );
   }
 }
-
 export default compose(
-  graphql(getGroupInfo, {
-    options: props => ({ variables: { _id: props.id } })
+  graphql(getGroupTransactionInfo, {
+    options: props => ({ variables: { _id: props.name } })
   })
 )(GroupInfo);

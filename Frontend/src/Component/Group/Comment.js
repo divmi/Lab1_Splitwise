@@ -1,10 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import {
-  addCommentsToDatabase,
-  getCommentFromDatabase,
-  deleteCommentFromDatabase
-} from "../../actions/comments";
 import { Card, Accordion } from "react-bootstrap";
 import ModelWindow from "./ModelComponent";
 //import { useAccordionToggle } from "react-bootstrap/AccordionToggle";
@@ -13,7 +7,6 @@ class Comment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      textComments: "",
       Currency: "",
       transactionID: "",
       UserId: "",
@@ -36,27 +29,6 @@ class Comment extends Component {
     });
   };
 
-  addComment = e => {
-    e.preventDefault();
-    //let comments = this.state.comments;
-    let newComment = {
-      comment: this.state.textComments,
-      transactionID: this.props.transDetail._id,
-      memberCommented: this.state.UserId
-    };
-    //comments.push(newComment);
-    this.props.addCommentsToDatabase(newComment);
-    this.setState({
-      textComments: ""
-    });
-  };
-
-  handleCommentChange = e => {
-    this.setState({
-      textComments: e.target.value
-    });
-  };
-
   componentDidMount() {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
@@ -69,79 +41,7 @@ class Comment extends Component {
     }
   }
 
-  deleteComment = (e, id) => {
-    e.preventDefault();
-    if (confirm("Are you sure you want to delete this comment?")) {
-      const data = {
-        transactionID: this.state.transactionID,
-        commentID: id._id
-      };
-      this.props.deleteCommentFromDatabase(data);
-    } else {
-      console.log("Thing was not saved to the database.");
-    }
-  };
-
-  getCommentFromDatabase = (e, id) => {
-    e.preventDefault();
-    this.props.getCommentFromDatabase(id);
-    this.setState({
-      transactionID: this.props.transDetail._id
-    });
-  };
-
   render() {
-    let showComments = null;
-    let deleteComment = null;
-    //let currentactiveKey = "";
-    if (this.props.commentsFromDB != null) {
-      if (this.props.commentsFromDB.Trans_ID == this.props.transDetail._id) {
-        showComments = this.props.commentsFromDB.comments.map((value, idx) => {
-          if (value.MemberCommented._id == this.state.UserId) {
-            deleteComment = (
-              <button
-                type="button border-none"
-                className="btn bg-transparent"
-                onClick={e => this.deleteComment(e, value)}
-              >
-                <i
-                  className="fa fa-remove"
-                  style={{ color: "#6d1111", fontWeight: "normal" }}
-                  aria-hidden="true"
-                ></i>
-              </button>
-            );
-          } else {
-            deleteComment = "";
-          }
-          return (
-            <div
-              key={idx}
-              className="input-group"
-              style={{ marginLeft: "5px" }}
-            >
-              <p
-                style={{
-                  fontSize: "13px",
-                  margin: "1px",
-                  padding: "1px"
-                }}
-              >
-                <strong>{value.MemberCommented.Name}</strong>
-                <label style={{ margin: "5px", color: "Gray" }}>
-                  {new Date(value.Time).toLocaleString("en-us", {
-                    weekday: "long"
-                  })}
-                </label>
-                {deleteComment}
-                <br />
-                {value.Comment}
-              </p>
-            </div>
-          );
-        });
-      }
-    }
     return (
       <span className="block-example border-bottom border-dark">
         <Card key={this.props.transDetail._id}>
@@ -149,9 +49,6 @@ class Comment extends Component {
             key={this.props.transDetail._id}
             as={Card.Header}
             eventKey={this.props.transDetail._id}
-            onClick={e =>
-              this.getCommentFromDatabase(e, this.props.transDetail._id)
-            }
           >
             <div className="row" style={{ margin: "0px" }}>
               <div className="col-sm-8">
@@ -189,61 +86,6 @@ class Comment extends Component {
             <Card.Body style={{ paddingTop: "0px", margin: "0px" }}>
               <div className="row border-top shadow bg-light">
                 <div className="col col-sm-6 border-right">
-                  <div className="row transaction-padding">
-                    <img
-                      src="./assets/expense.png"
-                      height={60}
-                      width={50}
-                    ></img>
-                    <p style={{ color: "GrayText", fontSize: 13, padding: 10 }}>
-                      {this.props.transDetail.TransactionDetail} <br />
-                      {this.state.Currency}
-                      {this.props.transDetail.Amount} <br />
-                      paid by {this.props.transDetail.MemberID.Name}
-                      <br />
-                      {new Date(this.props.transDetail.Time).toLocaleString(
-                        "en-us",
-                        {
-                          weekday: "long"
-                        }
-                      )}
-                      <br />
-                      {/* <button
-                          name="btn-Edit-Expense"
-                          className="btn btn-edit"
-                          onClick={e =>
-                            this.openModal(e, this.props.transDetail)
-                          }
-                        >
-                          Edit expense
-                        </button> */}
-                    </p>
-                  </div>
-                </div>
-                <div className="col col-sm-6">
-                  <label
-                    style={{
-                      color: "GrayText",
-                      fontSize: 12
-                    }}
-                  >
-                    Notes and Comments
-                  </label>
-                  {showComments}
-                  <textarea
-                    name="Add comment"
-                    style={{ marginBottom: "5px" }}
-                    value={this.state.textComments}
-                    className="form-control rounded"
-                    onChange={this.handleCommentChange}
-                  ></textarea>
-                  <button
-                    name="btn-AddComment"
-                    className="btn btn-edit border-none"
-                    onClick={this.addComment}
-                  >
-                    Post
-                  </button>
                   {this.state.component}
                 </div>
               </div>
@@ -256,15 +98,4 @@ class Comment extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    commentsFromDB: state.comments.commentsFromDB,
-    indexForAccordian: state.comments.index
-  };
-};
-
-export default connect(mapStateToProps, {
-  addCommentsToDatabase,
-  getCommentFromDatabase,
-  deleteCommentFromDatabase
-})(Comment);
+export default Comment;

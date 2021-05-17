@@ -5,8 +5,9 @@ import GroupInfo from "../Group/GroupInfoComponent";
 import TransactionDetail from "../Transaction/TransactionDetail";
 import Dashboard from "../User/DashBoard";
 import OwsGetDetail from "../Group/OwsGetsInfo";
-import { getUserDetails } from "../../actions/home";
-import { connect } from "react-redux";
+import { getGroupInfo } from "../../query/query";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -20,25 +21,28 @@ class Home extends Component {
   }
 
   componentDidUpdate(prevState) {
-    if (prevState.groupInfo != this.props.groupInfo) {
-      let groupInfo = [];
-      if (this.props.groupInfo.length > 0) {
-        this.props.groupInfo.map(info => {
-          const member = info.GroupMemberInfo.find(
-            x => x.ID._id == this.state.ID
-          );
-          if (typeof member != "undefined" && member.Accepted) {
-            groupInfo.push(info);
-          }
+    if (prevState.data != this.props.data) {
+      console.log(this.props.data.group);
+      if (typeof this.props.data.group != "undefined") {
+        let groupInfo = [];
+        if (this.props.data.group.length > 0) {
+          this.props.data.group.map(info => {
+            const member = info.GroupMemberInfo.find(
+              x => x.ID._id == this.state.ID
+            );
+            if (typeof member != "undefined" && member.Accepted) {
+              groupInfo.push(info);
+            }
+          });
+        }
+        this.setState({
+          groupInfo: groupInfo
         });
       }
-      this.setState({
-        groupInfo: groupInfo
-      });
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let data;
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
@@ -48,7 +52,8 @@ class Home extends Component {
           ID: data._id,
           token: data._token
         });
-        this.props.getUserDetails(data._id);
+
+        console.log(data._id);
       }
       if (this.state.component == null) {
         if (typeof data != "undefined") {
@@ -159,10 +164,10 @@ class Home extends Component {
     );
   }
 }
-const mapStateToProps = state => {
-  return {
-    groupInfo: state.homeReducer.groupInfo
-  };
-};
-
-export default connect(mapStateToProps, { getUserDetails })(Home);
+export default compose(
+  graphql(getGroupInfo, {
+    options: {
+      variables: { _id: JSON.parse(localStorage.getItem("userData"))._id }
+    }
+  })
+)(Home);

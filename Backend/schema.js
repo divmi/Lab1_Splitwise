@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const { login } = require("./Mutation/login");
 const { signUp } = require("./Mutation/signUp");
-const { getGroup } = require("./Mutation/group");
+const { getGroup, getDetailTransaction } = require("./Query/group");
 
 const {
   GraphQLObjectType,
@@ -56,11 +56,14 @@ const GroupMemberType = new GraphQLObjectType({
   })
 });
 
-const StatusType = new GraphQLObjectType({
-  name: "Status",
+const TransactionDetail = new GraphQLObjectType({
+  name: "Transaction",
   fields: () => ({
-    status: { type: GraphQLString },
-    message: { type: GraphQLString }
+    _id: { type: GraphQLID },
+    TransactionDetail: { type: GraphQLString },
+    MemberID: { type: LoginUserType },
+    GroupID: { type: GroupType },
+    Amount: { type: GraphQLInt }
   })
 });
 
@@ -73,6 +76,15 @@ const RootQuery = new GraphQLObjectType({
       args: { _id: { type: GraphQLID } },
       async resolve(parent, args) {
         const data = await getGroup(args._id);
+        return data;
+      }
+    },
+    groupDetailInfo: {
+      type: new GraphQLList(TransactionDetail),
+      args: { _id: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const data = await getDetailTransaction(args._id);
+        console.log(data);
         return data;
       }
     }
@@ -93,9 +105,7 @@ const Mutation = new GraphQLObjectType({
         console.log(data);
         return data;
       }
-    }
-  },
-  fields: {
+    },
     signUp: {
       type: LoginUserType,
       args: {

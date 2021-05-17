@@ -87,7 +87,7 @@ class CreateGroup extends Component {
     let error = this.validateForm();
     if (Object.keys(error).length == 0) {
       //this.props.sendCreateGroupRequest(this.state);
-      let mutationResponse = await this.props.signUpMutation({
+      let mutationResponse = await this.props.addGroup({
         variables: {
           data: this.state
         }

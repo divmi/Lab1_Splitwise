@@ -65,6 +65,7 @@ class Login extends Component {
           password: this.state.password
         }
       });
+      console.log(mutationResponse);
       if (mutationResponse.data.login.status == 200) {
         this.SetLocalStorage(JSON.stringify(mutationResponse.data.login));
         this.setState({
