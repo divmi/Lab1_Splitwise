@@ -19,6 +19,20 @@ const getGroupInfo = gql`
   }
 `;
 
+const getMemberName = gql`
+  query ($_id: ID) {
+    groupMemberName(_id: $_id) {
+      GroupMemberInfo {
+        _id
+        ID {
+          Name
+          UserProfilePic
+        }
+      }
+    }
+  }
+`;
+
 const getGroupTransactionInfo = gql`
   query ($_id: ID) {
     groupDetailInfo(_id: $_id) {
@@ -32,8 +46,33 @@ const getGroupTransactionInfo = gql`
         _id
         Name
       }
+      Time
+    }
+  }
+`;
+const getOwsGetsDetail = gql`
+  query ($_id: ID) {
+    owsGetDetail(_id: $_id) {
+      _id
+      MemberOws {
+        Name
+        Email
+      }
+      MemberGets {
+        Name
+        Email
+      }
+      GroupID {
+        GroupName
+      }
+      Amount
     }
   }
 `;
 
-export { getGroupInfo, getGroupTransactionInfo };
+export {
+  getGroupInfo,
+  getGroupTransactionInfo,
+  getOwsGetsDetail,
+  getMemberName
+};

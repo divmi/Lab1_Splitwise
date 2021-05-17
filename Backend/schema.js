@@ -1,7 +1,15 @@
 const graphql = require("graphql");
 const { login } = require("./Mutation/login");
 const { signUp } = require("./Mutation/signUp");
-const { getGroup, getDetailTransaction } = require("./Query/group");
+const {
+  insert_TransactionForUserAndGroup
+} = require("./Mutation/addTransactionToDatabase");
+const {
+  getGroup,
+  getDetailTransaction,
+  getOwsGetsDetail,
+  getGroupMemberName
+} = require("./Query/group");
 
 const {
   GraphQLObjectType,
@@ -9,6 +17,7 @@ const {
   GraphQLSchema,
   GraphQLID,
   GraphQLInt,
+  GraphQLFloat,
   GraphQLBoolean,
   GraphQLList,
   GraphQLNonNull
@@ -63,7 +72,26 @@ const TransactionDetail = new GraphQLObjectType({
     TransactionDetail: { type: GraphQLString },
     MemberID: { type: LoginUserType },
     GroupID: { type: GroupType },
-    Amount: { type: GraphQLInt }
+    Amount: { type: GraphQLFloat },
+    Time: { type: GraphQLString }
+  })
+});
+
+const StatusType = new GraphQLObjectType({
+  name: "status",
+  fields: () => ({
+    status: { type: GraphQLInt }
+  })
+});
+
+const GetOwsDetail = new GraphQLObjectType({
+  name: "GetOwsDetail",
+  fields: () => ({
+    _id: { type: GraphQLID },
+    MemberOws: { type: LoginUserType },
+    MemberGets: { type: LoginUserType },
+    GroupID: { type: GroupType },
+    Amount: { type: GraphQLFloat }
   })
 });
 
@@ -87,6 +115,24 @@ const RootQuery = new GraphQLObjectType({
         console.log(data);
         return data;
       }
+    },
+    owsGetDetail: {
+      type: new GraphQLList(GetOwsDetail),
+      args: { _id: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const data = await getOwsGetsDetail(args._id);
+        console.log(data);
+        return data;
+      }
+    },
+    groupMemberName: {
+      type: new GraphQLList(GroupType),
+      args: { _id: { type: GraphQLID } },
+      async resolve(parent, args) {
+        const data = await getGroupMemberName(args._id);
+        console.log(data);
+        return data;
+      }
     }
   }
 });
@@ -102,6 +148,21 @@ const Mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         let data = await login(args);
+        console.log(data);
+        return data;
+      }
+    },
+    insertTransaction: {
+      type: StatusType,
+      args: {
+        transactionDetail: { type: GraphQLString },
+        amount: { type: GraphQLFloat },
+        groupID: { type: GraphQLID },
+        memberID: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        console.log(args);
+        let data = await insert_TransactionForUserAndGroup(args);
         console.log(data);
         return data;
       }

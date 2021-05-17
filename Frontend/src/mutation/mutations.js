@@ -34,6 +34,24 @@ const signUpMutation = gql`
   }
 `;
 
+const addTransactionMutation = gql`
+  mutation insertTransaction(
+    $transactionDetail: String
+    $amount: Float
+    $groupID: ID
+    $memberID: ID
+  ) {
+    insertTransaction(
+      transactionDetail: $transactionDetail
+      amount: $amount
+      groupID: $groupID
+      memberID: $memberID
+    ) {
+      status
+    }
+  }
+`;
+
 const addGroup = gql`
   mutation addGroup($data: Object) {
     addGroup(data: $data) {
@@ -42,4 +60,4 @@ const addGroup = gql`
     }
   }
 `;
-export { loginMutation, signUpMutation, addGroup };
+export { loginMutation, signUpMutation, addGroup, addTransactionMutation };

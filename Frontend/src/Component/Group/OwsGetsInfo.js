@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { getGroupSummary } from "../../actions/GroupOwsGetsInfo";
+import { getOwsGetsDetail, getMemberName } from "../../query/query";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 
 class OwsGetDetail extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class OwsGetDetail extends Component {
     this.state = {
       componentMounted: false,
       memberWithAmountList: [],
-      Currency: "",
+      owsGetDetail: [],
+      Currency: ""
     };
   }
 
@@ -18,45 +20,52 @@ class OwsGetDetail extends Component {
       if (localStorage.key("userData")) {
         const localStorageData = JSON.parse(localStorage.getItem("userData"));
         this.setState({
-          Currency: localStorageData.Currency,
+          Currency: localStorageData.Currency
         });
       }
     }
-    this.props.getGroupSummary(this.props.name);
+    //this.props.getGroupSummary(this.props.name);
   }
 
   componentDidUpdate(prevState) {
-    if (prevState.name !== this.props.name) {
-      this.props.getGroupSummary(this.props.name);
-    } else if (prevState.owsGetDetail !== this.props.owsGetDetail) {
-      this.calculateMemberSpecificTable();
-    } else if (prevState.transactionDetail !== this.props.transactionDetail) {
-      this.props.getGroupSummary(this.props.name);
+    if (prevState.data.owsGetDetail !== this.props.data.owsGetDetail) {
+      graphql(getMemberName, {
+        options: props => ({ variables: { _id: props.name } })
+      });
+      this.setState({
+        owsGetDetail: this.props.data.owsGetDetail
+      });
+      if (prevState.data != this.props.data) {
+        console.log(this.props.data);
+      }
+      if (prevState.data.groupMemberName !== this.props.data.groupMemberName) {
+        this.calculateMemberSpecificTable();
+      }
     }
   }
 
   calculateMemberSpecificTable() {
     let memberlist = [];
-    if (this.props.groupMemberName.length > 0) {
+    if (this.props.data.groupMemberName.length > 0) {
       this.setState({
-        memberWithAmountList: [],
+        memberWithAmountList: []
       });
-      this.props.groupMemberName.map((memberName) => {
+      this.props.data.groupMemberName.map(memberName => {
         let sum = 0;
         let sumOws = 0;
-        let memberDetail = this.props.owsGetDetail.filter(
-          (x) => x.MemberGets == memberName.ID._id
+        let memberDetail = this.props.data.owsGetDetail.filter(
+          x => x.MemberGets == memberName.ID._id
         );
         if (memberDetail.length > 0) {
-          memberDetail.map((member) => {
+          memberDetail.map(member => {
             sum = sum + member.Amount;
           });
         }
         let memberOws = this.props.owsGetDetail.filter(
-          (x) => x.MemberOws == memberName.ID._id
+          x => x.MemberOws == memberName._id
         );
         if (memberOws.length > 0) {
-          memberOws.map((member) => {
+          memberOws.map(member => {
             sumOws = sumOws + -member.Amount;
           });
         }
@@ -69,19 +78,18 @@ class OwsGetDetail extends Component {
         let user = {
           Name: memberName.ID.Name,
           Amount: sum + sumOws,
-          UserProfilePic: memberName.ID.UserProfilePic,
+          UserProfilePic: memberName.ID.UserProfilePic
         };
         memberlist.push(user);
       });
       this.setState({
-        memberWithAmountList: memberlist,
+        memberWithAmountList: memberlist
       });
     }
   }
 
   render() {
     let component = null;
-    console.log(JSON.stringify(this.state.memberWithAmountList));
     component = this.state.memberWithAmountList.map((detail, idx) => {
       if (detail.Amount > 0) {
         return (
@@ -131,11 +139,8 @@ class OwsGetDetail extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    owsGetDetail: state.groupOwsGetsDetail.owsGetDetail,
-    transactionDetail: state.groupInfo.transactionDetail,
-  };
-};
-
-export default connect(mapStateToProps, { getGroupSummary })(OwsGetDetail);
+export default compose(
+  graphql(getOwsGetsDetail, {
+    options: props => ({ variables: { _id: props.name } })
+  })
+)(OwsGetDetail);

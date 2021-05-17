@@ -13,6 +13,7 @@ import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
 import Comment from "./Comment";
 import { getGroupTransactionInfo } from "../../query/query";
+import { addTransactionMutation } from "../../mutation/mutations";
 import { graphql } from "react-apollo";
 import { flowRight as compose } from "lodash";
 class GroupInfo extends Component {
@@ -41,7 +42,7 @@ class GroupInfo extends Component {
     } else {
       this.setState({
         transaction_description: "",
-        amount: ""
+        amount: 0
       });
     }
     console.log(this.state.transaction_description);
@@ -77,18 +78,12 @@ class GroupInfo extends Component {
   }
 
   componentDidUpdate(prevState) {
-    // if (prevState.name !== this.props.name) {
-    //   this.props.getTransactionDetail(this.props.name);
-    //   this.OpenOwsGetsAmount(false);
-    //   this.setState({
-    //     axiosCallInProgress: false
-    //   });
-    // }
     if (prevState.data !== this.props.data) {
       console.log(this.props.data);
       this.setState({
         transactionDetail: this.props.data.groupDetailInfo
       });
+      this.OpenOwsGetsAmount(false);
     }
     if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
       console.log("close Modal got called from update function");
@@ -100,11 +95,7 @@ class GroupInfo extends Component {
   OpenOwsGetsAmount(transactionUpdated) {
     this.setState({
       component: (
-        <OwsGetDetail
-          name={this.props.name}
-          groupMemberName={this.props.groupMember}
-          updated={transactionUpdated}
-        />
+        <OwsGetDetail name={this.props.name} updated={transactionUpdated} />
       )
     });
   }
@@ -125,19 +116,20 @@ class GroupInfo extends Component {
     return error;
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-    const data = {
-      transactionDetail: this.state.transaction_description,
-      amount: this.state.amount,
-      groupID: this.props.name,
-      groupMember: this.props.groupMember,
-      memberID: this.state.UserId
-    };
-
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      this.props.addTransactionToDatabase(data);
+      let mutationResponse = await this.props.addTransactionMutation({
+        variables: {
+          transactionDetail: this.state.transaction_description,
+          amount: parseFloat(this.state.amount),
+          groupID: this.props.name,
+          groupMember: this.props.groupMember,
+          memberID: this.state.UserId
+        }
+      });
+      console.log(mutationResponse);
     } else {
       this.setState({
         error: error,
@@ -339,5 +331,6 @@ class GroupInfo extends Component {
 export default compose(
   graphql(getGroupTransactionInfo, {
     options: props => ({ variables: { _id: props.name } })
-  })
+  }),
+  graphql(addTransactionMutation, { name: "addTransactionMutation" })
 )(GroupInfo);

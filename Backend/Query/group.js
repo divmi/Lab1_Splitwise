@@ -1,5 +1,6 @@
 const GroupInfo = require("../Model/GroupInfoModel");
 const TransactionDetail = require("../Model/TransactionDetailModel");
+const OwsGetsDetail = require("../Model/OwsGetsDetailModel");
 
 exports.getGroup = async args => {
   return new Promise(async (resolve, reject) => {
@@ -18,6 +19,28 @@ exports.getDetailTransaction = async args => {
       .sort({ Time: "desc" })
       .then(transaction => {
         resolve(transaction);
+      });
+  });
+};
+
+exports.getOwsGetsDetail = async args => {
+  return new Promise(async (resolve, reject) => {
+    OwsGetsDetail.find({ GroupID: args })
+      .populate("GroupID", ["GroupName"])
+      .populate("MemberOws", ["Name", "UserProfilePic"])
+      .populate("MemberGets", ["Name", "UserProfilePic"])
+      .then(transaction => {
+        resolve(transaction);
+      });
+  });
+};
+
+exports.getGroupMemberName = async args => {
+  return new Promise(async (resolve, reject) => {
+    GroupInfo.find({ _id: args })
+      .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
+      .then(memberName => {
+        resolve(memberName);
       });
   });
 };

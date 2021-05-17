@@ -58,7 +58,7 @@ class Comment extends Component {
                     month: "short",
                     day: "numeric"
                   }
-                )}{" "}
+                )}
                 &emsp;
                 <img src="./assets/expense.png" height={30} width={20}></img>
                 <label style={{ paddingLeft: "10px" }}>
