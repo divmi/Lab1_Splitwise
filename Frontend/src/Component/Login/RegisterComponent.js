@@ -10,8 +10,9 @@ import {
   FormFeedback
 } from "reactstrap";
 import { isEmail } from "validator";
-import { connect } from "react-redux";
-import { RegisterUser } from "../../actions/actionCreators";
+import { signUpMutation } from "../../mutation/mutations";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 
 class Register extends Component {
   constructor(props) {
@@ -39,36 +40,35 @@ class Register extends Component {
     });
   };
 
-  submitForm = e => {
+  submitForm = async e => {
     //prevent page from refresh
     e.preventDefault();
 
-    const { userInfo } = this.state;
+    const { name, email, password } = this.state.userInfo;
     const error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      this.props.RegisterUser(userInfo);
+      let mutationResponse = await this.props.signUpMutation({
+        variables: {
+          name,
+          email,
+          password
+        }
+      });
+      if (mutationResponse.data.signUp.status == 200) {
+        this.SetLocalStorage(JSON.stringify(mutationResponse.data.signUp));
+        this.setState({
+          authFlag: true
+        });
+      } else {
+        this.setState({
+          error: "User is already registered",
+          authFlag: false
+        });
+      }
     } else {
       this.setState({ error });
     }
   };
-
-  componentDidUpdate(prevState) {
-    if (prevState.user != this.props.user) {
-      console.log(this.props.user);
-      if (this.props.user == "Registered") {
-        this.setState({
-          authFlag: false,
-          formerror: {},
-          loginError: "User is already registered"
-        });
-      } else {
-        this.setState({
-          authFlag: true
-        });
-        this.SetLocalStorage(JSON.stringify(this.props.user));
-      }
-    }
-  }
 
   SetLocalStorage(userInfo) {
     if (typeof Storage !== "undefined") {
@@ -98,7 +98,7 @@ class Register extends Component {
 
   render() {
     let redirectVar = null;
-    if (typeof this.props.user != "undefined" && this.state.authFlag) {
+    if (this.state.authFlag) {
       console.log("Control goes to home page from here");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/register" />;
@@ -189,10 +189,7 @@ class Register extends Component {
     );
   }
 }
-const mapStateToProps = state => {
-  return {
-    user: state.login.user
-  };
-};
 
-export default connect(mapStateToProps, { RegisterUser })(Register); //
+export default compose(graphql(signUpMutation, { name: "signUpMutation" }))(
+  Register
+);

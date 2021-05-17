@@ -11,14 +11,10 @@ import {
 } from "react-bootstrap";
 import OwsGetDetail from "./OwsGetsInfo";
 import { Link } from "react-router-dom";
-import {
-  getTransactionDetail,
-  addTransactionToDatabase
-} from "../../actions/groupInfo";
-import { resetSuccessFlag } from "../../actions/loginAction";
-import { connect } from "react-redux";
 import Comment from "./Comment";
-
+import { getGroupInfo } from "../../query/query";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 class GroupInfo extends Component {
   constructor(props) {
     super(props);
@@ -336,15 +332,8 @@ class GroupInfo extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    transactionDetail: state.groupInfo.transactionDetail,
-    authFlag: state.groupInfo.authFlag
-  };
-};
-
-export default connect(mapStateToProps, {
-  getTransactionDetail,
-  addTransactionToDatabase,
-  resetSuccessFlag
-})(GroupInfo);
+export default compose(
+  graphql(getGroupInfo, {
+    options: props => ({ variables: { _id: props.id } })
+  })
+)(GroupInfo);

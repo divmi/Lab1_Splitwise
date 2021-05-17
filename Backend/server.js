@@ -1,6 +1,6 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
-const schema = require("./schema");
+const schemaGraphQL = require("./schema");
 require("dotenv/config");
 var cors = require("cors");
 var bodyParser = require("body-parser");
@@ -137,13 +137,13 @@ app.use("/transaction", Transaction);
 app.use(
   "/graphql",
   graphqlHTTP({
-    schema,
+    schema: schemaGraphQL,
     graphiql: true
   })
 );
 
 app.listen(port, () => {
-  console.log("App is listening to 8000");
+  console.log("App is listening to 3001");
 });
 
 app.post("/upload", (req, res, next) => {

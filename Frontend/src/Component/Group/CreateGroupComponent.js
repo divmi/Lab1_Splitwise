@@ -3,9 +3,9 @@ import { Redirect } from "react-router-dom";
 import NewUser from "./NewUser";
 import axios from "axios";
 import config from "../../config";
-import { connect } from "react-redux";
-import { sendCreateGroupRequest } from "../../actions/createGroup";
-import { resetSuccessFlag } from "../../actions/loginAction";
+import { addGroup } from "../../mutation/mutations";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -82,11 +82,26 @@ class CreateGroup extends Component {
     }));
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
     let error = this.validateForm();
     if (Object.keys(error).length == 0) {
-      this.props.sendCreateGroupRequest(this.state);
+      //this.props.sendCreateGroupRequest(this.state);
+      let mutationResponse = await this.props.signUpMutation({
+        variables: {
+          data: this.state
+        }
+      });
+      if (mutationResponse.data.addGroup.status == 200) {
+        this.setState({
+          authFlag: true
+        });
+      } else {
+        this.setState({
+          error: "Group is already registered",
+          authFlag: false
+        });
+      }
     } else {
       this.setState({
         error: error,
@@ -133,20 +148,6 @@ class CreateGroup extends Component {
           newGroupMembers: [user]
         });
       }
-    }
-  }
-
-  componentDidUpdate(prevState) {
-    if (prevState.authFlag != this.props.authFlag) {
-      this.props.resetSuccessFlag();
-      this.setState({
-        success: true
-      });
-    }
-    if (prevState.createGroupError != this.props.createGroupError) {
-      this.setState({
-        error: this.props.createGroupError
-      });
     }
   }
 
@@ -279,7 +280,7 @@ class CreateGroup extends Component {
               >
                 {this.state.error}
               </p>
-              <form onSubmit={this.handleSubmit} onChange={this.handleChange}>
+              <form onSubmit={this.handleSubmit}>
                 <div className="row">
                   <div className="col-sm-1"></div>
                   <div className="col-sm-8">
@@ -354,15 +355,4 @@ class CreateGroup extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    allUser: state.createGroup.allUser,
-    authFlag: state.createGroup.authFlag,
-    createGroupError: state.createGroup.createGroupError
-  };
-};
-
-export default connect(mapStateToProps, {
-  sendCreateGroupRequest,
-  resetSuccessFlag
-})(CreateGroup);
+export default compose(graphql(addGroup, { name: "addGroup" }))(CreateGroup);

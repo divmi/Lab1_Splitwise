@@ -6,27 +6,26 @@ var group = class group {
     Users.find({}, (error, user) => {
       if (error) {
         res.writeHead(401, {
-          "Content-Type": "text/plain",
+          "Content-Type": "text/plain"
         });
         res.end("Not able to read users");
       } else if (user) {
         res.writeHead(200, {
-          "Content-Type": "text/plain",
+          "Content-Type": "text/plain"
         });
         res.end(JSON.stringify(user));
       }
     });
   }
   // To find the ref column
-  getGroupDetail(ID, res) {
-    GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } })
-      .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
-      .then((grp) => {
-        res.writeHead(200, {
-          "Content-Type": "text/plain",
+  getGroupDetail(ID) {
+    return new Promise(async (resolve, reject) => {
+      GroupInfo.find({ "GroupMemberInfo.ID": { $all: ID } })
+        .populate("GroupMemberInfo.ID", ["Name", "Email", "UserProfilePic"])
+        .then(grp => {
+          resolve(grp);
         });
-        res.end(JSON.stringify(grp));
-      });
+    });
   }
 
   gettransactionDetail(ID, res) {
@@ -34,9 +33,9 @@ var group = class group {
       .populate("GroupID", ["GroupName"])
       .populate("MemberID", ["Name"])
       .sort({ Time: "desc" })
-      .then((transaction) => {
+      .then(transaction => {
         res.writeHead(200, {
-          "Content-Type": "text/plain",
+          "Content-Type": "text/plain"
         });
         res.end(JSON.stringify(transaction));
       });
@@ -58,13 +57,13 @@ var group = class group {
       .sort({ Time: "desc" })
       .limit(limit)
       .skip(skip)
-      .then((transaction) => {
+      .then(transaction => {
         res.writeHead(200, {
-          "Content-Type": "text/plain",
+          "Content-Type": "text/plain"
         });
         const data = {
           transactionCount: count,
-          transaction: transaction,
+          transaction: transaction
         };
         res.end(JSON.stringify(data));
       });
@@ -73,5 +72,5 @@ var group = class group {
 };
 
 module.exports = {
-  group,
+  group
 };

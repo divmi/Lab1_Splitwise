@@ -5,6 +5,8 @@ import "font-awesome/css/font-awesome.min.css";
 import "bootstrap-social/bootstrap-social.css";
 import "./index.css";
 import App from "./App";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
 
 const client = new ApolloClient({
   uri: "http://localhost:3001/graphql"

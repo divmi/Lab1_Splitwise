@@ -10,8 +10,10 @@ import {
   Col,
   FormFeedback
 } from "reactstrap";
-import { connect } from "react-redux";
-import { userLogin } from "../../actions/loginAction";
+//import { userLogin } from "../../actions/loginAction";
+import { loginMutation } from "../../mutation/mutations";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 
 class Login extends Component {
   constructor(props) {
@@ -20,9 +22,10 @@ class Login extends Component {
       this.state = {
         error: "",
         formerror: "",
-        authFlag: "",
+        authFlag: false,
         email: "",
-        password: ""
+        password: "",
+        userData: ""
       };
     }
   }
@@ -51,39 +54,32 @@ class Login extends Component {
     });
   };
   ///LoginUser'
-  submitForm = e => {
+  submitForm = async e => {
     //prevent page from refresh
     e.preventDefault();
-    const data = {
-      email: this.state.email,
-      password: this.state.password
-    };
     const formerror = this.validateForm();
     if (Object.keys(formerror).length == 0) {
-      this.props.userLogin(data);
-      //set the with credentials to true
+      let mutationResponse = await this.props.loginMutation({
+        variables: {
+          email: this.state.email,
+          password: this.state.password
+        }
+      });
+      if (mutationResponse.data.login.status == 200) {
+        this.SetLocalStorage(JSON.stringify(mutationResponse.data.login));
+        this.setState({
+          authFlag: true
+        });
+      } else {
+        this.setState({
+          error: "Username or password is incorrect",
+          authFlag: false
+        });
+      }
     } else {
       this.setState({ formerror });
     }
   };
-
-  componentDidUpdate(prevState) {
-    if (prevState.user != this.props.user) {
-      if (this.props.user == "UnSuccessful Login") {
-        this.setState({
-          authFlag: false,
-          formerror: {},
-          error: this.props.user
-        });
-      } else {
-        this.setState({
-          authFlag: true,
-          error: ""
-        });
-        this.SetLocalStorage(JSON.stringify(this.props.user));
-      }
-    }
-  }
 
   SetLocalStorage(data) {
     if (typeof Storage !== "undefined") {
@@ -95,7 +91,7 @@ class Login extends Component {
   render() {
     let redirectVar = null;
     //typeof this.props.user.token != "undefined" &&
-    if (typeof this.props.user != "undefined" && this.state.authFlag) {
+    if (this.state.authFlag) {
       console.log("Token is verified");
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/login" />;
@@ -170,10 +166,6 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    user: state.login.user
-  };
-};
-
-export default connect(mapStateToProps, { userLogin })(Login);
+export default compose(graphql(loginMutation, { name: "loginMutation" }))(
+  Login
+);
