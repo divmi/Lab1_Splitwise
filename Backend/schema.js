@@ -1,7 +1,8 @@
 const graphql = require("graphql");
 const { login, updateProfile } = require("./Mutation/login");
 const { signUp } = require("./Mutation/signUp");
-const { addGroup } = require("./Mutation/addGroup");
+const { addGroup, editGroup } = require("./Mutation/addGroup");
+const { settleUp } = require("./Mutation/settleUp");
 const {
   insert_TransactionForUserAndGroup
 } = require("./Mutation/addTransactionToDatabase");
@@ -218,19 +219,31 @@ const Mutation = new GraphQLObjectType({
       async resolve(parent, args) {
         return await addGroup(args);
       }
+    },
+    editGroup: {
+      type: StatusType,
+      args: {
+        GroupName: { type: GraphQLString },
+        GroupProfilePicture: { type: GraphQLString },
+        GroupMemberInfo: { type: GraphQLList(GraphQLID) }
+      },
+      async resolve(parent, args) {
+        return await editGroup(args);
+      }
+    },
+    settleUp: {
+      type: StatusType,
+      args: {
+        MemberID: { type: GraphQLID },
+        Amount: { type: GraphQLFloat },
+        SettleUpWith: { type: GraphQLID },
+        GroupID: { type: GraphQLID }
+      },
+      async resolve(parent, args) {
+        return await addGroup(args);
+      }
     }
   }
-  // fields: {
-  //   createGroup: {
-  //     type: StatusType,
-  //     args: {
-  //       data: { type: GraphQLObjectType }
-  //     },
-  //     async resolve(parent, args) {
-  //       return await signUp(args);
-  //     }
-  //   }
-  // }
 });
 
 const schema = new GraphQLSchema({

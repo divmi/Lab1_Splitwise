@@ -340,5 +340,8 @@ class GroupInfo extends Component {
   }
 }
 export default compose(
-  graphql(addTransactionMutation, { name: "addTransactionMutation" })
+  graphql(addTransactionMutation, { name: "addTransactionMutation" }),
+  graphql(getGroupTransactionInfo, {
+    options: props => ({ variables: { _id: props.name } })
+  })
 )(GroupInfo);

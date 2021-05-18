@@ -95,10 +95,46 @@ const addGroup = gql`
     }
   }
 `;
+
+const editGroup = gql`
+  mutation editGroup(
+    $GroupName: String
+    $GroupProfilePicture: String
+    $GroupMemberInfo: [ID]
+  ) {
+    editGroup(
+      GroupName: $GroupName
+      GroupProfilePicture: $GroupProfilePicture
+      GroupMemberInfo: $GroupMemberInfo
+    ) {
+      status
+    }
+  }
+`;
+const settleUp = gql`
+  mutation addGroup(
+    $MemberID: ID
+    $Amount: Float
+    $SettleUpWith: ID
+    $GroupID: [ID]
+  ) {
+    addGroup(
+      MemberID: $MemberID
+      Amount: $Amount
+      SettleUpWith: $SettleUpWith
+      GroupID: $GroupID
+    ) {
+      status
+    }
+  }
+`;
+
 export {
   loginMutation,
   signUpMutation,
   addGroup,
   addTransactionMutation,
-  updateProfileMutation
+  updateProfileMutation,
+  settleUp,
+  editGroup
 };

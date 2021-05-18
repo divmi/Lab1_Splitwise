@@ -26,3 +26,47 @@ const addGroup = async args => {
 };
 
 exports.addGroup = addGroup;
+
+exports.editGroup = async args => {
+  GroupInfo.findOne({ _id: req.prevGroupName }, (error, findGroup) => {
+    if (error) {
+      callback(error, "Error");
+    }
+    if (findGroup) {
+      const updateDoc = {
+        $set: {
+          GroupName: req.newGroupName,
+          GroupProfilePicture: req.groupPhoto
+        }
+      };
+      GroupInfo.updateOne(
+        { _id: req.prevGroupName },
+        updateDoc,
+        (error, success) => {
+          if (error) {
+            callback(error, "Error");
+          }
+          if (success) {
+            if (Object.keys(req.itemDeleted).length !== 0) {
+              GroupInfo.updateOne(
+                { _id: req.prevGroupName },
+                {
+                  $pull: {
+                    GroupMemberInfo: { ID: req.itemDeleted.ID }
+                  }
+                },
+                (error, success) => {
+                  if (success) {
+                    callback(null, success);
+                  }
+                }
+              );
+            } else {
+              callback(null, success);
+            }
+          }
+        }
+      );
+    }
+  });
+};
