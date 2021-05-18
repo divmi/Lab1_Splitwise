@@ -3,12 +3,9 @@ import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
 import timezones from "../../data/timezone";
 import map from "lodash/map";
 import { Redirect } from "react-router-dom";
-import { updateProfile } from "../../actions/updateUserProfile";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { resetSuccessFlag } from "../../actions/loginAction";
-import config from "../../config";
-import axios from "axios";
+import { updateProfileMutation } from "../../mutation/mutations";
+import { graphql } from "react-apollo";
+import { flowRight as compose } from "lodash";
 
 class UpdateProfile extends Component {
   constructor(props) {
@@ -50,13 +47,6 @@ class UpdateProfile extends Component {
       }
     });
   };
-
-  componentDidUpdate(prevState) {
-    if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
-      this.SetLocalStorage(JSON.stringify(this.state.userinfo));
-      this.props.resetSuccessFlag();
-    }
-  }
   componentDidMount() {
     if (typeof Storage !== "undefined") {
       if (localStorage.key("userData")) {
@@ -77,7 +67,7 @@ class UpdateProfile extends Component {
     }
   }
 
-  submitForm = e => {
+  submitForm = async e => {
     //prevent page from refresh
     e.preventDefault();
     const error = this.validateForm();
@@ -85,8 +75,23 @@ class UpdateProfile extends Component {
       let data = this.state.userinfo;
       if (this.state.UserProfilePic != "")
         data.UserProfilePic = this.state.UserProfilePic;
-      console.log(JSON.stringify(data));
-      this.props.updateProfile(data);
+      const result = await this.props.updateProfileMutation({
+        variables: {
+          _id: this.state.userinfo._id,
+          Name: this.state.userinfo.Name,
+          Email: this.state.userinfo.Email,
+          Currency: this.state.userinfo.Currency,
+          Timezone: this.state.userinfo.Timezone,
+          Language: this.state.userinfo.Language,
+          ContactNo: this.state.userinfo.ContactNo,
+          UserProfilePic: this.state.UserProfilePic
+        }
+      });
+      console.log(result);
+      this.SetLocalStorage(JSON.stringify(this.state.userinfo));
+      this.setState({
+        auth: true
+      });
     }
   };
 
@@ -102,20 +107,21 @@ class UpdateProfile extends Component {
   }
 
   handleFileUpload = event => {
-    event.preventDefault();
-    let data = new FormData();
-    console.log(event.target.files[0]);
-    data.append("file", event.target.files[0]);
-    axios
-      .post(`http://${config.ipAddress}:8000/upload`, data)
-      .then(response => {
-        console.log(response);
-        this.setState({
-          UserProfilePic: response.data
-        });
-        console.log(this.state.UserProfilePic);
-      })
-      .catch(error => console.log("error " + error));
+    console.log(event);
+    // event.preventDefault();
+    // let data = new FormData();
+    // console.log(event.target.files[0]);
+    // data.append("file", event.target.files[0]);
+    // axios
+    //   .post(`http://${config.ipAddress}:8000/upload`, data)
+    //   .then(response => {
+    //     console.log(response);
+    //     this.setState({
+    //       UserProfilePic: response.data
+    //     });
+    //     console.log(this.state.UserProfilePic);
+    //   })
+    //   .catch(error => console.log("error " + error));
   };
 
   render() {
@@ -123,7 +129,7 @@ class UpdateProfile extends Component {
     const data = JSON.parse(localStorage.getItem("userData"));
     if (data == null) {
       redirectVar = <Redirect to="/login" />;
-    } else if (this.props.authFlag) {
+    } else if (this.state.auth) {
       redirectVar = <Redirect to="/home" />;
     } else redirectVar = <Redirect to="/updateProfile" />;
     let picture = "";
@@ -337,17 +343,6 @@ class UpdateProfile extends Component {
   }
 }
 
-UpdateProfile.propTypes = {
-  updateProfile: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => {
-  return {
-    authFlag: state.updateProfile.authFlag
-  };
-};
-
-export default connect(mapStateToProps, {
-  updateProfile,
-  resetSuccessFlag
-})(UpdateProfile);
+export default compose(
+  graphql(updateProfileMutation, { name: "updateProfileMutation" })
+)(UpdateProfile);

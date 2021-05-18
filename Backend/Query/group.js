@@ -1,6 +1,7 @@
 const GroupInfo = require("../Model/GroupInfoModel");
 const TransactionDetail = require("../Model/TransactionDetailModel");
 const OwsGetsDetail = require("../Model/OwsGetsDetailModel");
+const User = require("../Model/UserRegistrationModel");
 
 exports.getGroup = async args => {
   return new Promise(async (resolve, reject) => {
@@ -42,5 +43,17 @@ exports.getGroupMemberName = async args => {
       .then(memberName => {
         resolve(memberName);
       });
+  });
+};
+
+exports.getAllUser = async args => {
+  return new Promise(async (resolve, reject) => {
+    User.find({}, (error, user) => {
+      if (error) {
+        resolve({ status: 500 });
+      } else if (user) {
+        resolve(user);
+      }
+    });
   });
 };

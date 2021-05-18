@@ -5,6 +5,7 @@ const loginMutation = gql`
     login(email: $email, password: $password) {
       token
       _id
+      Name
       Email
       Currency
       ContactNo
@@ -22,6 +23,7 @@ const signUpMutation = gql`
     signUp(name: $name, email: $email, password: $password) {
       token
       _id
+      Name
       Email
       Currency
       ContactNo
@@ -30,6 +32,31 @@ const signUpMutation = gql`
       UserProfilePic
       status
       message
+    }
+  }
+`;
+const updateProfileMutation = gql`
+  mutation updateProfile(
+    $_id: ID
+    $Name: String
+    $Email: String
+    $Currency: String
+    $Timezone: String
+    $Language: String
+    $ContactNo: String
+    $UserProfilePic: String
+  ) {
+    updateProfile(
+      _id: $_id
+      Name: $Name
+      Email: $Email
+      Currency: $Currency
+      Timezone: $Timezone
+      Language: $Language
+      ContactNo: $ContactNo
+      UserProfilePic: $UserProfilePic
+    ) {
+      status
     }
   }
 `;
@@ -51,13 +78,27 @@ const addTransactionMutation = gql`
     }
   }
 `;
-
 const addGroup = gql`
-  mutation addGroup($data: Object) {
-    addGroup(data: $data) {
+  mutation addGroup(
+    $GroupName: String
+    $GroupProfilePicture: String
+    $GroupCreatedBy: ID
+    $GroupMemberInfo: [ID]
+  ) {
+    addGroup(
+      GroupName: $GroupName
+      GroupProfilePicture: $GroupProfilePicture
+      GroupCreatedBy: $GroupCreatedBy
+      GroupMemberInfo: $GroupMemberInfo
+    ) {
       status
-      message
     }
   }
 `;
-export { loginMutation, signUpMutation, addGroup, addTransactionMutation };
+export {
+  loginMutation,
+  signUpMutation,
+  addGroup,
+  addTransactionMutation,
+  updateProfileMutation
+};

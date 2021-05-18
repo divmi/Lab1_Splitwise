@@ -8,12 +8,12 @@ var groupInfoSchema = new Schema(
     GroupMemberInfo: [
       {
         ID: { type: Schema.Types.ObjectId, ref: "UserRegistration" },
-        Accepted: { type: Boolean, defaultValue: false },
-      },
-    ],
+        Accepted: { type: Boolean, defaultValue: false }
+      }
+    ]
   },
   {
-    versionKey: false,
+    versionKey: false
   }
 );
 

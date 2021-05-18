@@ -1,6 +1,7 @@
 const graphql = require("graphql");
-const { login } = require("./Mutation/login");
+const { login, updateProfile } = require("./Mutation/login");
 const { signUp } = require("./Mutation/signUp");
+const { addGroup } = require("./Mutation/addGroup");
 const {
   insert_TransactionForUserAndGroup
 } = require("./Mutation/addTransactionToDatabase");
@@ -8,7 +9,8 @@ const {
   getGroup,
   getDetailTransaction,
   getOwsGetsDetail,
-  getGroupMemberName
+  getGroupMemberName,
+  getAllUser
 } = require("./Query/group");
 
 const {
@@ -133,6 +135,14 @@ const RootQuery = new GraphQLObjectType({
         console.log(data);
         return data;
       }
+    },
+    getAllUser: {
+      type: new GraphQLList(LoginUserType),
+      args: { Name: { type: GraphQLString } },
+      async resolve(parent, args) {
+        const data = await getAllUser(args);
+        return data;
+      }
     }
   }
 });
@@ -176,6 +186,37 @@ const Mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         return await signUp(args);
+      }
+    },
+    updateProfile: {
+      type: StatusType,
+      args: {
+        _id: { type: GraphQLID },
+        Name: { type: GraphQLString },
+        Email: { type: GraphQLString },
+        Currency: { type: GraphQLString },
+        Timezone: { type: GraphQLString },
+        Language: { type: GraphQLString },
+        ContactNo: { type: GraphQLString },
+        UserProfilePic: { type: GraphQLString },
+        status: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        const data = await updateProfile(args);
+        console.log(data);
+        return data;
+      }
+    },
+    addGroup: {
+      type: StatusType,
+      args: {
+        GroupName: { type: GraphQLString },
+        GroupProfilePicture: { type: GraphQLString },
+        GroupCreatedBy: { type: GraphQLID },
+        GroupMemberInfo: { type: GraphQLList(GraphQLID) }
+      },
+      async resolve(parent, args) {
+        return await addGroup(args);
       }
     }
   }

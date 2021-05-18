@@ -33,6 +33,16 @@ const getMemberName = gql`
   }
 `;
 
+const getAllUser = gql`
+  query ($Name: String) {
+    getAllUser(Name: $Name) {
+      _id
+      Name
+      Email
+    }
+  }
+`;
+
 const getGroupTransactionInfo = gql`
   query ($_id: ID) {
     groupDetailInfo(_id: $_id) {
@@ -74,5 +84,6 @@ export {
   getGroupInfo,
   getGroupTransactionInfo,
   getOwsGetsDetail,
-  getMemberName
+  getMemberName,
+  getAllUser
 };

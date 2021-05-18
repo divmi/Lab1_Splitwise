@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { secret } = require("../../Backend/Utils/config");
 
-const login = async args => {
+exports.login = async args => {
   return new Promise(async (resolve, reject) => {
     await Users.findOne({ Email: args.email }, (error, user) => {
       if (error) {
@@ -55,4 +55,26 @@ function createToken(user) {
   return "JWT " + token;
 }
 
-exports.login = login;
+exports.updateProfile = async args => {
+  new Promise((resolve, reject) => {
+    const filter = { _id: args._id };
+    const updateDoc = {
+      $set: {
+        Name: args.Name,
+        ContactNo: args.ContactNo,
+        Currency: args.Currency,
+        Timezone: args.Timezone,
+        Language: args.Language,
+        Email: args.Email,
+        UserProfilePic: args.UserProfilePic
+      }
+    };
+    Users.findOneAndUpdate(filter, updateDoc, async (error, result) => {
+      if (error) {
+        resolve(error);
+      } else {
+        resolve({ status: 200 });
+      }
+    });
+  });
+};

@@ -6,7 +6,7 @@ import config from "../../config";
 import { addGroup } from "../../mutation/mutations";
 import { graphql } from "react-apollo";
 import { flowRight as compose } from "lodash";
-
+import { getAllUser } from "../../query/query";
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
@@ -20,13 +20,15 @@ class CreateGroup extends Component {
       ID: "",
       UserProfilePic: "",
       success: "",
-      newGroupMembers: []
+      newGroupMembers: [],
+      allUser: [],
+      authFlag: false
     };
   }
   OnNameChange = e => {
     if (e.target.textContent != "") {
       let newGroupMembersBackup = [...this.state.newGroupMembers];
-      let found = this.props.allUser.find(
+      let found = this.state.allUser.find(
         element => element.Name == e.target.textContent
       );
       if (found) {
@@ -52,7 +54,7 @@ class CreateGroup extends Component {
   onEmailChange = e => {
     if (e.target.textContent != "") {
       let newGroupMembersBackup = [...this.state.newGroupMembers];
-      let found = this.props.allUser.find(
+      let found = this.state.allUser.find(
         element => element.Email == e.target.textContent
       );
       if (found) {
@@ -87,9 +89,15 @@ class CreateGroup extends Component {
     let error = this.validateForm();
     if (Object.keys(error).length == 0) {
       //this.props.sendCreateGroupRequest(this.state);
+      let group = [];
+      this.state.newGroupMembers.map(user => {
+        group.push(user.ID);
+      });
       let mutationResponse = await this.props.addGroup({
         variables: {
-          data: this.state
+          GroupName: this.state.groupName,
+          GroupProfilePicture: this.state.groupPhoto,
+          GroupMemberInfo: group
         }
       });
       if (mutationResponse.data.addGroup.status == 200) {
@@ -151,6 +159,15 @@ class CreateGroup extends Component {
     }
   }
 
+  componentDidUpdate(prevState) {
+    if (prevState.data != this.props.data) {
+      console.log(this.props.data);
+      this.setState({
+        allUser: this.props.data.getAllUser
+      });
+    }
+  }
+
   hasDuplicates(array) {
     const uniqueValues = new Set(array.map(v => v.Email));
     if (uniqueValues.size < array.length) {
@@ -195,7 +212,7 @@ class CreateGroup extends Component {
     } else {
       picture = this.state.groupPhoto;
     }
-    if (this.state.success) {
+    if (this.state.authFlag) {
       message = <Redirect to="/home" />;
     }
     let newuser = this.state.newGroupMembers.map((val, idx) => {
@@ -242,7 +259,7 @@ class CreateGroup extends Component {
           val={val}
           delete={this.handleItemDeleted.bind(this)}
           userData={this.state.userData}
-          tableData={this.props.allUser}
+          tableData={this.state.allUser}
           change={this.OnNameChange.bind(this)}
           emailChange={this.onEmailChange.bind(this)}
         />
@@ -355,4 +372,11 @@ class CreateGroup extends Component {
   }
 }
 
-export default compose(graphql(addGroup, { name: "addGroup" }))(CreateGroup);
+export default compose(
+  graphql(addGroup, { name: "addGroup" }),
+  graphql(getAllUser, {
+    options: {
+      variables: { Name: "" }
+    }
+  })
+)(CreateGroup);

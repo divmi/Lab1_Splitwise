@@ -50,7 +50,9 @@ class GroupInfo extends Component {
   };
   closeModal = () => {
     this.setState({ isOpen: false });
-    this.props.getTransactionDetail(this.props.name);
+    graphql(getGroupTransactionInfo, {
+      options: props => ({ variables: { _id: props.name } })
+    });
     this.OpenOwsGetsAmount(true);
   };
 
@@ -78,17 +80,18 @@ class GroupInfo extends Component {
   }
 
   componentDidUpdate(prevState) {
-    if (prevState.data !== this.props.data) {
+    if (prevState.name !== this.props.name) {
+      console.log("Name changed", this.props.name);
+      graphql(getGroupTransactionInfo, {
+        options: props => ({ variables: { _id: props.name } })
+      });
+    }
+    if (prevState.data != this.props.data) {
       console.log(this.props.data);
       this.setState({
         transactionDetail: this.props.data.groupDetailInfo
       });
       this.OpenOwsGetsAmount(false);
-    }
-    if (prevState.authFlag != this.props.authFlag && this.props.authFlag) {
-      console.log("close Modal got called from update function");
-      this.closeModal();
-      this.props.resetSuccessFlag();
     }
   }
 
@@ -127,9 +130,17 @@ class GroupInfo extends Component {
           groupID: this.props.name,
           groupMember: this.props.groupMember,
           memberID: this.state.UserId
-        }
+        },
+        refetchQueries: [
+          {
+            query: getGroupTransactionInfo,
+            variables: { _id: this.props.name }
+          }
+        ]
       });
-      console.log(mutationResponse);
+      if (mutationResponse.data.insertTransaction.status == 200) {
+        this.closeModal();
+      }
     } else {
       this.setState({
         error: error,
@@ -329,8 +340,5 @@ class GroupInfo extends Component {
   }
 }
 export default compose(
-  graphql(getGroupTransactionInfo, {
-    options: props => ({ variables: { _id: props.name } })
-  }),
   graphql(addTransactionMutation, { name: "addTransactionMutation" })
 )(GroupInfo);

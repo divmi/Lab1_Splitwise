@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { connect } from "react-redux";
-import { getAllUser } from "../../actions/createGroup";
 
 class NewUser extends Component {
   constructor(props) {
@@ -11,10 +9,10 @@ class NewUser extends Component {
   }
 
   onNameChange = e => {
-    if (e.target.value != null && e.target.value.length > 1) {
-      const data = { Name: e.target.value, Email: "" };
-      this.props.getAllUser(data);
-    }
+    // if (e.target.value != null && e.target.value.length > 1) {
+    //   const data = { Name: e.target.value, Email: "" };
+    //   this.props.getAllUser(data);
+    // }
     var value = this.props.tableData.find(x => x.Name == e.target.textContent);
     if (value) {
       this.props.change(e);
@@ -22,10 +20,10 @@ class NewUser extends Component {
   };
 
   onEmailChange = e => {
-    if (e.target.value != null && e.target.value.length > 1) {
-      const data = { Name: "", Email: e.target.value };
-      this.props.getAllUser(data);
-    }
+    // if (e.target.value != null && e.target.value.length > 1) {
+    //   const data = { Name: "", Email: e.target.value };
+    //   this.props.getAllUser(data);
+    // }
     var value = this.props.tableData.find(x => x.Email == e.target.textContent);
     if (value) {
       this.props.emailChange(e);
@@ -89,12 +87,5 @@ class NewUser extends Component {
     );
   }
 }
-const mapStateToProps = state => {
-  return {
-    allUser: state.createGroup.allUser
-  };
-};
 
-export default connect(mapStateToProps, {
-  getAllUser
-})(NewUser);
+export default NewUser;
